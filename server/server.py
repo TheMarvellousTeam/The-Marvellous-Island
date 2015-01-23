@@ -8,7 +8,7 @@ class RemoteListener(threading.Thread):
         threading.Thread.__init__(self)
         self.connection = connection
 
-    def listen(self):
+    def run(self):
         while True:
             data = self.connection.recv(16)
             if data:
@@ -22,15 +22,12 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 sock.bind(("10.45.18.219", 1984))
 
-sock.listen(1)
+sock.listen(3)
 
 while True:
     connection, client_addr = sock.accept()
     print(client_addr)
     listener = RemoteListener(connection)
-    try:
-        listener.listen()
-    finally:
-        listener.close()
+    listener.start()
 
 sock.close()        

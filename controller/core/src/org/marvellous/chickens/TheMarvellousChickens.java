@@ -9,11 +9,17 @@ import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 public class TheMarvellousChickens extends ApplicationAdapter implements InputProcessor {
+	private static final String SERVER_ADDR = "10.45.18.219";
+	private static final int SERVER_PORT = 1984;
+	
 	SpriteBatch batch;
+	ShapeRenderer renderer ;
 	Socket socket;
 	
 	@Override
@@ -22,7 +28,8 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 		
 		SocketHints hints = new SocketHints();
 		hints.keepAlive=true;
-		socket = Gdx.net.newClientSocket(Protocol.TCP, "10.45.18.219", 1984, hints);
+		socket = Gdx.net.newClientSocket(Protocol.TCP, SERVER_ADDR, SERVER_PORT, hints);
+		renderer = new ShapeRenderer();
 		
 		Gdx.input.setInputProcessor(this);
 
@@ -30,10 +37,18 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.end();
+		renderer.begin(ShapeType.Line);
+		int width =  Gdx.graphics.getWidth()/4 ;
+		int height = Gdx.graphics.getHeight()/5;
+		renderer.rect(0, 0, width, height);
+		renderer.rect(width, 0, width, height);
+		renderer.rect(2*width, 0, width, height);
+		renderer.rect(3*width, 0, width, height);
+		renderer.end();
 	}
 
 	@Override
