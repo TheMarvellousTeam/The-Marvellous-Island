@@ -5,38 +5,18 @@ var gulp = require('gulp')
   , autoprefixer = require('gulp-autoprefixer')
   , less =require('less')
   , Stream = require('stream').Stream
-  , uglify = require('gulp-uglify')
 
-
-var production = !!process.env.PRODUCTION_BUILD
-console.log( 'production '+production )
 
 gulp.task('browserify', function () {
 
     exec(
-        'node ./node_modules/browserify/bin/cmd.js js/app.js -o js/bundle.js '+( production ? '' : '--debug ') ,
+        'node ./node_modules/browserify/bin/cmd.js js/app.js -o js/bundle.js --debug ' ,
         function( err , out , code ){
             if(err)
                 console.log( err )
-
-            if ( production )
-                    gulp.src( './js/bundle.js' )
-                    .pipe( uglify() )
-                    .pipe( gulp.dest('./js/') )
         }
     )
 });
-
-gulp.task('browserify-test', function () {
-
-    exec(
-        'node ./node_modules/browserify/bin/cmd.js test/jasmine-bundle-src.js -o test/jasmine-bundle.js --debug ' ,
-        function( err , out , code ){
-            if(err)
-                console.log( err )
-            }
-        )
-    });
 
 gulp.task('less', function () {
 
@@ -82,11 +62,11 @@ gulp.task('less', function () {
 
     return gulp.src( './css/style.less' )
     .pipe( lessify({
-        compress: production,
+        compress: !true,
         paths: ['./css'],
     }))
     .pipe(autoprefixer({
-        cascade: !production,
+        cascade: true,
         browsers: ['last 2 versions'],
     }))
     .pipe(rename('style.css'))
@@ -98,13 +78,11 @@ gulp.task('watch', function () {
 
 	gulp.watch( ['css/**/*.less'] , ['less'] )
 
-	gulp.watch( ['js/**/*', '!js/bundle.js'] , ['browserify', 'browserify-test'] )
-
-	gulp.watch( ['test/**/*' , '!test/jasmine-bundle.js'] , ['browserify-test'] )
+	gulp.watch( ['js/**/*', '!js/bundle.js'] , ['browserify'] )
 
 });
 
 
 gulp.task('build', [ 'browserify' , 'less' ]);
 
-gulp.task('default', [ 'browserify-test', 'browserify' , 'less' , 'watch' ]);
+gulp.task('default', [ 'browserify' , 'less' , 'watch' ]);
