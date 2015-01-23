@@ -2,6 +2,7 @@ var gulp = require('gulp')
   , exec = require('child_process').exec
   , watch = require('gulp-watch')
   , rename = require('gulp-rename')
+  , connect = require('gulp-connect')
   , autoprefixer = require('gulp-autoprefixer')
   , less =require('less')
   , Stream = require('stream').Stream
@@ -73,6 +74,13 @@ gulp.task('less', function () {
     .pipe(gulp.dest('./css'))
 });
 
+gulp.task('serve', function () {
+    connect.server({
+        root: '.',
+        livereload: false,
+        port : 8081
+    });
+});
 
 gulp.task('watch', function () {
 
@@ -85,4 +93,4 @@ gulp.task('watch', function () {
 
 gulp.task('build', [ 'browserify' , 'less' ]);
 
-gulp.task('default', [ 'browserify' , 'less' , 'watch' ]);
+gulp.task('default', [ 'browserify' , 'less' , 'watch' , 'serve' ]);

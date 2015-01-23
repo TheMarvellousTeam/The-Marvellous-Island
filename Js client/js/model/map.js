@@ -1,11 +1,6 @@
 var Abstract = require('../util/Abstract')
 
 
-var Tile = {
-    color : 0,
-    height : 1
-}
-
 var procedural = function( w, h ){
 
     // x + y*w
@@ -37,14 +32,14 @@ var procedural = function( w, h ){
 var init = function( type ){
 
 
-    this.width = 16
-    this.height = 16
-    this.map = procedural( this.width, this.height )
+    this.width = 6
+    this.height = 6
+    this.m = procedural( this.width, this.height )
 
     return this
 }
 var get = function( x, y ){
-    return this.map[ x + y*this.width ]
+    return this.m[ x + y*this.width ]
 }
 
 module.exports = Object.create( Abstract )
