@@ -1,0 +1,23 @@
+{
+  "name": "js-client",
+  "version":"0.0.1",
+  "author": "@Platane",
+
+  "dependencies": {
+    "promise" : "*"
+  },
+
+  "devDependencies" : {
+    "browserify" : "*",
+    "less" :"*",
+    "gulp" : "*",
+    "gulp-watch" : "*",
+    "gulp-autoprefixer" : "*",
+    "gulp-rename" : "*",
+    "pixi.js" : "2.2.x"
+  },
+
+  "scripts" : {
+    "prepublish" : "node ./node_modules/browserify/bin/cmd.js js/app.js -o js/bundle.js --debug && node ./node_modules/less/bin/lessc ./css/style.less > ./css/style.css"
+  }
+}
