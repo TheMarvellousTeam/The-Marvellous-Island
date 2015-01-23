@@ -1,4 +1,4 @@
-var Abstract = require('../utils/Abstract')
+var Abstract = require('../util/Abstract')
 
 var listener = {};
 
@@ -8,10 +8,10 @@ var dispatch = function( eventName, data ){
 
     if(true)
         switch(eventName){
-            case 'ui-mousemove':
+            case '':
                 break;
             default:
-            //    console.log(eventName, data)
+                console.log(eventName, data)
         }
 
     this._lock = true

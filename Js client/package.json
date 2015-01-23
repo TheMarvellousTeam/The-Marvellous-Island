@@ -14,7 +14,8 @@
     "gulp-watch" : "*",
     "gulp-autoprefixer" : "*",
     "gulp-rename" : "*",
-    "pixi.js" : "2.2.x"
+    "pixi.js" : "2.2.x",
+    "socket.io-client": "*"
   },
 
   "scripts" : {
