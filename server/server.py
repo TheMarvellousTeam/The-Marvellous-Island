@@ -2,6 +2,7 @@
 
 import socket
 import threading
+import argparse
 
 class RemoteListener(threading.Thread):
     def __init__(self, connection):
@@ -18,9 +19,17 @@ class RemoteListener(threading.Thread):
         self.connection.close()
 
 
+#parsing des options
+parser = argparse.ArgumentParser()
+parser.add_argument("-ip")
+parser.add_argument("-port")
+
+args = parser.parse_args()
+
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-sock.bind(("10.45.18.219", 1984))
+sock.bind((args.ip, int(args.port)))
 
 sock.listen(1)
 
