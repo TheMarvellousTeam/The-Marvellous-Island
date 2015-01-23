@@ -44,10 +44,10 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 		renderer.begin(ShapeType.Line);
 		int width =  Gdx.graphics.getWidth()/4 ;
 		int height = Gdx.graphics.getHeight()/5;
-		renderer.rect(0, 0, width, height);
-		renderer.rect(width, 0, width, height);
-		renderer.rect(2*width, 0, width, height);
-		renderer.rect(3*width, 0, width, height);
+		renderer.rect(0, 15, width, width);
+		renderer.rect(width, 15, width, height);
+		renderer.rect(2*width, 15, width, height);
+		renderer.rect(3*width, 15, width, height);
 		renderer.end();
 	}
 
@@ -72,8 +72,10 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		try {
-			socket.getOutputStream().write("Hello Python !".getBytes());
-			System.out.println("message send "+socket.isConnected());
+			if( screenY < 15 ) {
+				socket.getOutputStream().write("Hello Python !".getBytes());
+				System.out.println("message send "+socket.isConnected());
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
