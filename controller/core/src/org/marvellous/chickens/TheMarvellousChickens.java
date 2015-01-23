@@ -14,18 +14,16 @@ import com.badlogic.gdx.net.SocketHints;
 
 public class TheMarvellousChickens extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
-	Texture img;
 	Socket socket;
 	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
 		
 		SocketHints hints = new SocketHints();
 		hints.keepAlive=true;
-		
 		socket = Gdx.net.newClientSocket(Protocol.TCP, "10.45.18.219", 1984, hints);
+		
 		Gdx.input.setInputProcessor(this);
 
 	}
@@ -35,7 +33,6 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(img, 0, 0);
 		batch.end();
 	}
 
