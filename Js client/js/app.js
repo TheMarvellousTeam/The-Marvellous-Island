@@ -1,5 +1,6 @@
 var Map = require('./model/map')
   , Player = require('./model/player')
+  , Tree = require('./model/Tree')
   , WorlRenderer = require('./renderer/main')
   //, serverIO = require('./system/serverIO')
 
@@ -13,9 +14,6 @@ WorlRenderer.init( modelBall )
 //serverIO.connect( "localhost", 1984 )
 
 var ed = window.ed = require('./system/eventDispatcher')
-
-modelBall.entityPool.push( Object.create( Player ).init() )
-ed.dispatch('add:entity')
 
 modelBall.entityPool.push( Object.create( Player ).init() )
 ed.dispatch('add:entity')
@@ -39,3 +37,5 @@ document.addEventListener('keydown', function(event){
             break
     }
 })
+
+modelBall.entityPool.push( Object.create( Tree ).init() )

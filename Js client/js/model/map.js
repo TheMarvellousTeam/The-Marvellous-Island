@@ -50,7 +50,7 @@ var init = function( type ){
 }
 var get = function( x, y ){
     var k = x + y*this.width
-    if(  k<0 || k>this.m.length )
+    if(  k<0 || k>=this.m.length )
         return {
             height: 0
         }

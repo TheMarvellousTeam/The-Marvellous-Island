@@ -2,6 +2,7 @@ var Abstract = require('../util/Abstract')
   , ed = require('../system/eventDispatcher')
   , tileFactory = require('./tile-factory')
   , playerFactory = require('./player-factory')
+  , treeFactory = require('./tree-factory')
   , PIXI = require('pixi.js')
 
 var renderStatic = function( ){
@@ -61,21 +62,30 @@ var renderDynamic = function( ){
 
     entities.sort(function(a, b){
         return a.x+a.y>b.x+b.y ? 1 : -1
-    }).forEach(function( cell , i ){
+    }).forEach(function( entity , i ){
 
 
         // find the associated entity
         var sprite
         var r = container.children.filter(function( c ){
-            return c.id == cell.id
+            return c.id == entity.id
         })
 
         // create it if it does not exist
         if (!r.length) {
-            sprite = playerFactory.create( )
-            sprite.id = cell.id
+            switch( entity.type ){
+                case 'player':
+                    sprite = playerFactory.create( )
+                    sprite.setState( entity.state, entity.faceOrBack, entity.sens )
+                    break
+                case 'tree':
+                    sprite = treeFactory.create( )
+                    break
+                default :
+                    return
+            }
+            sprite.id = entity.id
             container.addChild( sprite )
-            sprite.setState( cell.state, cell.faceOrBack, cell.sens )
         } else {
             sprite = r[ 0 ]
         }
@@ -85,15 +95,13 @@ var renderDynamic = function( ){
 
 
         // set position
-        var p = proj( cell.x, cell.y )
+        var p = proj( entity.x, entity.y )
 
-        var y = map.get( Math.round( cell.x ) , Math.round( cell.y ) ).height
+        var y = map.get( Math.round( entity.x ) , Math.round( entity.y ) ).height
 
         sprite.position.x = p.x
-        sprite.position.y = p.y - y * ratio / 20
+        sprite.position.y = p.y + ratio / 4 - y * ratio / 20  
 
-
-        sprite.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
     })
 
     this._dynamic_renderId ++

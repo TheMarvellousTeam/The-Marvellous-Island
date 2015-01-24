@@ -47,7 +47,7 @@ var create = function(){
     player.mc.scale.x = player.mc.scale.y = 0.5
 
     player.mc.anchor.x = 0.5
-    player.mc.anchor.y = 0.8
+    player.mc.anchor.y = 0.9
 
 
     // yolo
