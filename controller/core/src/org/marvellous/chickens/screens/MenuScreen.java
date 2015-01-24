@@ -102,10 +102,10 @@ public class MenuScreen implements Screen , EventListener{
 		connectButton = new TextButton("Land!", skin);
 		connectButton.setPosition(300, 150);
 		connectButton.addListener(this);
-		ipField = new TextField("192.168.1.1", skin);
+		ipField = new TextField("10.45.18.219", skin);
 		ipField.setPosition(350, 300);
 		
-		portField = new TextField("1984", skin);
+		portField = new TextField("31415", skin);
 		portField.setPosition(350, 250);
 		
 		nameField = new TextField("Simon", skin);
@@ -172,7 +172,7 @@ public class MenuScreen implements Screen , EventListener{
 			game.getSocket().connect(ip, port);
 			if(game.getSocket().isConnected()){
 				game.getSocket().send("{name:" + name+"}");
-				connexionStateLabel.setText("Connexion établie.");
+				connexionStateLabel.setText("Connexion ï¿½tablie.");
 			}else{
 				connexionStateLabel.setText("Impossible de se connecter au serveur.");
 			}
