@@ -38,18 +38,27 @@ var remoteServer = net.createServer( function(sock) {
 })
 
 
-io.sockets.on('connection', function (socket) {
+/////////////
+// handle viewer connection
+
+io.sockets.on('connection', function ( viewerSocket) {
 
     var room = rooms[ 0 ]
 
-    room.addViewer( socket )
-
-})
-
+    room.viewers.push( viewerSocket )
 
 remoteServer.listen(port, ip, function(){
 	console.log('server bound')
 })
 
+    // handle disconnection
+    viewerSocket
+    .on('disconnect', function () {
 
+        // remove from the list of viewers
+        for(var i=room.viewers.length; i--;)
+            if( room.viewers[i].id == viewerSocket.id )
+                room.viewers.splice( i,1 )
+    });
+})
 server.listen( 1984 )
