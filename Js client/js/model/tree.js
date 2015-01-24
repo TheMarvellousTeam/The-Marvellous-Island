@@ -10,8 +10,8 @@ var init = function( ){
 
     this.type = 'tree'
 
-    this.x = 6
-    this.y = 10
+    this.x = 5
+    this.y = 5
 
     return this
 }

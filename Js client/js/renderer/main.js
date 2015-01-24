@@ -33,7 +33,7 @@ var renderStatic = function( ){
         return a.z>b.z ? 1 : -1
     }).forEach(function( cell ){
 
-        var tile = tileFactory.create( )
+        var tile = tileFactory.create( cell.c.type )
 
 
         var p = proj( cell.x, cell.y )
@@ -43,8 +43,6 @@ var renderStatic = function( ){
 
         tile.height = ratio * 60/100
         tile.width = ratio
-        tile.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
-        //tile.scale.x = tile.scale.y
 
         container.addChild( tile )
 
@@ -64,7 +62,9 @@ var renderDynamic = function( ){
 
 
     entities.sort(function(a, b){
-        return a.x+a.y>b.x+b.y ? 1 : -1
+        var za = a.x+a.y + ( a.type == 'player' ? 0.1 : 0 )
+        var zb = b.x+b.y + ( b.type == 'player' ? 0.1 : 0 )
+        return za>zb ? 1 : -1
     }).forEach(function( entity , i ){
 
 
@@ -83,6 +83,10 @@ var renderDynamic = function( ){
                     break
                 case 'tree':
                     sprite = treeFactory.create( )
+                    sprite.width =  ratio / 20
+                    sprite.height = ratio / 20
+                    //sprite.alpha = 0.76
+
                     break
                 default :
                     return
@@ -104,6 +108,8 @@ var renderDynamic = function( ){
 
         sprite.position.x = p.x
         sprite.position.y = p.y + ratio / 4 - y * ratio / 20
+
+        //sprite.position.x = sprite.position.y = 0
 
     })
 
@@ -171,7 +177,6 @@ var init = function( modelBall ){
         entityPool: modelBall.entityPool,
     }
 
-
     bootstrapPIXI.call( this )
 
     // start render loop
@@ -184,7 +189,6 @@ var init = function( modelBall ){
 
     this._static_renderId = 0
     renderStatic.call( this )
-
 
     this._dynamic_renderId = 0
     renderDynamic.call( this )
@@ -208,6 +212,8 @@ var init = function( modelBall ){
     ed.listen('add:entity',function(){
         this.must_render_id = this._dynamic_renderId
     }.bind(this))
+
+
 
     return this
 }

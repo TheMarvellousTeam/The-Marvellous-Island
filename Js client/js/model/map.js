@@ -29,9 +29,16 @@ var procedural = function( w, h ){
         else
             height = 0
 
+        var obstacle = null
+
+        if ( height>=3 && Math.random()>0.9 || height>=2 && Math.random()>0.95 )
+            obstacle = 'tree'
+
         map[ x + y*w ] = {
             color : 0 | ( r_color * 4 ),
-            height : height
+            height : height,
+            type: ['water', 'sand', 'dirt', 'grass', 'grass'][ height ],
+            obstacle: obstacle
         }
 
     }

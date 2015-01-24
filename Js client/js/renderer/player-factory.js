@@ -43,7 +43,7 @@ var setState = function( label, frontOrBack, sens ){
     this.stateLabel = label
 }
 
-var create = function(){
+var create = function( name ){
 
     var player = new PIXI.DisplayObjectContainer();
 
@@ -61,6 +61,10 @@ var create = function(){
         ;( mc[i] = mc[i] || {} )[k] = m
     }
     player.mc = mc
+
+    // LOL no
+    //var bitmapFontText = new PIXI.BitmapText( name || 'martin' )
+    //player.addChild( bitmapFontText )
 
     // yolo
     player.setState = setState

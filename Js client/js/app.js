@@ -11,18 +11,40 @@ var modelBall = {
     entityPool: []
 }
 
+
+
+
+
 Object.create( WorlRenderer ).init( modelBall )
 
 Object.create( ActionCtrl ).init( modelBall ).enable()
+
+
+modelBall.map.m.forEach(function( c , i ){
+
+    if ( !c.obstacle )
+        return
+
+    var x = i%modelBall.map.width
+    var y = 0|(i/modelBall.map.width)
+
+    var e = Object.create( Tree ).init()
+    e.x = x
+    e.y = y
+
+    modelBall.entityPool.push( e )
+})
+
 
 //serverIO.connect( "localhost", 1984 )
 
 var ed = window.ed = require('./system/eventDispatcher')
 
-modelBall.entityPool.push( Object.create( Player ).init() )
+var p
+modelBall.entityPool.push( p = Object.create( Player ).init() )
+//modelBall.entityPool.push( Object.create( Tree ).init() )
 ed.dispatch('add:entity')
 
-var p = modelBall.entityPool[ 0 ]
 document.addEventListener('keydown', function(event){
 
     var duration = 30
@@ -43,5 +65,3 @@ document.addEventListener('keydown', function(event){
             break
     }
 })
-
-modelBall.entityPool.push( Object.create( Tree ).init() )
