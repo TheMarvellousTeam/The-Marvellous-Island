@@ -11,6 +11,7 @@ var textures = {
 
 
 var create = function( type ){
+    
     var tile = new PIXI.Sprite( textures[ type ] || textures.sand )
 
     tile.anchor.x = 0.5

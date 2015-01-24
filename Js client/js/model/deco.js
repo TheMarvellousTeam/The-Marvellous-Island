@@ -1,14 +1,13 @@
 var Abstract = require('../util/Abstract')
-, ed = require('../system/eventDispatcher')
-, Entity = require('./entity')
-
+  , ed = require('../system/eventDispatcher')
+  , Entity = require('./entity')
 
 
 var init = function( ){
 
     Entity.init.call( this )
 
-    this.type = 'tree'
+    this.type = 'deco'
 
     this.x = 5
     this.y = 5

@@ -1,6 +1,7 @@
 var Map = require('./model/map')
   , Player = require('./model/player')
   , Tree = require('./model/Tree')
+  , Deco = require('./model/Deco')
   , WorlRenderer = require('./renderer/main')
 
   , ActionCtrl = require('./controller/actionStack')
@@ -34,6 +35,29 @@ modelBall.map.m.forEach(function( c , i ){
 
     modelBall.entityPool.push( e )
 })
+
+
+
+for (var k= 0 | ( 10 * Math.random() ); k--; )
+    for (var i=10; i--; )
+    {
+        var x = 0 | ( Math.random() * modelBall.map.width )
+        var y = 0 | ( Math.random() * modelBall.map.height )
+
+        var c = modelBall.map.get( x, y )
+
+        if( c.type == 'water' && !c.obstacle )
+            continue
+
+        var e = Object.create( Deco ).init( c.type )
+        e.x = x
+        e.y = y
+
+        modelBall.entityPool.push( e )
+
+        break
+    }
+
 
 
 //serverIO.connect( "localhost", 1984 )
