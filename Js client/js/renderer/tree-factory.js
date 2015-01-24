@@ -24,21 +24,29 @@ var create = function(){
 
 
     // BLACK MAGIC
-    var m = new PIXI.Sprite( mire );
-    m.x = -60
-    m.y = -50
+    var m = new PIXI.Sprite( mire )
+    m.alpha = 1
+    m.width = 200
+    m.height = 200
     container.addChild( m )
 
 
 
-    var sprite = new PIXI.Sprite( texture, 2250, 4000 );
+
+
+    var sprite = new PIXI.Sprite( texture );
     sprite.pivot.x = sprite.anchor.x = 0.5
     sprite.pivot.y = sprite.anchor.y = 0.95
+
+    //sprite.width = 200
+    //sprite.height = 200
 
     sprite.rotation = ( Math.random() - 0.5 ) * 0.6
     sprite.alpha = 0.95
 
     container.addChild( sprite )
+
+    return container
 
     /*
     if ( Math.random() > 0.9 )
