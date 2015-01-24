@@ -2,7 +2,7 @@
 
 import asyncore
 import socket
-
+import json
 
 def out(s):
   return s.encode("utf-8")
@@ -15,6 +15,7 @@ class World:
     self.cmd = {} 
     self.nb_players = nb_players
     self.order = []
+    self.started = False
 
   def init_render(self, handler):
     self.render = handler
@@ -37,18 +38,44 @@ class World:
     self.cmd[addr] = str(data)
 
     if len(self.cmd) == self.nb_players:
-      self.resolve_cmd()
+      if self.started:
+        self.resolve_cmd()
+      else:
+        self.resolve_name()
+        self.started=True
 
   def receive_msg(self, data):
     print("[renderer] %s"%data)
 
-  def resolve_cmd():
+  def resolve_cmd(self):
+    if self.cmd[addr][0].startswith("NAME"):
+      self.resolve_name()
+    else:
+
+    response = {}
+    response['action'] = []
+    response['order'] = []
     for addr in self.order:
-      if self.cmd[addr].startswith("NAME"):
-        self.players[addr]['name'] = cmd[5:]
-        print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
+      pass
 
     self.order = self.order[1:] + [self.order[0]]
+    for addr in self.order:
+      response['order'].append(self.players[addr]['name'])
+
+    self.render.send_msg(json.dumps(response))
+    self.broadcast("NEW_TURN")
+
+  def resolve_name(self):
+    response = {}
+    response['players'] = []
+
+    for addr in self.order:
+      self.players[addr]['name'] = self.cmd[addr][5:]      
+      response['players'].append(self.players[addr]['name'])
+
+      print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
+
+    self.render.send_msg(json.dumps(response))
     self.broadcast("NEW_TURN")
 
 class RemoteHandler(asyncore.dispatcher_with_send):
