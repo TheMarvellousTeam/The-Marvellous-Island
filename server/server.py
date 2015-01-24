@@ -2,8 +2,7 @@
 
 import json
 import network
-
-import world_generation
+import world_generation as mapgen
 
 
 class World:
@@ -64,7 +63,7 @@ class World:
   def start_game(self):
     response = {}
     response['players'] = []
-    response['map'] = None
+    response['map'] = mapgen.yolo()
 
     for addr in self.order:
       self.players[addr]['name'] = self.cmd[addr][7:-1]      
@@ -72,7 +71,7 @@ class World:
 
       print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
 
-    #self.render.send_msg(json.dumps(response))
+    #self.render.send_msg("START_GAME %s"%json.dumps(response))
     print(json.dumps(response))
     self.broadcast('START_GAME')
 

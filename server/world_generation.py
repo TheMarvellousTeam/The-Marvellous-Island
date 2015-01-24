@@ -6,10 +6,13 @@ def yolo():
     width = 16
     height = 16
 
+    treeCount = 0
+    treeTs = 0.3
+
 
     # generation based on the distance from the center of the island
 
-    _map = {}
+    _map = []
 
     r_max = math.sqrt( ( width/2 )*( width/2 ) + ( height/2 )*( height/2 ) ) * 1.1
 
@@ -37,13 +40,19 @@ def yolo():
 
 
             obstacle = ''
-            if ( height == 3 and random.random() > 0.9 ) or ( height == 2 and random.random() > 0.95 ) :
+            if ( height == 3 and random.random() > treeTs ) or ( height == 2 and random.random() > treeTs ) and treeCount < 5 :
                 obstacle = 'tree'
+                treeCount += 1
+                treeTs = 0.3
+            else:
+                treeTs += 0.1 
 
-            _map[ x + y * width ] = {
+            _map.append({
+                "x": x,
+                "y": y,
                 "height": height,
                 "obstacle": obstacle
-            }
+            })
 
 
 
