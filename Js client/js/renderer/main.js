@@ -34,7 +34,7 @@ var renderStatic = function( ){
         var p = proj( cell.x, cell.y )
 
         tile.position.x = p.x
-        tile.position.y = p.y + cell.c.height * 20
+        tile.position.y = p.y - cell.c.height * 10
 
         tile.height = ratio * 1.5
         tile.width = ratio
