@@ -36,7 +36,7 @@ class World:
       if self.started:
         self.resolve_cmd()
       else:
-        self.resolve_name()
+        self.start_game()
         self.started=True
 
       self.cmd = {}
@@ -59,11 +59,12 @@ class World:
 
     #self.render.send_msg(json.dumps(response))
     print(json.dumps(response))
-    self.broadcast("NEW_TURN")
+    self.broadcast('NEW_TURN')
 
-  def resolve_name(self):
+  def start_game(self):
     response = {}
     response['players'] = []
+    response['map'] = None
 
     for addr in self.order:
       self.players[addr]['name'] = self.cmd[addr][7:-1]      
@@ -73,7 +74,7 @@ class World:
 
     #self.render.send_msg(json.dumps(response))
     print(json.dumps(response))
-    self.broadcast("NEW_TURN")
+    self.broadcast('START_GAME')
 
 
 
