@@ -48,16 +48,14 @@ class World:
     print("[renderer] %s"%data)
 
   def resolve_cmd(self):
-    if self.cmd[addr][0].startswith("NAME"):
-      self.resolve_name()
-    else:
-
     response = {}
     response['action'] = []
     response['order'] = []
-    for addr in self.order:
-      pass
 
+    for addr in self.order:
+      pass #resolve this shit
+
+    # order rotation
     self.order = self.order[1:] + [self.order[0]]
     for addr in self.order:
       response['order'].append(self.players[addr]['name'])
