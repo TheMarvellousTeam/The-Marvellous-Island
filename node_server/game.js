@@ -154,14 +154,14 @@ var removePlayer = function( name ){
     return this
 }
 
-var playersAsJson = function(){
-    return {}
+var getPlayersAsJson = function(){
+    return this.players
 }
-var worldAsJson = function(){
-    return {}
+var getWorldAsJson = function(){
+    return this.world
 }
-var orderAsJson = function(){
-    return {}
+var getOrderAsJson = function(){
+    return this.order
 }
 
 
@@ -230,7 +230,7 @@ module.exports = {
 
     resolveCommands: resolveCommands,
 
-    playersAsJson: playersAsJson,
-    worldAsJson: worldAsJson,
-    orderAsJson: orderAsJson,
+    getPlayersAsJson: getPlayersAsJson,
+    getWorldAsJson: getWorldAsJson,
+    getOrderAsJson: getOrderAsJson,
 }

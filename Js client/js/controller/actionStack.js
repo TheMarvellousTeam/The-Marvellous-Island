@@ -8,70 +8,52 @@ var init = function( modelBall ){
         entityPool: modelBall.entityPool
     }
 
-    this.receiveAction = receiveAction.bind( this )
-    this.update = update.bind( this )
-
-    this.k = 0
-    this.stack = []
+    this.doAction = doAction.bind( this )
 
     return this
 }
 
 var doAction = function( action ){
 
-    var who
-    if ( action.who )
-        who = this.model.entityPool.filter(function(c){ return action.who == c.id })[ 0 ]
+    var type = action.action
+    var playerName = action.player
+    var duration = action.duration
 
-    switch( action.type )
+    var player
+    if ( playerName )
+        player = this.model.entityPool.filter(function(c){ return playerName == c.id })[ 0 ]
+
+    switch( type )
     {
-        case 'entity-move' :
-            who.engageMove( action.x, action.y, 30 )
-            return 30
+        case 'move' :
+            player.engageMove( action.toX, action.toY, duration )
+            return
 
-        case 'entity-die' :
+        case 'death' :
             // TODO
-            //who.engageMove( action.x, action.y, 300 )
-            //ed.dispatch('')
-            return 40
+            return
+
+        case 'spawn' :
+            // TODO
+            return
 
         default :
             return 0
     }
 
     ed.dispatch('action-done', {
-        who: who,
-        remainingActions: this.stack.length
+        player: player,
+        action: type
     })
 }
 
-var update = function() {
-
-    var timeBreak = 20
-
-    if ( this.k <= 0 && this.stack.length )
-    {
-        if( this.stack.length )
-
-            this.k = doAction.call( this, this.stack.shift() ) + timeBreak
-
-    } else
-        this.k --
-
-}
-
-var receiveAction = function( event ){
-    this.stack.push.apply( this.stack, event.actions )
-}
 
 var enable = function(){
     this.disable()
-    ed.listen( 'io:receiveAction', this.receiveAction, this )
-    ed.listen( 'update', this.update, this )
+    ed.listen( 'io:incoming-action', this.doAction, this )
 }
 var disable = function(){
-    ed.unlisten( 'io:receiveAction', this )
-    ed.unlisten( 'update', this )
+    ed.unlisten( 'io:incoming-action', this )
 }
 
 module.exports = Object.create( Abstract ).extend({

@@ -5,7 +5,7 @@ var Map = require('./model/map')
   , WorlRenderer = require('./renderer/main')
 
   , ActionCtrl = require('./controller/actionStack')
-  //, serverIO = require('./system/serverIO')
+  , serverIO = require('./system/serverIO')
 
 var modelBall = {
     map: Object.create( Map ).init(),
@@ -60,15 +60,14 @@ for (var k= 0 | ( 10 * Math.random() ); k--; )
 
 
 
-//serverIO.connect( "localhost", 1984 )
+serverIO.connect( "localhost", 1984 )
 
+
+/*
 var ed = window.ed = require('./system/eventDispatcher')
-
 var p
 modelBall.entityPool.push( p = Object.create( Player ).init() )
-//modelBall.entityPool.push( Object.create( Tree ).init() )
 ed.dispatch('add:entity')
-
 document.addEventListener('keydown', function(event){
 
     var duration = 30
@@ -89,3 +88,4 @@ document.addEventListener('keydown', function(event){
             break
     }
 })
+*/

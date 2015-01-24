@@ -1,8 +1,9 @@
 var app = require('express')()
 var server = require('http').createServer(app)
 var io = require('socket.io')(server)
-var game = require('./game')
 var net = require('net')
+var game = require('./game')
+var dispatcher = require('./dispatchActions')
 
 var port = 31415
 var ip = '192.168.1.1'
@@ -12,6 +13,10 @@ var rooms = [{
     users : [],
     game : game
 }]
+
+
+/////////////
+// handle remote connection
 
 var remoteServer = net.createServer( function(sock) {
 
@@ -26,7 +31,7 @@ var remoteServer = net.createServer( function(sock) {
     sock.on('end', function(){
     	console.log('['+sock.remoteAddress+'] deconnected')
     })
-	
+
     sock.on('data', function(data){
     	console.log('['+sock.remoteAddress+'] '+data)
     	if ( data.name ) {
@@ -34,8 +39,13 @@ var remoteServer = net.createServer( function(sock) {
     		rooms[0].game.addPlayer(user.name)
     	}
     })
-   
+
 })
+remoteServer.listen(port, ip, function(){
+    console.log('server bound')
+})
+
+
 
 
 /////////////
@@ -47,9 +57,6 @@ io.sockets.on('connection', function ( viewerSocket) {
 
     room.viewers.push( viewerSocket )
 
-remoteServer.listen(port, ip, function(){
-	console.log('server bound')
-})
 
     // handle disconnection
     viewerSocket
@@ -59,6 +66,17 @@ remoteServer.listen(port, ip, function(){
         for(var i=room.viewers.length; i--;)
             if( room.viewers[i].id == viewerSocket.id )
                 room.viewers.splice( i,1 )
-    });
+    })
+
+    // send him the actual situation
+    .emit('world', {
+        world : room.game.getWorldAsJson()
+    })
+    .emit('order', {
+        world : room.game.getOrderAsJson()
+    })
+    .emit('players', {
+        world : room.game.getPlayersAsJson()
+    })
 })
 server.listen( 1984 )
