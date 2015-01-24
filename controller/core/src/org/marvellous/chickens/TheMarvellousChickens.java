@@ -18,18 +18,18 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 	private static final String SERVER_ADDR = "10.45.18.219";
 	private static final int SERVER_PORT = 1984;
 	
-	SpriteBatch batch;
-	ShapeRenderer renderer ;
 	Socket socket;
+	
+	TestSocketInput input ;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
 		
 		SocketHints hints = new SocketHints();
 		hints.keepAlive=true;
 		socket = Gdx.net.newClientSocket(Protocol.TCP, SERVER_ADDR, SERVER_PORT, hints);
-		renderer = new ShapeRenderer();
+		
+		input = new TestSocketInput(socket);
 		
 		Gdx.input.setInputProcessor(this);
 
@@ -37,23 +37,11 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.end();
-		renderer.begin(ShapeType.Line);
-		int width =  Gdx.graphics.getWidth()/4 ;
-		int height = Gdx.graphics.getHeight()/5;
-		renderer.rect(0, 15, width, width);
-		renderer.rect(width, 15, width, height);
-		renderer.rect(2*width, 15, width, height);
-		renderer.rect(3*width, 15, width, height);
-		renderer.end();
+		
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-
 		return false;
 	}
 
@@ -71,15 +59,7 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		try {
-			if( screenY < 15 ) {
-				socket.getOutputStream().write("Hello Python !".getBytes());
-				System.out.println("message send "+socket.isConnected());
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !", null);
 		return false;
 	}
 
