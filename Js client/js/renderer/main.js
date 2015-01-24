@@ -79,7 +79,7 @@ var renderDynamic = function( ){
             switch( entity.type ){
                 case 'player':
                     sprite = playerFactory.create( )
-                    sprite.setState( entity.state, entity.faceOrBack, entity.sens )
+                    sprite.setState( entity.state, entity.direction.frontOrBack, entity.direction.sens )
                     break
                 case 'tree':
                     sprite = treeFactory.create( )
@@ -161,7 +161,7 @@ var changeState = function( event ){
     })
     if(!r.length)
         return
-    r[ 0 ].setState( event.entity.state, event.entity.direction.frontOrback, event.entity.direction.sens )
+    r[ 0 ].setState( event.entity.state, event.entity.direction.frontOrBack, event.entity.direction.sens )
 }
 
 var init = function( modelBall ){

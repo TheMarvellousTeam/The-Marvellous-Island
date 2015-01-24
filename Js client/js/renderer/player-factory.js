@@ -3,15 +3,16 @@ var PIXI = require('pixi.js')
 
 
 var player_spriteSheet = PIXI.Texture.fromImage("./asset/dude_animation_sheet_stolen.png")
+var mire_texture = PIXI.Texture.fromImage("./asset/mire.svg", 128, 128)
 
 
 var textures_running = []
 for (var i=0; i<7; i++)
-    textures_running.push( new PIXI.Texture( player_spriteSheet, {width: 128, height: 128, x: i*128, y: 0}) )
+    textures_running.push( new PIXI.Texture( player_spriteSheet, {width: 128, height: 128, x: i*128, y: 10}) )
 
 var textures_idl = []
 for (var i=0; i<2; i++)
-    textures_idl.push( new PIXI.Texture( player_spriteSheet, {width: 128, height: 128, x: i*128, y: 128*3}) )
+    textures_idl.push( new PIXI.Texture( player_spriteSheet, {width: 128, height: 128, x: i*128, y: 310}) )
 
 var textures = {
     running : {
@@ -28,11 +29,16 @@ var textures = {
 
 var setState = function( label, frontOrBack, sens ){
 
-    this.textures = textures[ label ][ frontOrBack ]
-    if ( sens != this.mc.scale.x>0 )
-        this.mc.scale.x *= -1
-    this.mc.animationSpeed = textures[ label ].speed
-    this.mc.gotoAndPlay( label == this.stateLabel ? this.mc.currentFrame : 0 )
+    this.removeChildren()
+
+    var m = this.mc[ label ][ frontOrBack ]
+
+    this.addChild( m )
+
+    if ( sens != m.scale.x>0 )
+        m.scale.x *= -1
+
+    m.gotoAndPlay( label == this.stateLabel ? m.currentFrame : 0 )
 
     this.stateLabel = label
 }
@@ -41,14 +47,20 @@ var create = function(){
 
     var player = new PIXI.DisplayObjectContainer();
 
-    player.mc = new PIXI.MovieClip( textures.running.front )
-    player.addChild( player.mc )
+    var mc = {}
+    for ( var i in textures )
+    for ( var k in textures[ i ] )
+    {
+        var m = new PIXI.MovieClip( textures[ i ][ k ] )
+        m.animationSpeed = textures[ i ].speed
+        m.anchor.x = 0.5
+        m.anchor.y = 0.9
 
-    player.mc.scale.x = player.mc.scale.y = 0.5
+        m.scale.x = m.scale.y = 0.5
 
-    player.mc.anchor.x = 0.5
-    player.mc.anchor.y = 0.9
-
+        ;( mc[i] = mc[i] || {} )[k] = m
+    }
+    player.mc = mc
 
     // yolo
     player.setState = setState

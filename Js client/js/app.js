@@ -22,18 +22,20 @@ var p = modelBall.entityPool[ 0 ]
 document.addEventListener('keydown', function(event){
 
     var duration = 30
+    var x = p._move ? p._move.targetX : p.x
+    var y = p._move ? p._move.targetY : p.y
     switch( event.which ){
         case 38 : // up
-            p.engageMove( p.x -1 ,p.y, duration )
+            p.engageMove( x -1 , y , duration )
             break
         case 40 : // down
-            p.engageMove( p.x +1 ,p.y, duration )
+            p.engageMove( x +1 , y , duration )
             break
         case 37 : // left
-            p.engageMove( p.x ,p.y +1, duration )
+            p.engageMove( x , y +1 , duration )
             break
         case 39 : // right
-            p.engageMove( p.x ,p.y -1, duration )
+            p.engageMove( x , y -1 , duration )
             break
     }
 })

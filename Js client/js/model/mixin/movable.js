@@ -21,6 +21,7 @@ var finishMove = function( noStateChange ){
         this.x = this._move.targetX
         this.y = this._move.targetY
     }
+    this._move = null
 
     ed.dispatch('change:position', {
         entity: this
