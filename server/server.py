@@ -1,17 +1,9 @@
 #!/usr/bin/python3
 
-<<<<<<< Updated upstream
 import json
 import network
-=======
-import asyncore
-import socket
+
 import world_generation
-
-
-def out(s):
-  return s.encode("utf-8")
->>>>>>> Stashed changes
 
 
 class World:
