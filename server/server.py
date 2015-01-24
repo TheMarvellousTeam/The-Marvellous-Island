@@ -1,14 +1,24 @@
 #!/usr/bin/python3
 
+<<<<<<< Updated upstream
 import json
 import network
+=======
+import asyncore
+import socket
+import world_generation
+
+
+def out(s):
+  return s.encode("utf-8")
+>>>>>>> Stashed changes
 
 
 class World:
 
   def __init__(self, nb_players):
     self.players = {}
-    self.cmd = {} 
+    self.cmd = {}
     self.nb_players = nb_players
     self.order = []
     self.started = False
@@ -18,7 +28,7 @@ class World:
 
   def add_player(self, addr, handler):
     self.players[addr] = {}
-    self.players[addr]['handler'] = handler 
+    self.players[addr]['handler'] = handler
     self.order.append(addr)
     print("%s joined the game"%addr)
 
@@ -27,7 +37,7 @@ class World:
       stuff['handler'].send_msg(msg)
 
   def receive_cmd(self, addr, data):
-    print("[%s] %s"%(addr, data))   
+    print("[%s] %s"%(addr, data))
     self.cmd[addr] = str(data)
 
     if len(self.cmd) == self.nb_players:
@@ -67,7 +77,18 @@ class World:
       self.players[addr]['name'] = self.cmd[addr][7:-1]      
       response['players'].append(self.players[addr]['name'])
 
+<<<<<<< Updated upstream
       print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
+=======
+class RenderServer(asyncore.dispatcher):
+
+  def __init__(self, host, port, world):
+    asyncore.dispatcher.__init__(self)
+    self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+    self.set_reuse_addr()
+    self.bind((host, port))
+    self.listen(1)
+>>>>>>> Stashed changes
 
     #self.render.send_msg(json.dumps(response))
     print(json.dumps(response))
@@ -86,4 +107,3 @@ def main(ip, portRemote, portRender):
 
 if __name__=="__main__":
   main("192.168.1.1", 1984, 19842)
-
