@@ -1,38 +1,39 @@
 package org.marvellous.chickens;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
+import org.marvellous.chickens.screens.MenuScreen;
+
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
 
-public class TheMarvellousChickens extends ApplicationAdapter implements InputProcessor {
-	private static final String SERVER_ADDR = "10.45.18.219";
-	private static final int SERVER_PORT = 1984;
+public class TheMarvellousChickens extends Game implements InputProcessor {
 	private ChickenSocket socket;
 	TestSocketInput input ;
+	private MenuScreen menuScreen;
+	
 	@Override
 	public void create () {
-		socket = new ChickenSocket(SERVER_ADDR, SERVER_PORT);
+		resize(800, 480);
+		socket = new ChickenSocket();
 		socket.addListener(new ChickenSocketListener() {
-			
 			@Override
 			public void onReceive(String content) {
-				System.out.println("The chicken says : " + content);
+				System.out.println("The chicken says : '" + content+"'");
+				
+			}
+
+			@Override
+			public void onConnexionError(String errorMessage) {
+				System.err.println("error : " + errorMessage);
 			}
 		});
-		socket.start();
-		Gdx.input.setInputProcessor(this);
-
+		setScreen(new MenuScreen(this));
 	}
 
 
-	@Override
-	public void render () {
-		
-	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-		socket.close();
+
 		return false;
 	}
 
@@ -53,7 +54,8 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 		char zero = 0;
 		String endOfInput = new StringBuilder().append(zero).append(zero).append(zero).append(zero).toString();
 		//Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !"+endOfInput, null);
-		socket.send("trololo");
+		//socket.send("trololo");
+		//socket.close();
 		return false;
 	}
 
@@ -79,5 +81,8 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	public ChickenSocket getSocket(){
+		return socket;
 	}
 }

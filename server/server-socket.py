@@ -7,7 +7,7 @@ import signal
 
 #signal handler
 def handler (signum, frame):
-    print 'interupt'
+    print ('interupt')
 
 class RemoteListener(threading.Thread):
     def __init__(self, connection):
