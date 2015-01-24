@@ -1,49 +1,29 @@
 package org.marvellous.chickens;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Net.Protocol;
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.SocketHints;
 
 public class TheMarvellousChickens extends ApplicationAdapter implements InputProcessor {
 	private static final String SERVER_ADDR = "10.45.18.219";
 	private static final int SERVER_PORT = 1984;
-	
+	private ChickenSocket socket;
 	TestSocketInput input ;
-	
 	@Override
 	public void create () {
-		
-		SocketHints hints = new SocketHints();
-		hints.keepAlive=true;
-		final Socket socket = Gdx.net.newClientSocket(Protocol.TCP, SERVER_ADDR, SERVER_PORT, hints);
-		
-		new Thread(new Runnable() {
+		socket = new ChickenSocket(SERVER_ADDR, SERVER_PORT);
+		socket.addListener(new ChickenSocketListener() {
+			
 			@Override
-			public void run() {
-				byte[] b = new byte[512] ;
-				try {
-					while(true){
-						socket.getInputStream().read(b) ;
-						String action = new String(b);
-						System.out.println(action);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			public void onReceive(String content) {
+				System.out.println("The chicken says : " + content);
 			}
-		}).start();
-		
-		input = new TestSocketInput(socket);
-		
+		});
+		socket.start();
 		Gdx.input.setInputProcessor(this);
 
 	}
+
 
 	@Override
 	public void render () {
@@ -52,6 +32,7 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 
 	@Override
 	public boolean keyDown(int keycode) {
+		socket.close();
 		return false;
 	}
 
@@ -71,7 +52,8 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		char zero = 0;
 		String endOfInput = new StringBuilder().append(zero).append(zero).append(zero).append(zero).toString();
-		Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !"+endOfInput, null);
+		//Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !"+endOfInput, null);
+		socket.send("trololo");
 		return false;
 	}
 
