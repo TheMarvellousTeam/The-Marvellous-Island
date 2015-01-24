@@ -92,7 +92,7 @@ io.sockets.on('connection', function ( viewerSocket) {
     })
 
 })
-server.listen( 1984 )
+rendererServer.listen( 1984 )
 
 remoteServer.listen(31415, '10.45.18.219', function(){
     console.log('server bound')
