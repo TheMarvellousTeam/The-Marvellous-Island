@@ -9,7 +9,7 @@ var create = function(){
     var tile = new PIXI.Sprite( texture_tile )
 
     tile.anchor.x = 0.5
-    tile.anchor.y = 0.166666
+    tile.anchor.y = 0.001
 
     return tile
 }

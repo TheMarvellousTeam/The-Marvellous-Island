@@ -13,11 +13,11 @@ var procedural = function( w, h ){
     {
 
         // distance to center
-        var r = (( x-w )*( x-w ) + ( y-h )*( y-h )) / r_max
+        var r = (( x-w/2 )*( x-w/2 ) + ( y-h/2 )*( y-h/2 )) / r_max
 
         // distance to center ~ random param
-        var r_color = Math.min( 1, ( r * ( Math.random() * 0.8 + 0.2 ) ))
-        var r_height = Math.min( 1, ( r * ( Math.random() * 0.8 + 0.2 ) ))
+        var r_color = Math.min( 1, ( r * ( Math.random() * 0.2 + 0.8 ) ))
+        var r_height = Math.min( 1, ( Math.pow( r , 1/2 ) * ( Math.random() * 0.2 + 0.8 ) ))
 
         map[ x + y*w ] = {
             color : 0 | ( r_color * 4 ),
@@ -32,8 +32,8 @@ var procedural = function( w, h ){
 var init = function( type ){
 
 
-    this.width = 6
-    this.height = 6
+    this.width = 16
+    this.height = 16
     this.m = procedural( this.width, this.height )
 
     return this

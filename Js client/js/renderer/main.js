@@ -34,10 +34,11 @@ var renderStatic = function( ){
         var p = proj( cell.x, cell.y )
 
         tile.position.x = p.x
-        tile.position.y = p.y
+        tile.position.y = p.y + cell.c.height * 20
 
-        tile.height = ratio * 3
+        tile.height = ratio * 1.5
         tile.width = ratio
+        tile.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
         //tile.scale.x = tile.scale.y
 
         container.addChild( tile )
@@ -82,7 +83,7 @@ var computeCamera = function( ){
 var project = function( x, y ){
     return {
         x: (x-y) * this.ratio / 2 + this.offset.x + this.renderer.width/2,
-        y: (x+y) * this.ratio / 2 + this.offset.y - this.renderer.height/2
+        y: (x+y) * this.ratio / 4 + this.offset.y
     }
 }
 
