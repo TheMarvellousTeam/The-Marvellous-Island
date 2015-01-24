@@ -2,7 +2,10 @@
 
 var init = function(){
 
-    this.players = {}
+    this.players = {
+        'platane' : { x:5, y:6 },
+        'john' : { x:10, y:7 },
+    }
 
     this.order = []
 

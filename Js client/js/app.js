@@ -16,6 +16,7 @@ Object.create( WorlRenderer ).init( modelBall )
 
 Object.create( require('./controller/actionStack') ).init( modelBall ).enable()
 Object.create( require('./controller/sync-world') ).init( modelBall ).enable()
+Object.create( require('./controller/sync-player') ).init( modelBall ).enable()
 
 
 

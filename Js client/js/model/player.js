@@ -13,6 +13,8 @@ var init = function( ){
     this.x= 5
     this.y= 5
 
+    this.name
+
     return this
 }
 

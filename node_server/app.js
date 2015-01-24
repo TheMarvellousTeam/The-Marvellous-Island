@@ -41,10 +41,10 @@ var remoteServer = net.createServer( function(sock) {
     })
 
 })
-remoteServer.listen(port, ip, function(){
-    console.log('server bound')
-})
 
+//remoteServer.listen(port, ip, function(){
+//    console.log('server bound')
+//})
 
 
 
@@ -73,10 +73,10 @@ io.sockets.on('connection', function ( viewerSocket) {
         world : room.game.getWorldAsJson()
     })
     .emit('order', {
-        world : room.game.getOrderAsJson()
+        order : room.game.getOrderAsJson()
     })
     .emit('players', {
-        world : room.game.getPlayersAsJson()
+        players : room.game.getPlayersAsJson()
     })
 
 })
