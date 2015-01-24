@@ -1,5 +1,6 @@
 package org.marvellous.chickens;
 
+import org.marvellous.chickens.screens.ControllerScreen;
 import org.marvellous.chickens.screens.MenuScreen;
 
 import com.badlogic.gdx.Game;
@@ -9,6 +10,7 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 	private ChickenSocket socket;
 	TestSocketInput input ;
 	private MenuScreen menuScreen;
+	private ControllerScreen controllerScreen;
 	
 	@Override
 	public void create () {
@@ -18,7 +20,9 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 			@Override
 			public void onReceive(String content) {
 				System.out.println("The chicken says : '" + content+"'");
-				
+				if("START".equals(content)){
+					setScreen(new ControllerScreen(TheMarvellousChickens.this));
+				}
 			}
 
 			@Override
@@ -26,7 +30,9 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 				System.err.println("error : " + errorMessage);
 			}
 		});
-		setScreen(new MenuScreen(this));
+		menuScreen = new MenuScreen(this);
+		controllerScreen = new ControllerScreen(this);
+		setScreen(menuScreen);
 	}
 
 
