@@ -10,6 +10,7 @@ class RemoteListener(threading.Thread):
         self.connection = connection
 
     def run(self):
+        self.connection.sendall("START".encode("utf-8"))
         while True:
             data = self.connection.recv(16)
             if data:
@@ -19,24 +20,31 @@ class RemoteListener(threading.Thread):
         self.connection.close()
 
 
-#parsing des options
-parser = argparse.ArgumentParser()
-parser.add_argument("-ip")
-parser.add_argument("-port")
+def main(args):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-args = parser.parse_args()
+    sock.bind((args.ip, int(args.port)))
 
+    sock.listen(3)
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clients = []
 
-sock.bind((args.ip, int(args.port)))
+    while len(clients) < 2:
+        connection, client_addr = sock.accept()
+        clients.append((client_addr, RemoteListener(connection)))
+        print("%s joined the game"%client_addr[0])
 
-sock.listen(3)
+    for client in clients:
+        client[1].start()
 
-while True:
-    connection, client_addr = sock.accept()
-    print(client_addr)
-    listener = RemoteListener(connection)
-    listener.start()
+    sock.close()
 
-sock.close()        
+if __name__=="__main__":
+    #parsing des options
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-ip")
+    parser.add_argument("-port")
+
+    args = parser.parse_args()
+    main(args)
+           

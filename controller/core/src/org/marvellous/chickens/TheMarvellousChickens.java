@@ -18,8 +18,6 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 	private static final String SERVER_ADDR = "10.45.18.219";
 	private static final int SERVER_PORT = 1984;
 	
-	Socket socket;
-	
 	TestSocketInput input ;
 	
 	@Override
@@ -27,7 +25,24 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 		
 		SocketHints hints = new SocketHints();
 		hints.keepAlive=true;
-		socket = Gdx.net.newClientSocket(Protocol.TCP, SERVER_ADDR, SERVER_PORT, hints);
+		final Socket socket = Gdx.net.newClientSocket(Protocol.TCP, SERVER_ADDR, SERVER_PORT, hints);
+		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				byte[] b = new byte[512] ;
+				try {
+					while(true){
+						socket.getInputStream().read(b) ;
+						String action = new String(b);
+						System.out.println(action);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 		
 		input = new TestSocketInput(socket);
 		
