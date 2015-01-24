@@ -6,11 +6,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Net.Protocol;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
@@ -74,7 +69,9 @@ public class TheMarvellousChickens extends ApplicationAdapter implements InputPr
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !", null);
+		char zero = 0;
+		String endOfInput = new StringBuilder().append(zero).append(zero).append(zero).append(zero).toString();
+		Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !"+endOfInput, null);
 		return false;
 	}
 

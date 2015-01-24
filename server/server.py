@@ -3,6 +3,11 @@
 import socket
 import threading
 import argparse
+import signal
+
+#signal handler
+def handler (signum, frame):
+    print 'interupt'
 
 class RemoteListener(threading.Thread):
     def __init__(self, connection):
