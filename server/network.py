@@ -61,7 +61,7 @@ class RemoteServer(asyncore.dispatcher):
     pair = self.accept()
     if pair is not None:
       sock, addr = pair
-      self.world.add_player(addr, RemoteHandler(sock, addr, world))
+      self.world.add_player(addr, RemoteHandler(sock, addr, self.world))
 
   def handle_close(self):
     self.close()

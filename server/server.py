@@ -22,9 +22,6 @@ class World:
     self.order.append(addr)
     print("%s joined the game"%addr)
 
-    if len(self.players) == self.nb_players:
-      self.broadcast("START")
-
   def broadcast(self, msg):
     for addr, stuff in self.players.items():
       stuff['handler'].send_msg(msg)
@@ -39,6 +36,8 @@ class World:
       else:
         self.resolve_name()
         self.started=True
+
+      self.cmd = {}
 
   def receive_msg(self, data):
     print("[renderer] %s"%data)
@@ -56,7 +55,8 @@ class World:
     for addr in self.order:
       response['order'].append(self.players[addr]['name'])
 
-    self.render.send_msg(json.dumps(response))
+    #self.render.send_msg(json.dumps(response))
+    print(json.dumps(response))
     self.broadcast("NEW_TURN")
 
   def resolve_name(self):
@@ -64,12 +64,13 @@ class World:
     response['players'] = []
 
     for addr in self.order:
-      self.players[addr]['name'] = self.cmd[addr][5:]      
+      self.players[addr]['name'] = self.cmd[addr][7:-1]      
       response['players'].append(self.players[addr]['name'])
 
       print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
 
-    self.render.send_msg(json.dumps(response))
+    #self.render.send_msg(json.dumps(response))
+    print(json.dumps(response))
     self.broadcast("NEW_TURN")
 
 
