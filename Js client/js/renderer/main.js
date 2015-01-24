@@ -60,7 +60,7 @@ var renderDynamic = function( ){
     var ratio = this.ratio
     var proj = project.bind( this )
 
-
+    var renderId = this._dynamic_renderId
 
     entities.sort(function(a, b){
         var za = a.x+a.y + ( a.type == 'player' ? 0.1 : 0 )
@@ -103,6 +103,8 @@ var renderDynamic = function( ){
             sprite = r[ 0 ]
         }
 
+        sprite._render_id = renderId
+
         // set z index
         container.setChildIndex( sprite, i )
 
@@ -123,6 +125,12 @@ var renderDynamic = function( ){
 
     })
 
+    // delete removed entities
+    var toDelete = container.children.filter(function( c ){
+        return c._render_id !== renderId
+    })
+    .forEach( container.removeChild.bind( container ) )
+
     this._dynamic_renderId ++
 }
 
@@ -132,7 +140,10 @@ var renderLoop = function(){
 
     this.renderer.render( this.stage )
 
-    if ( this.must_render_id == this._dynamic_renderId )
+    if ( this.must_render_dynamic_id == this._dynamic_renderId )
+        renderDynamic.call( this )
+
+    if ( this.must_render_static_id == this._static_renderId )
         renderDynamic.call( this )
 
     requestAnimationFrame( this.renderLoop )
@@ -209,7 +220,11 @@ var init = function( modelBall ){
 
 
     ed.listen('change:position',function(){
-        this.must_render_id = this._dynamic_renderId
+        this.must_render_dynamic_id = this._dynamic_renderId
+    }.bind(this))
+
+    ed.listen('change:map',function(){
+        this.must_render_static_id = this._static_renderId
     }.bind(this))
 
     ed.listen('change:state',changeState.bind(this))
@@ -217,10 +232,10 @@ var init = function( modelBall ){
 
 
     ed.listen('delete:entity',function(){
-        // TODO
+        this.must_render_dynamic_id = this._dynamic_renderId
     }.bind(this))
     ed.listen('add:entity',function(){
-        this.must_render_id = this._dynamic_renderId
+        this.must_render_dynamic_id = this._dynamic_renderId
     }.bind(this))
 
 

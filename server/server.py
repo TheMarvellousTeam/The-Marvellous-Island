@@ -16,12 +16,13 @@ class World:
 
   def init_render(self, handler):
     self.render = handler
+    print("renderer connected")
 
   def add_player(self, addr, handler):
     self.players[addr] = {}
     self.players[addr]['handler'] = handler
     self.order.append(addr)
-    print("%s joined the game"%addr)
+    #print("%s joined the game"%addr)
 
   def broadcast(self, msg):
     for addr, stuff in self.players.items():
@@ -29,7 +30,8 @@ class World:
 
   def receive_cmd(self, addr, data):
     print("[%s] %s"%(addr, data))
-    self.cmd[addr] = str(data)
+    self.cmd[addr] = str(data)[2:-1]
+    print("[%s] send %s"%(addr, self.cmd[addr]))
 
     if len(self.cmd) == self.nb_players:
       if self.started:
@@ -66,7 +68,7 @@ class World:
     response['map'] = mapgen.yolo()
 
     for addr in self.order:
-      self.players[addr]['name'] = self.cmd[addr][7:-1]      
+      self.players[addr]['name'] = self.cmd[addr][5:0]      
       response['players'].append(self.players[addr]['name'])
 
       print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
@@ -79,12 +81,12 @@ class World:
 
 
 
-def main(ip, portRemote, portRender):
-  world = World(1)
+def main(ip, portRemote, portRender, nbPlayer):
+  world = World(nbPlayer)
   remote = network.RemoteServer(ip, portRemote, world)
   render = network.RenderServer(ip, portRender, world)
   network.start()
 
 
 if __name__=="__main__":
-  main("192.168.1.1", 1984, 19842)
+  main("10.45.18.219", 1984, 19842, 1)

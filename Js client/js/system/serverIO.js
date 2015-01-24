@@ -12,10 +12,19 @@ var connect = function( host, port ){
         ed.dispatch('io:connected')
     })
 
-    this.socket.on( 'ping' , function( ){
-        ed.dispatch('io:ping')
 
-        this.socket.emit( 'pong', {} )
+    this.socket
+    .on( 'order' , function( data ){
+        ed.dispatch('io:update-order', data)
+    })
+    .on( 'players' , function( data ){
+        ed.dispatch('io:update-players', data)
+    })
+    .on( 'world' , function( data ){
+        ed.dispatch('io:update-world', data)
+    })
+    .on( 'action' , function( data ){
+        ed.dispatch('io:incoming-action', data)
     })
 
     return this
