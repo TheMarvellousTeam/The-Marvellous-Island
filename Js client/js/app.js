@@ -1,6 +1,6 @@
 var Map = require('./model/map')
   , WorlRenderer = require('./renderer/main')
-  , serverIO = require('./system/serverIO')
+  //, serverIO = require('./system/serverIO')
 
 var modelBall = {
     map: Object.create( Map ).init()
@@ -8,4 +8,6 @@ var modelBall = {
 
 WorlRenderer.init( modelBall )
 
-serverIO.connect( "localhost", 1984 )
+//serverIO.connect( "localhost", 1984 )
+
+window.ed = require('./system/eventDispatcher')

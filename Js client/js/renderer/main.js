@@ -1,6 +1,7 @@
 var Abstract = require('../util/Abstract')
   , ed = require('../system/eventDispatcher')
   , tileFactory = require('./tile-factory')
+  , playerFactory = require('./player-factory')
   , PIXI = require('pixi.js')
 
 var renderStatic = function( ){
@@ -34,7 +35,51 @@ var renderStatic = function( ){
         var p = proj( cell.x, cell.y )
 
         tile.position.x = p.x
-        tile.position.y = p.y - cell.c.height * 10
+        tile.position.y = p.y - cell.c.height * ratio / 20
+
+        tile.height = ratio * 1.5
+        tile.width = ratio
+        tile.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
+        //tile.scale.x = tile.scale.y
+
+        container.addChild( tile )
+
+    })
+
+    this._static_renderId ++
+}
+var renderDynamic = function( ){
+
+    var entities = this.model.map
+    var container = this.dynamic_layer
+
+
+    var w = map.width
+    var ratio = this.ratio
+    var proj = project.bind( this )
+
+    container.removeChildren()
+
+    map.m.map(function( c, i ){
+        var x = i%w
+        var y = 0|(i/w)
+        return {
+            x: x,
+            y: y,
+            z: x+y,
+            c: c
+        }
+    }).sort(function(a, b){
+        return a.z>b.z ? 1 : -1
+    }).forEach(function( cell ){
+
+        var tile = tileFactory.create( )
+
+
+        var p = proj( cell.x, cell.y )
+
+        tile.position.x = p.x
+        tile.position.y = p.y - cell.c.height * ratio / 20
 
         tile.height = ratio * 1.5
         tile.width = ratio
@@ -106,6 +151,19 @@ var init = function( modelBall ){
 
     this._static_renderId = 0
     renderStatic.call( this )
+
+
+    var player = playerFactory.create(  )
+    player.x = 500
+    player.y = 700
+    player.setState('running', 'front', true)
+    this.dynamic_layer.addChild( player )
+
+    var player2 = playerFactory.create(  )
+    player2.x = 300
+    player2.y = 200
+    player2.setState('idl', 'front', false)
+    this.dynamic_layer.addChild( player2 )
 
     return this
 }
