@@ -25,6 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class MenuScreen implements Screen , EventListener{
 	private Stage stage;
@@ -81,26 +83,29 @@ public class MenuScreen implements Screen , EventListener{
 		tbstyle.font = skin.getFont("default");
 		
 		
-		//skin du button
+		//skin du textfield
 		TextFieldStyle tfstyle = new TextFieldStyle();
 		tfstyle.font = skin.getFont("default");
 		tfstyle.fontColor = Color.BLACK;
 		tfstyle.background = skin.newDrawable("white", Color.PINK);
 		tfstyle.cursor = skin.newDrawable("white", Color.PURPLE);
 		
+		//skin du label
 		LabelStyle labelStyle = new LabelStyle();
 		labelStyle.font = skin.getFont("default");
 		labelStyle.fontColor = Color.BLACK;
+		
+		
 		skin.add("default", tbstyle);
 		skin.add("default", tfstyle);
 		skin.add("default", labelStyle);
 		connectButton = new TextButton("Land!", skin);
 		connectButton.setPosition(300, 150);
 		connectButton.addListener(this);
-		ipField = new TextField("192.168.1.1", skin);
+		ipField = new TextField("10.45.18.219", skin);
 		ipField.setPosition(350, 300);
 		
-		portField = new TextField("1984", skin);
+		portField = new TextField("31415", skin);
 		portField.setPosition(350, 250);
 		
 		nameField = new TextField("Simon", skin);
@@ -166,8 +171,8 @@ public class MenuScreen implements Screen , EventListener{
 			
 			game.getSocket().connect(ip, port);
 			if(game.getSocket().isConnected()){
-				game.getSocket().send("NAME " + name);
-				connexionStateLabel.setText("Connexion établie.");
+				game.getSocket().send("{name:" + name+"}");
+				connexionStateLabel.setText("Connexion ï¿½tablie.");
 			}else{
 				connexionStateLabel.setText("Impossible de se connecter au serveur.");
 			}

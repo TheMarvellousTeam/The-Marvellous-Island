@@ -30,7 +30,9 @@ public class ChickenSocket {
 		this.port = port;
 		System.out.println("tentative de connexion...");
 		try{
+			Gdx.app.debug("ChickenSocket", "connecting to "+ip+":"+port+"...");
 			socket = Gdx.net.newClientSocket(Protocol.TCP, ip, port, hints);
+			Gdx.app.debug("ChickenSocket", "connection successful");
 			System.out.println(socket.isConnected());
 			thread = new Thread(){
 				public void run(){
@@ -40,13 +42,13 @@ public class ChickenSocket {
 							while(true){
 								if(socket.isConnected()){
 								int read = socket.getInputStream().read(b);
-								
-								String content = new String(b, 0, read);
-								if (content.startsWith("NEW_TURN"))
-									System.out.println("prout !!");
-								if(!content.isEmpty())
-									for(ChickenSocketListener listener : listeners)
-										listener.onReceive(content);
+								if(read >=0 ){
+									String content = new String(b, 0, read);
+									if(!content.isEmpty())
+										Gdx.app.debug("ChickenSocket", "recv:'"+content+"'");
+										for(ChickenSocketListener listener : listeners)
+											listener.onReceive(content);
+									}
 								}
 							}
 						} catch (IOException e) {
@@ -58,7 +60,8 @@ public class ChickenSocket {
 			thread.start();
 		}catch(GdxRuntimeException gre){
 			System.out.println(gre.getMessage());
-			System.out.println(socket);
+			Gdx.app.error("ChickenSocket", "error when connecting to "+ip+":"+port+" : ");
+			Gdx.app.error("ChickenSocket", gre.getMessage());
 		}
 	}
 	public boolean isConnected(){
@@ -74,8 +77,11 @@ public class ChickenSocket {
 	public void send(String content){
 		try {
 			socket.getOutputStream().write(content.getBytes());
+			Gdx.app.debug("ChickenSocket", "send:'"+content+"'");
 		} catch (IOException e) {
 			e.printStackTrace();
+			Gdx.app.error("ChickenSocket", "error when sending:'"+content+"'");
+			Gdx.app.error("ChickenSocket", e.getMessage());
 		}
 	}
 	
@@ -83,9 +89,12 @@ public class ChickenSocket {
 		if(isConnected()){
 			try {
 				socket.getOutputStream().write(content.getBytes());
+				Gdx.app.debug("ChickenSocket", "send:'"+content+"'");
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
+				Gdx.app.error("ChickenSocket", "error when sending:'"+content+"'");
+				Gdx.app.error("ChickenSocket", e.getMessage());
 				return false;
 			}
 		}else

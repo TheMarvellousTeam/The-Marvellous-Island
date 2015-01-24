@@ -6,7 +6,7 @@ var game = require('./game')
 var dispatcher = require('./dispatchActions')
 
 var port = 31415
-var ip = '192.168.1.1'
+var ip = '10.45.18.219'
 
 var rooms = [{
     viewers : [],
