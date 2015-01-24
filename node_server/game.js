@@ -3,11 +3,12 @@
 var init = function(){
 
     this.players = {
-        'platane' : { x:5, y:6 },
-        'john' : { x:10, y:7 },
+        'platane' : { x:5, y:6, spawnX:5, spawnY:6 },
+        'john' : { x:10, y:7, spawnX:10, spawnY:7 },
+        'toby' : { x:12, y:12, spawnX:12, spawnY:12 }
     }
 
-    this.order = []
+    this.order = ['platane','john','toby']
 
     this.size = 16
 
@@ -30,12 +31,18 @@ var resolveOneCommand = function( cmd ){
         player.respawnIn --
 
         if ( player.respawnIn <= 0 )
+        {
             resulting_actions.push({
                 'action' : 'spawn',
                 'player' : playerName,
                 'toX' : player.spawnX,
                 'toY' : player.spawnY
             })
+
+            player.x = player.spawnX
+            player.y = player.spawnY
+
+        }
         else
             return [{
                 'action' : 'fail',
@@ -62,7 +69,7 @@ var resolveOneCommand = function( cmd ){
                 // test if another player is on the cell
 
                 for( var i in this.players )
-                    if( this.players.x == next_cell.x && this.players.y == next_cell.y )
+                    if( this.players[i].x == next_cell.x && this.players[i].y == next_cell.y )
                         fail = true
             }
 
@@ -74,7 +81,7 @@ var resolveOneCommand = function( cmd ){
                 }]
 
             // the move is acceptable
-
+            console.log( 'move ', this.players )
             resulting_actions.push({
                 'action' : 'move',
                 'player' : playerName,
@@ -140,7 +147,7 @@ var resolveCommands = function( cmds ){
         // add one history entry
         history.push({
             actions : resolveOneCommand.call( this, next_cmd ),
-            new_order : this.orderAsJson()
+            new_order : this.getOrderAsJson()
         })
 
     }
@@ -212,11 +219,12 @@ var proceduralGenWorld = function( w, h ){
 
     // #yolo
     map.get = function( x, y ){
-        var k = x + y*this.width
+        var k = x + y*w
         if(  k<0 || k>=map.length )
             return {
                 height: 0,
-                type: 'water'
+                type: 'water',
+                obstacle: ''
             }
         return map[ k ]
     }

@@ -17,15 +17,18 @@ var doAction = function( action ){
 
     var type = action.action
     var playerName = action.player
-    var duration = action.duration
+    var duration = action.duration / 15 // from ms to frame
 
     var player
     if ( playerName )
-        player = this.model.entityPool.filter(function(c){ return playerName == c.id })[ 0 ]
+        player = this.model.entityPool.filter(function(c){ return playerName == c.name })[ 0 ]
 
     switch( type )
     {
         case 'move' :
+            player._move = null
+            player.x = action.fromX
+            player.y = action.fromY
             player.engageMove( action.toX, action.toY, duration )
             return
 
