@@ -4,7 +4,6 @@ var Abstract = require('../util/Abstract')
   , Entity = require('./entity')
 
 
-var id=0
 var init = function( ){
 
     Entity.init.call( this )

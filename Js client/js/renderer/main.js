@@ -3,6 +3,7 @@ var Abstract = require('../util/Abstract')
   , tileFactory = require('./tile-factory')
   , playerFactory = require('./player-factory')
   , treeFactory = require('./tree-factory')
+  , decoFactory = require('./deco-factory')
   , water = require('./water')
   , PIXI = require('pixi.js')
 
@@ -80,13 +81,18 @@ var renderDynamic = function( ){
                 case 'player':
                     sprite = playerFactory.create( )
                     sprite.setState( entity.state, entity.direction.frontOrBack, entity.direction.sens )
+                    sprite.width =  ratio / 1.2
+                    sprite.height = ratio / 1.2
                     break
                 case 'tree':
                     sprite = treeFactory.create( )
                     sprite.width =  ratio / 20
                     sprite.height = ratio / 20
-                    //sprite.alpha = 0.76
-
+                    break
+                case 'deco':
+                    sprite = decoFactory.create(  )
+                    sprite.width =  ratio / 4000
+                    sprite.height = ratio / 4000
                     break
                 default :
                     return
@@ -101,10 +107,14 @@ var renderDynamic = function( ){
         container.setChildIndex( sprite, i )
 
 
+        //entity.x = entity.y = 6
+
         // set position
         var p = proj( entity.x, entity.y )
 
         var y = map.get( Math.round( entity.x ) , Math.round( entity.y ) ).height
+
+
 
         sprite.position.x = p.x
         sprite.position.y = p.y + ratio / 4 - y * ratio / 20
