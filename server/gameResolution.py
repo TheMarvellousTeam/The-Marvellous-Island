@@ -6,7 +6,7 @@ class Game :
     def __init__(self):
 
         # generate a new map
-        self.world = world_generation()
+        self.world = mapgen.yolo()
 
         # height / with of the world
         self.size = 16
@@ -62,7 +62,19 @@ class Game :
 
         # commands is dictionnary of list of command ( indexed by players )
 
-        # TODO
+        actions = []
+        turnOrder = []
+
+        while( 1 ){
+
+            # grab the next player
+            next_player = self.order.index( 0 )
+
+            # grab the next player's command
+            if len( commands ) :
+                0
+
+        }
 
     def playerAsJson():
         # TODO
