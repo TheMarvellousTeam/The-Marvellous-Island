@@ -3,6 +3,7 @@ var Abstract = require('../util/Abstract')
   , tileFactory = require('./tile-factory')
   , playerFactory = require('./player-factory')
   , treeFactory = require('./tree-factory')
+  , water = require('./water')
   , PIXI = require('pixi.js')
 
 var renderStatic = function( ){
@@ -26,6 +27,8 @@ var renderStatic = function( ){
             z: x+y,
             c: c
         }
+    }).filter(function( cell ){
+        return cell.c.height > 0
     }).sort(function(a, b){
         return a.z>b.z ? 1 : -1
     }).forEach(function( cell ){
@@ -38,7 +41,7 @@ var renderStatic = function( ){
         tile.position.x = p.x
         tile.position.y = p.y - cell.c.height * ratio / 20
 
-        tile.height = ratio * 1.5
+        tile.height = ratio * 60/100
         tile.width = ratio
         tile.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
         //tile.scale.x = tile.scale.y
@@ -100,7 +103,7 @@ var renderDynamic = function( ){
         var y = map.get( Math.round( entity.x ) , Math.round( entity.y ) ).height
 
         sprite.position.x = p.x
-        sprite.position.y = p.y + ratio / 4 - y * ratio / 20  
+        sprite.position.y = p.y + ratio / 4 - y * ratio / 20
 
     })
 
@@ -185,6 +188,10 @@ var init = function( modelBall ){
 
     this._dynamic_renderId = 0
     renderDynamic.call( this )
+
+
+    // water layer
+    this.stage.addChildAt( water.create(), 0 )
 
 
     ed.listen('change:position',function(){
