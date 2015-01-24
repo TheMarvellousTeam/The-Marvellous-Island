@@ -77,18 +77,7 @@ class World:
       self.players[addr]['name'] = self.cmd[addr][7:-1]      
       response['players'].append(self.players[addr]['name'])
 
-<<<<<<< Updated upstream
       print("[%s] affect name: %s"%(addr, self.players[addr]['name']))
-=======
-class RenderServer(asyncore.dispatcher):
-
-  def __init__(self, host, port, world):
-    asyncore.dispatcher.__init__(self)
-    self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-    self.set_reuse_addr()
-    self.bind((host, port))
-    self.listen(1)
->>>>>>> Stashed changes
 
     #self.render.send_msg(json.dumps(response))
     print(json.dumps(response))
