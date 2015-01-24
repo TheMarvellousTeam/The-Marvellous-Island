@@ -172,7 +172,7 @@ public class MenuScreen implements Screen , EventListener{
 			game.getSocket().connect(ip, port);
 			if(game.getSocket().isConnected()){
 				game.getSocket().send("{name:" + name+"}");
-				connexionStateLabel.setText("Connexion �tablie.");
+				connexionStateLabel.setText("Connexion etablie.");
 			}else{
 				connexionStateLabel.setText("Impossible de se connecter au serveur.");
 			}
