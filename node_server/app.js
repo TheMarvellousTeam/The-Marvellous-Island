@@ -17,7 +17,7 @@ var rooms = [{
 
 /////////////
 // handle remote connection
-/*
+
 var remoteServer = net.createServer( function(sock) {
 
     console.log('['+sock.remoteAddress+'] connected')
@@ -44,7 +44,6 @@ var remoteServer = net.createServer( function(sock) {
 remoteServer.listen(port, ip, function(){
     console.log('server bound')
 })
-*/
 
 
 
@@ -79,6 +78,6 @@ io.sockets.on('connection', function ( viewerSocket) {
     .emit('players', {
         world : room.game.getPlayersAsJson()
     })
-    
+
 })
 server.listen( 1984 )
