@@ -3,6 +3,7 @@ var Abstract = require('../util/Abstract')
   , tileFactory = require('./tile-factory')
   , playerFactory = require('./player-factory')
   , treeFactory = require('./tree-factory')
+  , water = require('./water')
   , PIXI = require('pixi.js')
 
 var renderStatic = function( ){
@@ -26,11 +27,13 @@ var renderStatic = function( ){
             z: x+y,
             c: c
         }
+    }).filter(function( cell ){
+        return cell.c.height > 0
     }).sort(function(a, b){
         return a.z>b.z ? 1 : -1
     }).forEach(function( cell ){
 
-        var tile = tileFactory.create( )
+        var tile = tileFactory.create( cell.c.type )
 
 
         var p = proj( cell.x, cell.y )
@@ -38,10 +41,8 @@ var renderStatic = function( ){
         tile.position.x = p.x
         tile.position.y = p.y - cell.c.height * ratio / 20
 
-        tile.height = ratio * 1.5
+        tile.height = ratio * 60/100
         tile.width = ratio
-        tile.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
-        //tile.scale.x = tile.scale.y
 
         container.addChild( tile )
 
@@ -61,7 +62,9 @@ var renderDynamic = function( ){
 
 
     entities.sort(function(a, b){
-        return a.x+a.y>b.x+b.y ? 1 : -1
+        var za = a.x+a.y + ( a.type == 'player' ? 0.1 : 0 )
+        var zb = b.x+b.y + ( b.type == 'player' ? 0.1 : 0 )
+        return za>zb ? 1 : -1
     }).forEach(function( entity , i ){
 
 
@@ -76,10 +79,14 @@ var renderDynamic = function( ){
             switch( entity.type ){
                 case 'player':
                     sprite = playerFactory.create( )
-                    sprite.setState( entity.state, entity.faceOrBack, entity.sens )
+                    sprite.setState( entity.state, entity.direction.frontOrBack, entity.direction.sens )
                     break
                 case 'tree':
                     sprite = treeFactory.create( )
+                    sprite.width =  ratio / 20
+                    sprite.height = ratio / 20
+                    //sprite.alpha = 0.76
+
                     break
                 default :
                     return
@@ -100,7 +107,9 @@ var renderDynamic = function( ){
         var y = map.get( Math.round( entity.x ) , Math.round( entity.y ) ).height
 
         sprite.position.x = p.x
-        sprite.position.y = p.y + ratio / 4 - y * ratio / 20  
+        sprite.position.y = p.y + ratio / 4 - y * ratio / 20
+
+        //sprite.position.x = sprite.position.y = 0
 
     })
 
@@ -158,7 +167,7 @@ var changeState = function( event ){
     })
     if(!r.length)
         return
-    r[ 0 ].setState( event.entity.state, event.entity.direction.frontOrback, event.entity.direction.sens )
+    r[ 0 ].setState( event.entity.state, event.entity.direction.frontOrBack, event.entity.direction.sens )
 }
 
 var init = function( modelBall ){
@@ -167,7 +176,6 @@ var init = function( modelBall ){
         map: modelBall.map,
         entityPool: modelBall.entityPool,
     }
-
 
     bootstrapPIXI.call( this )
 
@@ -182,9 +190,12 @@ var init = function( modelBall ){
     this._static_renderId = 0
     renderStatic.call( this )
 
-
     this._dynamic_renderId = 0
     renderDynamic.call( this )
+
+
+    // water layer
+    this.stage.addChildAt( water.create(), 0 )
 
 
     ed.listen('change:position',function(){
@@ -201,6 +212,8 @@ var init = function( modelBall ){
     ed.listen('add:entity',function(){
         this.must_render_id = this._dynamic_renderId
     }.bind(this))
+
+
 
     return this
 }

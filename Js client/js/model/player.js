@@ -11,8 +11,8 @@ var init = function( ){
 
     this.type = 'player'
 
-    this.x= 0
-    this.y= 0
+    this.x= 5
+    this.y= 5
 
     return this
 }
