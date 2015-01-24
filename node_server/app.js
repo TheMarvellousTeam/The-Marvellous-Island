@@ -17,12 +17,22 @@ var remoteServer = net.createServer( function(sock) {
 
     console.log('['+sock.remoteAddress+'] connected')
 
+    var user = {
+    	socket: sock
+    }
+
+    rooms[0].users.push(user)
+
     sock.on('end', function(){
     	console.log('['+sock.remoteAddress+'] deconnected')
     })
 	
     sock.on('data', function(data){
     	console.log('['+sock.remoteAddress+'] '+data)
+    	if ( data.name ) {
+    		user.name = data.name
+    		rooms[0].game.addPlayer(user.name)
+    	}
     })
    
 })
