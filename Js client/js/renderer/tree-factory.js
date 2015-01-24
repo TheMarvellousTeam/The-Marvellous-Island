@@ -36,8 +36,8 @@ var create = function(){
     sprite.pivot.y = sprite.anchor.y = 0.95
 
     sprite.rotation = ( Math.random() - 0.5 ) * 0.6
-    sprite.alpha = 0.86
-    
+    sprite.alpha = 0.95
+
     container.addChild( sprite )
 
     /*
