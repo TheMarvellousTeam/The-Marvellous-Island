@@ -2,6 +2,8 @@ var Map = require('./model/map')
   , Player = require('./model/player')
   , Tree = require('./model/Tree')
   , WorlRenderer = require('./renderer/main')
+
+  , ActionCtrl = require('./controller/actionStack')
   //, serverIO = require('./system/serverIO')
 
 var modelBall = {
@@ -9,7 +11,9 @@ var modelBall = {
     entityPool: []
 }
 
-WorlRenderer.init( modelBall )
+Object.create( WorlRenderer ).init( modelBall )
+
+Object.create( ActionCtrl ).init( modelBall ).enable()
 
 //serverIO.connect( "localhost", 1984 )
 
