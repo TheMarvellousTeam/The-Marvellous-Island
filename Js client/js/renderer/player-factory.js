@@ -17,21 +17,24 @@ var textures = {
     running : {
         front: textures_running,
         back: textures_running,
-        speed: 0.4
+        speed: 0.7
     },
     idl : {
         front: textures_idl,
         back: textures_idl,
-        speed: 0.2
+        speed: 0.1
     }
 }
 
 var setState = function( label, frontOrBack, sens ){
+
     this.textures = textures[ label ][ frontOrBack ]
     if ( sens != this.mc.scale.x>0 )
         this.mc.scale.x *= -1
     this.mc.animationSpeed = textures[ label ].speed
-    this.mc.gotoAndPlay(0)
+    this.mc.gotoAndPlay( label == this.stateLabel ? this.mc.currentFrame : 0 )
+
+    this.stateLabel = label
 }
 
 var create = function(){

@@ -50,51 +50,63 @@ var renderStatic = function( ){
 }
 var renderDynamic = function( ){
 
-    var entities = this.model.map
+    var entities = this.model.entityPool
+    var map = this.model.map
     var container = this.dynamic_layer
 
-
-    var w = map.width
     var ratio = this.ratio
     var proj = project.bind( this )
 
-    container.removeChildren()
 
-    map.m.map(function( c, i ){
-        var x = i%w
-        var y = 0|(i/w)
-        return {
-            x: x,
-            y: y,
-            z: x+y,
-            c: c
+
+    entities.sort(function(a, b){
+        return a.x+a.y>b.x+b.y ? 1 : -1
+    }).forEach(function( cell , i ){
+
+
+        // find the associated entity
+        var sprite
+        var r = container.children.filter(function( c ){
+            return c.id == cell.id
+        })
+
+        // create it if it does not exist
+        if (!r.length) {
+            sprite = playerFactory.create( )
+            sprite.id = cell.id
+            container.addChild( sprite )
+            sprite.setState( cell.state, cell.faceOrBack, cell.sens )
+        } else {
+            sprite = r[ 0 ]
         }
-    }).sort(function(a, b){
-        return a.z>b.z ? 1 : -1
-    }).forEach(function( cell ){
 
-        var tile = tileFactory.create( )
+        // set z index
+        container.setChildIndex( sprite, i )
 
 
+        // set position
         var p = proj( cell.x, cell.y )
 
-        tile.position.x = p.x
-        tile.position.y = p.y - cell.c.height * ratio / 20
+        var y = map.get( Math.round( cell.x ) , Math.round( cell.y ) ).height
 
-        tile.height = ratio * 1.5
-        tile.width = ratio
-        tile.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
-        //tile.scale.x = tile.scale.y
+        sprite.position.x = p.x
+        sprite.position.y = p.y - y * ratio / 20
 
-        container.addChild( tile )
 
+        sprite.tint = cell.z / ( map.width + map.height )  * 0xFFFFFF
     })
 
-    this._static_renderId ++
+    this._dynamic_renderId ++
 }
 
 var renderLoop = function(){
+
+    ed.dispatch('update')
+
     this.renderer.render( this.stage )
+
+    if ( this.must_render_id == this._dynamic_renderId )
+        renderDynamic.call( this )
 
     requestAnimationFrame( this.renderLoop )
 }
@@ -132,10 +144,20 @@ var project = function( x, y ){
     }
 }
 
+var changeState = function( event ){
+    var r = this.dynamic_layer.children.filter(function( c ){
+        return c.id == event.entity.id
+    })
+    if(!r.length)
+        return
+    r[ 0 ].setState( event.entity.state, event.entity.direction.frontOrback, event.entity.direction.sens )
+}
+
 var init = function( modelBall ){
 
     this.model = {
-        map: modelBall.map
+        map: modelBall.map,
+        entityPool: modelBall.entityPool,
     }
 
 
@@ -153,17 +175,24 @@ var init = function( modelBall ){
     renderStatic.call( this )
 
 
-    var player = playerFactory.create(  )
-    player.x = 500
-    player.y = 700
-    player.setState('running', 'front', true)
-    this.dynamic_layer.addChild( player )
+    this._dynamic_renderId = 0
+    renderDynamic.call( this )
 
-    var player2 = playerFactory.create(  )
-    player2.x = 300
-    player2.y = 200
-    player2.setState('idl', 'front', false)
-    this.dynamic_layer.addChild( player2 )
+
+    ed.listen('change:position',function(){
+        this.must_render_id = this._dynamic_renderId
+    }.bind(this))
+
+    ed.listen('change:state',changeState.bind(this))
+    ed.listen('change:direction',changeState.bind(this))
+
+
+    ed.listen('delete:entity',function(){
+        // TODO
+    }.bind(this))
+    ed.listen('add:entity',function(){
+        this.must_render_id = this._dynamic_renderId
+    }.bind(this))
 
     return this
 }

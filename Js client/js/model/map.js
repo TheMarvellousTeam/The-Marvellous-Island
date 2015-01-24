@@ -49,7 +49,12 @@ var init = function( type ){
     return this
 }
 var get = function( x, y ){
-    return this.m[ x + y*this.width ]
+    var k = x + y*this.width
+    if(  k<0 || k>this.m.length )
+        return {
+            height: 0
+        }
+    return this.m[ k ]
 }
 
 module.exports = Object.create( Abstract )
