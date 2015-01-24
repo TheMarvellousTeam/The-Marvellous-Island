@@ -8,10 +8,10 @@ var dispatch = function( eventName, data ){
 
     if(true)
         switch(eventName){
-            case '':
+            case 'update':
                 break;
             default:
-                console.log(eventName, data)
+                // console.log(eventName, data)
         }
 
     this._lock = true
