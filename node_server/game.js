@@ -124,101 +124,111 @@ var resolveOneCommand = function( cmd ){
             break
 
 
+        case 'peck' :
 
-            case 'fire_push_bullet' :
-
-                resulting_actions.push({
-                    'action' : 'fire_push_bullet',
-                    'player' : playerName,
-                    'fromX' : player.x,
-                    'fromY' : player.y,
-                    'dirX' : direction.x,
-                    'dirY' : direction.y
-                })
+            resulting_actions.push({
+                'action' : 'peck',
+                'player' : playerName,
+                'fromX' : player.x,
+                'fromY' : player.y,
+            })
+            break
 
 
-                // check the players in the line of fire
-                var in_lines = []
-                var ox = player.x + direction.x
-                var oy = player.y + direction.y
+        case 'fire_push_bullet' :
 
-                while( true )
+            resulting_actions.push({
+                'action' : 'fire_push_bullet',
+                'player' : playerName,
+                'fromX' : player.x,
+                'fromY' : player.y,
+                'dirX' : direction.x,
+                'dirY' : direction.y
+            })
+
+
+            // check the players in the line of fire
+            var in_lines = []
+            var ox = player.x + direction.x
+            var oy = player.y + direction.y
+
+            while( true )
+            {
+
+                for ( var name in this.players )
+                    if( this.players[ name ].x == ox && this.players[ name ].y == oy )
+                        in_lines.push( name )
+
+                ox += direction.x
+                oy += direction.y
+
+                if( this.size < ox  || ox < 0 || this.size < oy  || oy < 0  )
+                    break
+            }
+
+
+            // push the fuckers
+            var that =this
+            in_lines.reverse().forEach(function( name ){
+
+                var ax = that.players[ name ].x
+                var ay = that.players[ name ].y
+
+                for( var i= 3; i--; )
                 {
+                    ax += direction.x
+                    ay += direction.y
 
-                    for ( var name in this.players )
-                        if( this.players[ name ].x == ox && this.players[ name ].y == oy )
-                            in_lines.push( name )
-
-                    ox += direction.x
-                    oy += direction.y
-
-                    if( this.size < ox  || ox < 0 || this.size < oy  || oy < 0  )
-                        break
-                }
-
-
-                // push the fuckers
-                var that =this
-                in_lines.reverse().forEach(function( name ){
-
-                    var ax = that.players[ name ].x
-                    var ay = that.players[ name ].y
-
-                    for( var i= 3; i--; )
+                    if ( that.world.get( ax , ay ).obstacle )
                     {
-                        ax += direction.x
-                        ay += direction.y
+                        // bim you take a tree in your face and now your dead, happy now ?
+                        resulting_actions.push({
+                            'action' : 'push',
+                            'player' : name,
+                            'fromX' : that.players[ name ].x,
+                            'fromY' : that.players[ name ].y,
+                            'toX' : ax - direction.x,
+                            'toY' : ay - direction.y
+                        })
 
-                        if ( that.world.get( ax , ay ).obstacle )
-                        {
-                            // bim you take a tree in your face and now your dead, happy now ?
-                            resulting_actions.push({
-                                'action' : 'push',
-                                'player' : name,
-                                'fromX' : that.players[ name ].x,
-                                'fromY' : that.players[ name ].y,
-                                'toX' : ax - direction.x,
-                                'toY' : ay - direction.y
-                            })
-
-                            resulting_actions.push({
-                                'action' : 'death',
-                                'player' : name
-                            })
-
-                            // you r dead, go fuck yourself in -99 -999
-                            that.players[ name ].x = -999
-                            that.players[ name ].y = -999
-
-                            that.players[ name ].respawnIn = timeDead
-
-                            return
-                        }
-                    }
-                    resulting_actions.push({
-                        'action' : 'push',
-                        'player' : name,
-                        'fromX' : that.players[ name ].x,
-                        'fromY' : that.players[ name ].y,
-                        'toX' : ax - direction.x,
-                        'toY' : ay - direction.y
-                    })
-
-                    /// is the fucker in the water ?
-                    if ( that.world.get( ax , ay ).type == 'water' ){
                         resulting_actions.push({
                             'action' : 'death',
                             'player' : name
                         })
+
                         // you r dead, go fuck yourself in -99 -999
                         that.players[ name ].x = -999
                         that.players[ name ].y = -999
 
                         that.players[ name ].respawnIn = timeDead
+
+                        return
                     }
+                }
+                resulting_actions.push({
+                    'action' : 'push',
+                    'player' : name,
+                    'fromX' : that.players[ name ].x,
+                    'fromY' : that.players[ name ].y,
+                    'toX' : ax - direction.x,
+                    'toY' : ay - direction.y
                 })
 
-                break
+                /// is the fucker in the water ?
+                if ( that.world.get( ax , ay ).type == 'water' ){
+                    resulting_actions.push({
+                        'action' : 'death',
+                        'player' : name
+                    })
+                    // you r dead, go fuck yourself in -99 -999
+                    that.players[ name ].x = -999
+                    that.players[ name ].y = -999
+
+                    that.players[ name ].respawnIn = timeDead
+                }
+            })
+
+            break
 
     }
 

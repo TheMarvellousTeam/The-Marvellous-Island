@@ -162,7 +162,7 @@ remoteServer.listen(31415, '10.45.18.219', function(){
         var k = 0 | (Math.random()*4)
 
         var cmd = {
-            type : Math.random() < 0.5 ? 'move' : 'fire_push_bullet',
+            type : Math.random() < 0.5 ? 'move' : 'peck',
             player : name,
             direction : {
                 x: k==0 ? -1 : ( k==1 ? 1 : 0 ),
