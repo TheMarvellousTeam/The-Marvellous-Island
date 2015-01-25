@@ -4,6 +4,8 @@ var PIXI = require('pixi.js')
 
 var run_sp = PIXI.Texture.fromImage("./asset/Mini/poulet.png")
 var pi_sp = PIXI.Texture.fromImage("./asset/Mini/pistolet.png")
+var death_sp = PIXI.Texture.fromImage("./asset/Mini/death.png")
+var pic_sp = PIXI.Texture.fromImage("./asset/Mini/picorer.png")
 
 
 
@@ -31,6 +33,16 @@ for (var i=1; i<9; i++)
     textures_fire_front.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + (9-i)*125, y: 150 }) )
 }
 
+var textures_death_front = []
+var textures_death_back = []
+for (var i=1; i<4; i++)
+{
+    textures_death_back.push( new PIXI.Texture( death_sp, {width: 180, height: 130, x:  5+ i*180, y: 0 }) )
+    textures_death_front.push( new PIXI.Texture( death_sp, {width: 180, height: 130, x:  5+ i*180, y: 130 }) )
+}
+
+var textures_null_front = [ new PIXI.Texture( run_sp, {width: 1, height: 1, x: 0, y: 0 }) ]
+
 var textures = {
     running : {
         front: textures_running_front,
@@ -42,9 +54,21 @@ var textures = {
         back: textures_idl_back,
         speed: 0.06
     },
+    death : {
+        front: textures_death_front,
+        back: textures_death_back,
+        speed: 0.04,
+        noLoop: true
+    },
     fire : {
         front: textures_fire_front,
         back: textures_fire_back,
+        speed: 0.11,
+        noLoop: true
+    },
+    null : {
+        front: textures_null_front,
+        back: textures_null_front,
         speed: 0.11,
         noLoop: true
     }
@@ -85,8 +109,12 @@ var create = function( name ){
     player.mc = mc
 
     // LOL no
-    //var bitmapFontText = new PIXI.BitmapText( name || 'martin' )
-    //player.addChild( bitmapFontText )
+    var text = new PIXI.Text('name', {font: "bold 60px Podkova", fill: "#cc00ff", align: "center", stroke: "#FFFFFF", strokeThickness: 6});
+    text.anchor.x = text.anchor.y = 0.5;
+    text.position.x = 10;
+    text.position.y = 10;
+
+    player.addChild( text )
 
     // yolo
     player.setState = setState
