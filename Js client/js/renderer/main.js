@@ -4,7 +4,6 @@ var Abstract = require('../util/Abstract')
   , playerFactory = require('./player-factory')
   , treeFactory = require('./tree-factory')
   , decoFactory = require('./deco-factory')
-  , snakeFactory = require('./snake-factory')
   , water = require('./water')
   , PIXI = require('pixi.js')
 
