@@ -20,22 +20,25 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-public class ControllerScreen implements Screen, DirectionSelectorListener{
+public class ControllerScreen implements Screen, DirectionSelectorListener, EventListener{
 	private TheMarvellousChickens game;
 	
 	private Stage stage;
 	private Skin skin;
 	private List<CmdOperation> operations;
 	private List<CommandSelector> cmdSelectors;
-	private Label selected;
 	private DirectionSelector dirSelector;
 	private CmdOperation currentOp;
 	
@@ -47,7 +50,7 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 	private ImageButton cancelButton;
 	
 	private Map<String, Texture> textures;
-	
+	private Map<String, Boolean> opNeedDirection;
 	public ControllerScreen(TheMarvellousChickens game){
 		this.game = game;
 		operations = new ArrayList<CmdOperation>();
@@ -55,10 +58,21 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 		
 		cmdSelectors.add(new CommandSelector("background/moveButton.png", this, "move", (float)(0.6f*widthRatio)));
 		cmdSelectors.add(new CommandSelector("background/fireButton.png", this, "fire_push_bullet",(float)(0.6f*heightRatio)));
+		cmdSelectors.add(new CommandSelector("background/peckButton.png", this, "peck",(float)(0.6f*heightRatio)));
 		batch = new SpriteBatch();
 		textures = new HashMap<String, Texture>();
 		textures.put("move", new Texture(Gdx.files.internal("background/moveButton.png")));
 		textures.put("fire_push_bullet", new Texture(Gdx.files.internal("background/fireButton.png")));
+		textures.put("peck", new Texture(Gdx.files.internal("background/peckButton.png")));
+		
+		applyButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/applyButton.png")))));
+		cancelButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/cancelButton.png")))));
+		applyButton.setDisabled(true);
+		opNeedDirection = new HashMap<String, Boolean>();
+		
+		opNeedDirection.put("move", true);
+		opNeedDirection.put("fire_push_bullet", true);
+		opNeedDirection.put("peck", false);
 	}
 	
 	
@@ -92,16 +106,18 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 		labelStyle.fontColor = Color.BLACK;
 		skin.add("default", labelStyle);
 		
+		applyButton.setPosition(0, 100);
+		cancelButton.setPosition(300, 100);
+		applyButton.setDisabled(true);
+		applyButton.addListener(this);
+		cancelButton.addListener(this);
+		cancelButton.setDisabled(true);
 		
 		
-		
-		
-		selected = new Label("", skin);
-		selected.setPosition((int)(200*widthRatio), (int)(800*heightRatio));
 		
 		stage.addActor(new Background(new Texture(Gdx.files.internal("background/controller.png"))));
-		stage.addActor(selected);
-		
+		stage.addActor(applyButton);
+		stage.addActor(cancelButton);
 		for(int i = 0; i < cmdSelectors.size(); i++){
 			CommandSelector selector = cmdSelectors.get(i);
 			selector.getButton().setPosition((int)(280*widthRatio), (int)((320+(i*220)*heightRatio)));
@@ -109,7 +125,6 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 			System.out.println(i);
 		}
 		stage.addActor(dirSelector);
-		setSelected("test");
 	}
 
 	@Override
@@ -165,7 +180,10 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 	public void addNewCommand(CmdOperation op){
 		if(operations.size() < 4){
 			currentOp = op;
-			dirSelector.setVisible(true);
+			if(opNeedDirection.get(op.type)){
+				dirSelector.setVisible(true);
+			}else
+				onDirectionChoosen(0, 0);
 		}
 	}
 	
@@ -173,10 +191,6 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 		operations.clear();
 	}
 	
-	public void setSelected(String text){
-		selected.setText(text);
-		System.out.println(text);
-	}
 
 
 	@Override
@@ -186,19 +200,42 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 			currentOp.x = x;
 			currentOp.y = y;
 			operations.add(currentOp);
+			cancelButton.setDisabled(false);
 			currentOp = null;
 			if(operations.size() == 4){
-				String buf = "[";
-				for(int i  = 0; i < operations.size() - 1; i ++){
-					buf += ChickenJSON.toJSON(operations.get(i)) + ",";
-				}
-				buf += ChickenJSON.toJSON(operations.get(operations.size()-1));
-				buf += "]";
-				System.out.println(buf);
-				game.getSocket().send(buf);
+				applyButton.setDisabled(false);
+				System.out.println("TEST enable");
 			}
 			
 		}
+	}
+	public void sendOperations(){
+		String buf = "[";
+		for(int i  = 0; i < operations.size() - 1; i ++){
+			buf += ChickenJSON.toJSON(operations.get(i)) + ",";
+		}
+		buf += ChickenJSON.toJSON(operations.get(operations.size()-1));
+		buf += "]";
+		System.out.println(buf);
+		game.getSocket().send(buf);
+	}
+
+
+	@Override
+	public boolean handle(Event event) {
+		System.out.println("TEST handle");
+		if(event.getTarget() == applyButton){
+			sendOperations();
+			applyButton.setDisabled(true);
+		}
+		if(event.getTarget() == cancelButton){
+			if(!operations.isEmpty())
+				operations.remove(operations.size()-1);
+			if(operations.size() == 0){
+				cancelButton.setDisabled(true);
+			}
+		}
+		return false;
 	}
 
 

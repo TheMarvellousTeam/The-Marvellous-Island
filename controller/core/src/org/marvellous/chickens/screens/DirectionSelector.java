@@ -53,7 +53,6 @@ public class DirectionSelector extends Table implements EventListener{
 
 	@Override
 	public boolean handle(Event event) {
-		System.out.println("FIRE");
 		int x =0;
 		int y = 0;
 		if(NE == event.getTarget()){

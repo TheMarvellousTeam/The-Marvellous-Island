@@ -37,6 +37,9 @@ public class ChickenJSON {
 		if("new_turn".equals(op)){
 			return json.fromJson(NewTurnOp.class, argsStr);
 		}
+		if("vibrate".equals(op)){
+			return json.fromJson(VibrateOp.class, argsStr);
+		}
 		return null;
 	}
 }
