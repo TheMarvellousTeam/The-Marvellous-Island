@@ -1,6 +1,6 @@
 package org.marvellous.chickens.operation;
 
-import com.badlogic.gdx.utils.JsonValue;
+import org.marvellous.chickens.TheMarvellousChickens;
 
 public class CmdOperation extends Operation{
 
@@ -17,7 +17,7 @@ public class CmdOperation extends Operation{
 	}
 
 	@Override
-	public void execute() {
+	public void execute(TheMarvellousChickens game) {
 		
 	}
 	

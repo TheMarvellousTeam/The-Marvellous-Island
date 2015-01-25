@@ -41,13 +41,18 @@ public class MenuScreen implements Screen , EventListener{
 	private ImageButton connectButton;
 	private Label connexionStateLabel;
 	
-	
+	private double widthRatio ;
+	private double heightRatio ;
 	
 	public MenuScreen(TheMarvellousChickens game){
 		this.game = game;
 	}
 	public void show(){
-		stage = new Stage(new StretchViewport(720, 1180));
+		stage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		
+		widthRatio = Gdx.graphics.getWidth()/720. ;
+		heightRatio = Gdx.graphics.getHeight()/1180. ;
+		
 		Gdx.input.setInputProcessor(stage);
 		
 		stage.addActor(new Background(new Texture(Gdx.files.internal("background/menu2.png"))));
@@ -61,7 +66,7 @@ public class MenuScreen implements Screen , EventListener{
 		
 		skin.add("white", new Texture(pixmap));
 		skin.add("default", new BitmapFont());
-		skin.getFont("default").scale(2);
+		skin.getFont("default").scale((float)(2*widthRatio));
 		
 		//skin du button
 		TextButtonStyle tbstyle = new TextButtonStyle();
@@ -89,29 +94,30 @@ public class MenuScreen implements Screen , EventListener{
 		skin.add("default", labelStyle);
 		
 		int midWitdh = Gdx.graphics.getWidth()/2;
-		int xField = midWitdh - 80;
+		int xField = midWitdh - (int)(80*widthRatio);
 		connectButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/playButton.png")))));
-		connectButton.setPosition(300, 150);
+		connectButton.setPosition((int)(300*widthRatio), (int)(150*heightRatio));
 		connectButton.addListener(this);
+		connectButton.scaleBy((float)(2*widthRatio), (float)(2*heightRatio));
 		ipField = new TextField("10.45.18.219", skin);
-		ipField.setPosition(xField, 820);
-		ipField.setHeight(60);
-		ipField.setWidth(300);
+		ipField.setPosition((int)(xField*widthRatio), (int)(heightRatio*820));
+		ipField.setHeight((int)(60*heightRatio));
+		ipField.setWidth((int)(300*widthRatio));
 		
 		portField = new TextField("31415", skin);
-		portField.setPosition(xField, 700);
-		portField.setHeight(60);
-		portField.setWidth(300);
+		portField.setPosition((int)(xField*widthRatio), (int)(700*heightRatio));
+		portField.setHeight((int)(60*heightRatio));
+		portField.setWidth((int)(300*widthRatio));
 		
 		nameField = new TextField("Simon", skin);
-		nameField.setPosition(xField, 610);
-		nameField.setHeight(60);
-		nameField.setWidth(300);
+		nameField.setPosition((int)(xField*widthRatio), (int)(610*heightRatio));
+		nameField.setHeight((int)(60*heightRatio));
+		nameField.setWidth((int)(300*widthRatio));
 		
 		
 		connexionStateLabel = new Label("", skin);
-		connexionStateLabel.setPosition(220, 100,Align.center);
-		connexionStateLabel.setWidth(200);
+		connexionStateLabel.setPosition((int)(220*widthRatio), (int)(100*heightRatio),Align.center);
+		connexionStateLabel.setWidth((int)(200*widthRatio));
 		
 		stage.addActor(ipField);
 		stage.addActor(portField);

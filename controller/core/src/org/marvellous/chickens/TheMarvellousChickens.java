@@ -7,6 +7,7 @@ import org.marvellous.chickens.screens.ControllerScreen;
 import org.marvellous.chickens.screens.MenuScreen;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Json;
 
@@ -16,6 +17,7 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 	private MenuScreen menuScreen;
 	private ControllerScreen controllerScreen;
 	
+	
 	@Override
 	public void create () {
 		
@@ -24,14 +26,15 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 		System.out.println(ChickenJSON.toJSON(creds));
 		
 		
-		System.out.println(ChickenJSON.fromJSON("{ op:name, args:{name:Simon}}").getClass());
 		socket = new ChickenSocket();
 		socket.addListener(new ChickenSocketListener() {
 			@Override
 			public void onReceive(String content) {
-				System.out.println("The chicken says : '" + content+"'");
-				if("START".equals(content)){
-					setScreen(new ControllerScreen(TheMarvellousChickens.this));
+				Operation op = ChickenJSON.fromJSON(content);
+				if(op == null){
+					System.err.println("commande inconnue : " + content);
+				}else{
+					op.execute(TheMarvellousChickens.this);
 				}
 			}
 
