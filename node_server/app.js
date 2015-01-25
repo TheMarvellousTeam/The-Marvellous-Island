@@ -46,11 +46,12 @@ var remoteServer = net.createServer( function(sock) {
     	data = JSON.parse(data)
     	console.log('['+sock.remoteAddress+'] send '+data)
 
-    	if( data.name ) {
+    	if( data.op == "name" ) {
     		user.name = data.args.name
     		cmdBuffer[user.name] = []
     		room.game.addPlayer(user.name)
     	} else {
+
     		data.forEach(function(cmd){
     			cmd.args.player = user.name
     			cmdBuffer[user.name].push(cmd.args)
@@ -58,7 +59,7 @@ var remoteServer = net.createServer( function(sock) {
     		
 
     		if ( needToBeResolve() ) {
-    			room.game.resolveCommands(cmdBuffer) 
+    			var history = room.game.resolveCommands(cmdBuffer) 
 
    				dispatcher.dispatch(
        				dispatcher.historyToMessages( history ),

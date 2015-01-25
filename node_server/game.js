@@ -29,7 +29,7 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
-    var direction = cmd.direction ? cmd.direction : null
+    var direction = cmd.direction ? cmd.direction : {}
 
     if( cmd.type == 'move' ){
     	direction.x = cmd.x
