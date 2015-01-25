@@ -35,10 +35,18 @@ for (var i=1; i<9; i++)
 
 var textures_death_front = []
 var textures_death_back = []
-for (var i=1; i<4; i++)
+for (var i=0; i<4; i++)
 {
-    textures_death_back.push( new PIXI.Texture( death_sp, {width: 180, height: 130, x:  5+ i*180, y: 0 }) )
-    textures_death_front.push( new PIXI.Texture( death_sp, {width: 180, height: 130, x:  5+ i*180, y: 130 }) )
+    textures_death_back.push( new PIXI.Texture( death_sp, {width: 175, height: 130, x: 35 + (3-i)*190, y: 0 }) )
+    textures_death_front.push( new PIXI.Texture( death_sp, {width: 175, height: 130, x: 35 + (3-i)*190, y: 130 }) )
+}
+
+var textures_pic_front = []
+var textures_pic_back = []
+for (var i=0; i<5; i++)
+{
+    textures_pic_back.push( new PIXI.Texture( pic_sp, {width: 130, height: 140, x:  i*130, y: 0 }) )
+    textures_pic_front.push( new PIXI.Texture( pic_sp, {width: 130, height: 140, x:  i*130, y: 150 }) )
 }
 
 var textures_null_front = [ new PIXI.Texture( run_sp, {width: 1, height: 1, x: 0, y: 0 }) ]
@@ -58,7 +66,7 @@ var textures = {
         front: textures_death_front,
         back: textures_death_back,
         speed: 0.04,
-        noLoop: true
+        //noLoop: true
     },
     fire : {
         front: textures_fire_front,
@@ -71,11 +79,16 @@ var textures = {
         back: textures_null_front,
         speed: 0.11,
         noLoop: true
+    },
+    picor : {
+        front: textures_pic_front,
+        back: textures_pic_back,
+        speed: 0.11
     }
 }
 
 var setState = function( label, frontOrBack, sens ){
-
+    
     this.removeChildren()
 
     var m = this.mc[ label ][ frontOrBack ]
