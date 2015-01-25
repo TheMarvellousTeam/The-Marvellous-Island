@@ -27,8 +27,8 @@ var textures_fire_front = []
 var textures_fire_back = []
 for (var i=1; i<9; i++)
 {
-    textures_fire_front.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + (9-i)*125, y: 0 }) )
     textures_fire_back.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + (9-i)*125, y: 0 }) )
+    textures_fire_front.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + (9-i)*125, y: 150 }) )
 }
 
 var textures = {
@@ -45,7 +45,7 @@ var textures = {
     fire : {
         front: textures_fire_front,
         back: textures_fire_back,
-        speed: 0.1,
+        speed: 0.11,
         noLoop: true
     }
 }

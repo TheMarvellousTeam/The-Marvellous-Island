@@ -60,13 +60,16 @@ var resolveOneCommand = function( cmd ){
     {
         case 'move' :
 
+            if ( Math.abs( direction.x ) + Math.abs( direction.y ) > 1 )
+                console.log( direction )
+
             var next_position = {
                 x: player.x + direction.x,
                 y: player.y + direction.y
             }
 
             // check if the cell is empty
-            var next_cell = this.world.get( next_position.x , next_position.y )
+            var next_cell = this.world.get( next_position.x , next_position.y ) || {obstacle: 'true'}
 
             var fail = next_cell.obstacle
 
@@ -91,8 +94,8 @@ var resolveOneCommand = function( cmd ){
                 'player' : playerName,
                 'fromX' : player.x,
                 'fromY' : player.y,
-                'toX' : next_cell.x,
-                'toY' : next_cell.y
+                'toX' : next_position.x,
+                'toY' : next_position.y
             })
 
             player.x = next_cell.x
@@ -328,7 +331,7 @@ var proceduralGenWorld = function( w, h ){
         return map[ k ]
     }
 
-    var max_chain = 5
+    var max_chain = 10
 
     // cleaning
     for ( var x=w; x--; )
@@ -422,8 +425,6 @@ var computeSpawnCandidate = function(map, w, h) {
     	}
     }
 
-    console.log(nextWater)
-
     spawn.push(nextWater.shift())
 
     var cell = nextWater.shift()
@@ -446,12 +447,12 @@ var computeSpawnCandidate = function(map, w, h) {
     var cell = nextWater.shift()
     var max = {
     	cell: cell,
-    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
     	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     }
 
     nextWater.forEach(function(cell){
-    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
     			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     	if( dst > max.dst ){
     		max.cell = cell
@@ -465,13 +466,13 @@ var computeSpawnCandidate = function(map, w, h) {
     var cell = nextWater.shift()
     var max = {
     	cell: cell,
-    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
     	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
     }
 
     nextWater.forEach(function(cell){
-    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
     			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
     	if( dst > max.dst ){

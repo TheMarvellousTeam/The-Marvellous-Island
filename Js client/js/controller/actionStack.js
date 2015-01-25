@@ -27,9 +27,10 @@ var doAction = function( action ){
     switch( type )
     {
         case 'move' :
-            player._move = null
+            player.finishMove()
             player.x = action.fromX
             player.y = action.fromY
+
             player.engageMove( action.toX, action.toY, duration )
             return
 
@@ -38,17 +39,22 @@ var doAction = function( action ){
             return
 
         case 'spawn' :
-            // TODO
+            player.finishMove()
+            player.x = action.toX
+            player.y = action.toY
             return
 
         case 'fire_push_bullet' :
-            player.state = 'fire'
-            player.state = 'fire'
 
-
-            player._move = null
+            player.finishMove()
             player.x = action.fromX
             player.y = action.fromY
+
+            player.state = 'fire'
+            player.direction.frontOrBack = action.dirX+action.dirY > 0 ? 'back' : 'front'
+            player.direction.sens = action.dirX - action.dirY > 0
+
+            player.engageWereable( 62 )
 
             ed.dispatch('change:state', {
                 entity: player

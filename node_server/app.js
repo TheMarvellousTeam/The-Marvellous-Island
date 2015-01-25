@@ -124,7 +124,7 @@ remoteServer.listen(31415, '10.45.18.219', function(){
         var k = 0 | (Math.random()*4)
 
         var cmd = {
-            type : Math.random() < 0.065 ? 'move' : 'fire_push_bullet',
+            type : Math.random() < 0.5 ? 'move' : 'fire_push_bullet',
             player : name,
             direction : {
                 x: k==0 ? -1 : ( k==1 ? 1 : 0 ),
@@ -140,7 +140,7 @@ remoteServer.listen(31415, '10.45.18.219', function(){
     dispatcher.dispatch(
         dispatcher.historyToMessages( history ),
         room.viewers,
-        function(){ setTimeout( action, 2000 ) }
+        function(){ setTimeout( action, 200 ) }
     )
 
 
