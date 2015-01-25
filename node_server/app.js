@@ -75,16 +75,6 @@ var remoteServer = net.createServer( function(sock) {
 
     room.users.push(user)
 
-    sock.on('end', function(){
-    	console.log('['+sock.remoteAddress+'] deconnected')
-    	room.game.removePlayer(user.name)
-    	viewerSocks.forEach(function(viewerSock){
-    		viewerSock.emit('players', {
-        		players : room.game.getPlayersAsJson()
-    		})
-    	})
-    })
-
     sock.on('data', function(data){
     	data = JSON.parse(data)
     	console.log('['+sock.remoteAddress+'] send '+data)
@@ -128,6 +118,18 @@ var remoteServer = net.createServer( function(sock) {
     sock.on('error', function(){
     	console.log('['+sock.remoteAddress+'] error !')
     	room.game.removePlayer(user.name)
+    	delete cmdBuffer[user.name]
+    	viewerSocks.forEach(function(viewerSock){
+    		viewerSock.emit('players', {
+        		players : room.game.getPlayersAsJson()
+    		})
+    	})
+    })
+
+    sock.on('end', function(){
+    	console.log('['+sock.remoteAddress+'] deconnected')
+    	room.game.removePlayer(user.name)
+    	delete cmdBuffer[user.name]
     	viewerSocks.forEach(function(viewerSock){
     		viewerSock.emit('players', {
         		players : room.game.getPlayersAsJson()
@@ -138,15 +140,10 @@ var remoteServer = net.createServer( function(sock) {
 })
 
 
-
-
-
-
-
 rendererServer.listen( 1984 )
 
 
-remoteServer.listen(31415, 'localhost', function(){
+remoteServer.listen(31415, '10.45.18.219', function(){
     console.log('server bound')
 })
 

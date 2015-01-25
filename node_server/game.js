@@ -269,9 +269,11 @@ var addPlayer = function( name ){
     return this
 }
 var removePlayer = function( name ){
-	this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
-	this.order.splice(this.order.indexOf(name), 1)
-	delete this.players[name]
+	if( this.players.indexOf(name) != -1 ) {
+		this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
+		this.order.splice(this.order.indexOf(name), 1)
+		delete this.players[name]
+	}
     return this
 }
 
