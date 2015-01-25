@@ -70,11 +70,6 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		char zero = 0;
-		String endOfInput = new StringBuilder().append(zero).append(zero).append(zero).append(zero).toString();
-		//Gdx.input.getTextInput(input, "Socket", "Let's test that shit madafaka !"+endOfInput, null);
-		//socket.send("trololo");
-		//socket.close();
 		return false;
 	}
 

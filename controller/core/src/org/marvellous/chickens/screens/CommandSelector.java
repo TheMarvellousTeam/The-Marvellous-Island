@@ -39,7 +39,6 @@ public class CommandSelector implements EventListener{
 		System.out.println("handle");
 		CmdOperation op = new CmdOperation(type);
 		controller.addNewCommand(op);
-		controller.setSelected(op.type);
 		System.out.println(ChickenJSON.toJSON(op));
 		return false;
 	}
