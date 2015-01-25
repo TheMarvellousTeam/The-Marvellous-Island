@@ -262,7 +262,7 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
-    		closed.foreach(function(ceil){
+    		closed.forEach(function(ceil){
     			ceil.height = 0
     			ceil.type = 'water'
     			ceil.obstacle = null
