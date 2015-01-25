@@ -1,15 +1,17 @@
 
 var actionsDelay = {
-    "move": 500,
-    "death": 500,
-    "fail": 500,
-    "spawn": 500
+    "move": 200,
+    "death": 200,
+    "fail": 200,
+    "spawn": 200,
 }
 
 
 var dispatchOne = function( message, viewers ){
 
-    var name = message.name ? message.name : 'name'
+    var name = message.name ? message.name : 'action'
+
+    message.duration = actionsDelay[ message.action ] || 0
 
     viewers.forEach(function(v){
         v.emit( name , message )
@@ -29,7 +31,7 @@ var dispatch = function( messages, viewers, cb ){
 }
 
 
-var historyToMessage = function( history ){
+var historyToMessages = function( history ){
     return history.reduce(function( prev, c ){
             return prev.concat( c.actions ).concat({ name : 'order', 'order': c.new_order })
         },[])
@@ -40,5 +42,5 @@ var historyToMessage = function( history ){
 
 module.exports = {
     dispatch: dispatch,
-    historyToMessage: historyToMessage
+    historyToMessages: historyToMessages
 }

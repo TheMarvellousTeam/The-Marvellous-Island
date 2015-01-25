@@ -1,10 +1,6 @@
 var Map = require('./model/map')
-  , Player = require('./model/player')
-  , Tree = require('./model/Tree')
-  , Deco = require('./model/Deco')
   , WorlRenderer = require('./renderer/main')
 
-  , ActionCtrl = require('./controller/actionStack')
   , serverIO = require('./system/serverIO')
 
 var modelBall = {
@@ -18,26 +14,14 @@ var modelBall = {
 
 Object.create( WorlRenderer ).init( modelBall )
 
-Object.create( ActionCtrl ).init( modelBall ).enable()
-
-
-modelBall.map.m.forEach(function( c , i ){
-
-    if ( !c.obstacle )
-        return
-
-    var x = i%modelBall.map.width
-    var y = 0|(i/modelBall.map.width)
-
-    var e = Object.create( Tree ).init()
-    e.x = x
-    e.y = y
-
-    modelBall.entityPool.push( e )
-})
+Object.create( require('./controller/actionStack') ).init( modelBall ).enable()
+Object.create( require('./controller/sync-world') ).init( modelBall ).enable()
+Object.create( require('./controller/sync-player') ).init( modelBall ).enable()
 
 
 
+
+/*
 for (var k= 0 | ( 10 * Math.random() ); k--; )
     for (var i=10; i--; )
     {
@@ -57,7 +41,7 @@ for (var k= 0 | ( 10 * Math.random() ); k--; )
 
         break
     }
-
+*/
 
 
 serverIO.connect( "localhost", 1984 )

@@ -1,48 +1,66 @@
 var app = require('express')()
-var server = require('http').createServer(app)
-var io = require('socket.io')(server)
+var rendererServer = require('http').createServer(app)
+var io = require('socket.io')(rendererServer)
 var net = require('net')
 var game = require('./game')
 var dispatcher = require('./dispatchActions')
 
-var port = 31415
-var ip = '10.45.18.219'
 
 var rooms = [{
     viewers : [],
     users : [],
-    game : game
+    game : game.init()
 }]
 
 
 /////////////
 // handle remote connection
 
+var cmdBuffer = {}
+
 var remoteServer = net.createServer( function(sock) {
 
     console.log('['+sock.remoteAddress+'] connected')
+
+    var room = rooms[0]
 
     var user = {
     	socket: sock
     }
 
-    rooms[0].users.push(user)
+    room.users.push(user)
 
     sock.on('end', function(){
     	console.log('['+sock.remoteAddress+'] deconnected')
     })
 
     sock.on('data', function(data){
-    	console.log('['+sock.remoteAddress+'] '+data)
-    	if ( data.name ) {
-    		user.name = data.name
-    		rooms[0].game.addPlayer(user.name)
+    	data = JSON.parse(data)
+    	switch(data.op) {
+
+    		case "name":
+    			user.name = data.args.name
+    			room.game.addPlayer(user.name)
+    			break
+
+    		case "cmd":
+    			cmdBuffer[user.name] = data.args
+
+    			if ( cmdBuffer.length == room.users.length ) {
+    				room.game.resolveCommands(cmdBuffer)
+    				cmdBuffer = {}
+    			}
+    			break
+
+    		default:
+    			console.log('['+sock.remoteAddress+'] unknown op '+data)
     	}
     })
 
-})
-remoteServer.listen(port, ip, function(){
-    console.log('server bound')
+    sock.on('error', function(){
+    	console.log('['+sock.remoteAddress+'] error !')
+    })
+
 })
 
 
@@ -73,10 +91,54 @@ io.sockets.on('connection', function ( viewerSocket) {
         world : room.game.getWorldAsJson()
     })
     .emit('order', {
-        world : room.game.getOrderAsJson()
+        order : room.game.getOrderAsJson()
     })
     .emit('players', {
-        world : room.game.getPlayersAsJson()
+        players : room.game.getPlayersAsJson()
     })
+
 })
-server.listen( 1984 )
+
+
+rendererServer.listen( 1984 )
+/*
+remoteServer.listen(31415, '10.45.18.219', function(){
+    console.log('server bound')
+})
+*/
+
+;(function action(){
+
+    var room = rooms[0]
+
+    var orders = {}
+    for( var name in game.players )
+    {
+
+        var x = game.players[ name ].x
+        var y = game.players[ name ].y
+
+        var k = 0 | (Math.random()*4)
+
+        var cmd = {
+            type : 'move',
+            player : name,
+            direction : {
+                x: k==0 ? -1 : ( k==1 ? 1 : 0 ),
+                y:  k==2 ? -1 : ( k==3 ? 1 : 0 ),
+            }
+        }
+
+        orders[ name ] = [ cmd ]
+    }
+
+    var history = game.resolveCommands( orders )
+
+    dispatcher.dispatch(
+        dispatcher.historyToMessages( history ),
+        room.viewers,
+        function(){ setTimeout( action, 2000 ) }
+    )
+
+
+})()

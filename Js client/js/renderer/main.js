@@ -86,8 +86,8 @@ var renderDynamic = function( ){
                     break
                 case 'tree':
                     sprite = treeFactory.create( )
-                    sprite.width =  ratio / 20
-                    sprite.height = ratio / 20
+                    sprite.width =  ratio / 2
+                    sprite.height = ratio / 2
                     break
                 case 'deco':
                     sprite = decoFactory.create(  )
@@ -126,7 +126,7 @@ var renderDynamic = function( ){
     })
 
     // delete removed entities
-    var toDelete = container.children.filter(function( c ){
+    container.children.filter(function( c ){
         return c._render_id !== renderId
     })
     .forEach( container.removeChild.bind( container ) )
@@ -144,7 +144,7 @@ var renderLoop = function(){
         renderDynamic.call( this )
 
     if ( this.must_render_static_id == this._static_renderId )
-        renderDynamic.call( this )
+        renderStatic.call( this )
 
     requestAnimationFrame( this.renderLoop )
 }
@@ -168,7 +168,7 @@ var bootstrapPIXI = function(){
 
 var computeCamera = function( ){
     var w = Math.min( this.renderer.width, this.renderer.height * 2 )
-    this.ratio = w / this.model.map.width
+    this.ratio = w / this.model.map.width * 1.1
     this.offset = {
         x: 0,
         y: 0
