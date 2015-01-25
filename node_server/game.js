@@ -15,8 +15,8 @@ var init = function(){
     console.log("Game initialized ")
 
     // to delete
-    this.addPlayer('platane')
-    this.addPlayer('john')
+    //this.addPlayer('platane')
+    //this.addPlayer('john')
     //this.addPlayer('toby')
     //this.addPlayer('toto')
 
@@ -29,7 +29,8 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
-    var direction = cmd.x ? {x:cmd.x, y:cmd.y} : cmd.direction
+    console.log(cmd)
+    var direction = typeof(cmd.x)!='undefined' ? {x: cmd.x, y: cmd.y} : cmd.direction
 
 
     var resulting_actions = []
@@ -265,11 +266,9 @@ var addPlayer = function( name ){
     return this
 }
 var removePlayer = function( name ){
-	if( this.players.name ) {
-		this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
-		this.order.splice(this.order.indexOf(name), 1)
-		delete this.players[name]
-	}
+	this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
+	this.order.splice(this.order.indexOf(name), 1)
+	delete this.players[name]
     return this
 }
 
