@@ -14,6 +14,8 @@ var init = function(){
 
     this.world = proceduralGenWorld( this.size, this.size )
 
+    this.spawnCandidate = computeSpawnCandidate(this.world, this.size, this.size)
+
     return this
 }
 
@@ -235,8 +237,14 @@ var proceduralGenWorld = function( w, h ){
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
-    	var open = [map.get(x, y)]
+
+    	var startCeil = map.get(x, y)
+
+    	var open = []
     	var closed = []
+
+    	if ( startCeil.height > 0 )
+    		open.push(startCeil)
 
     	while( open.length > 0 && closed.length < max_chain ) {
 
@@ -273,6 +281,111 @@ var proceduralGenWorld = function( w, h ){
     return map
 }
 
+var computeSpawnCandidate = function(map, w, h) {
+	var nextWater = []
+	var spawn = []
+
+    for ( var x=w; x--; )
+    for ( var y=h; y--; )
+    {
+    	var startCeil = map.get(x, y)
+    	var max_chain = 5
+
+    	var open = []
+    	var closed = []
+
+    	if ( startCeil.height > 0 )
+    		open.push(startCeil)
+
+    	while( open.length > 0 && closed.length < max_chain ) {
+
+    		var ceil = open.shift()
+    		closed.push(ceil)
+
+    		var neighboor = map.get(x-1, y)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x+1, y)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x, y-1)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x, y+1)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    	}
+
+    	if ( closed.length > max_chain ) {
+    		nextWater.push(startCeil)
+    	}
+    }
+
+    spawn.push(nextWater.shift())
+
+    var ceil = nextWater.shift()
+    var max = {
+    	ceil: ceil,
+    	dst: Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2))
+    }
+
+    nextWater.forEach(function(ceil){
+    	var dst = Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2))
+    	if( dst > max.dst ){
+    		max.ceil = ceil
+    		max.dst = dst
+    	}
+    })
+
+    spawn.push(max.ceil)
+    nextWater.splice(nextWater.indexOf(max.ceil), 1)
+
+    var ceil = nextWater.shift()
+    var max = {
+    	ceil: ceil,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    }
+
+    nextWater.forEach(function(ceil){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    	if( dst > max.dst ){
+    		max.ceil = ceil
+    		max.dst = dst
+    	}
+    })
+
+    spawn.push(max.ceil)
+    nextWater.splice(nextWater.indexOf(max.ceil), 1)
+
+    var ceil = nextWater.shift()
+    var max = {
+    	ceil: ceil,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - ceil.x, 2)+Math.pow(spawn[2].y - ceil.y, 2)), 2)
+    }
+
+    nextWater.forEach(function(ceil){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - ceil.x, 2)+Math.pow(spawn[2].y - ceil.y, 2)), 2)
+    	if( dst > max.dst ){
+    		max.ceil = ceil
+    		max.dst = dst
+    	}
+    })
+
+    spawn.push(max.ceil)
+
+    return spawn
+
+}
 
 module.exports = {
     init: init,
