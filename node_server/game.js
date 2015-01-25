@@ -12,11 +12,13 @@ var init = function(){
 
     this.spawnCandidate = computeSpawnCandidate(this.world, this.size, this.size)
 
+    console.log("Game initialized ")
+
     // to delete
-    this.addPlayer('platane')
-    this.addPlayer('john')
-    this.addPlayer('toby')
-    this.addPlayer('toto')
+    //this.addPlayer('platane')
+    //this.addPlayer('john')
+    //this.addPlayer('toby')
+    //this.addPlayer('toto')
 
     return this
 }
@@ -28,6 +30,11 @@ var resolveOneCommand = function( cmd ){
     var player = this.players[ playerName ]
     var cmdType = cmd.type
     var direction = cmd.direction ? cmd.direction : null
+
+    if( cmd.type == 'move' ){
+    	direction.x = cmd.x
+    	direction.y = cmd.y
+    }
 
     var resulting_actions = []
 
@@ -370,6 +377,7 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
+    		console.log('DELETE SHIT')
     		closed.forEach(function(cell){
     			cell.height = 0
     			cell.type = 'water'

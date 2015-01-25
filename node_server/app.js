@@ -18,6 +18,14 @@ var rooms = [{
 
 var cmdBuffer = {}
 
+var needToBeResolve = function() {
+	var nbCmd = 0;
+	rooms[0].users.forEach(function(user){
+		nbCmd += cmdBuffer[user.name].length
+	})
+	return nbCmd == 4*rooms[0].users.length 
+}
+
 var remoteServer = net.createServer( function(sock) {
 
     console.log('['+sock.remoteAddress+'] connected')
@@ -36,27 +44,36 @@ var remoteServer = net.createServer( function(sock) {
 
     sock.on('data', function(data){
     	data = JSON.parse(data)
-    	switch(data.op) {
+    	console.log('['+sock.remoteAddress+'] send '+data)
 
-    		case "name":
-    			user.name = data.args.name
-    			room.game.addPlayer(user.name)
-    			break
+    	if( data.name ) {
+    		user.name = data.args.name
+    		cmdBuffer[user.name] = []
+    		room.game.addPlayer(user.name)
+    	} else {
+    		data.forEach(function(cmd){
+    			cmd.args.player = user.name
+    			cmdBuffer[user.name].push(cmd.args)
+    		})
+    		
 
-    		case "cmd":
-    			data.args.player = user.name
-    			cmdBuffer[user.name] = data.args
+    		if ( needToBeResolve() ) {
+    			room.game.resolveCommands(cmdBuffer) 
 
+   				dispatcher.dispatch(
+       				dispatcher.historyToMessages( history ),
+        			room.viewers,
+        			function(){
+        				room.users.forEach(function(user){
+        					user.socket.write("{op:\"new_turn\", args:{}}");
+       						cmdBuffer[user.name] = []
+       					})
+       				}
+   				)
 
-    			if ( cmdBuffer.length == room.users.length ) {
-    				room.game.resolveCommands(cmdBuffer)
-    				cmdBuffer = {}
-    			}
-    			break
-
-    		default:
-    			console.log('['+sock.remoteAddress+'] unknown op '+data)
+    		}
     	}
+
     })
 
     sock.on('error', function(){
@@ -104,12 +121,12 @@ io.sockets.on('connection', function ( viewerSocket) {
 
 rendererServer.listen( 1984 )
 
-/*
+
 remoteServer.listen(31415, '10.45.18.219', function(){
     console.log('server bound')
 })
-*/
 
+/*
 ;(function action(){
 
     var room = rooms[0]
@@ -145,3 +162,4 @@ remoteServer.listen(31415, '10.45.18.219', function(){
 
 
 })()
+*/
