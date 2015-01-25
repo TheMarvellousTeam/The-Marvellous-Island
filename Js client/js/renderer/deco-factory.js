@@ -4,15 +4,19 @@ var PIXI = require('pixi.js')
 var mire = PIXI.Texture.fromImage("./asset/mire.svg")
 
 var textures = [
-    PIXI.Texture.fromImage("./asset/buisson1.png"),
-    PIXI.Texture.fromImage("./asset/buisson2.png"),
-    PIXI.Texture.fromImage("./asset/buisson3.png")
+    PIXI.Texture.fromImage("./asset/mini/buisson1.png"),
+    PIXI.Texture.fromImage("./asset/mini/buisson2.png"),
+    PIXI.Texture.fromImage("./asset/mini/buisson3.png"),
+    PIXI.Texture.fromImage("./asset/mini/roc1.png"),
+    PIXI.Texture.fromImage("./asset/mini/roc2.png"),
+    PIXI.Texture.fromImage("./asset/mini/roc3.png")
 ]
 
 
-var create = function(){
+var create = function( type ){
 
     var container = new PIXI.DisplayObjectContainer();
+
 
     var sprite = new PIXI.Sprite( textures[ 0 | ( textures.length * Math.random() ) ] );
     //var sprite = new PIXI.Sprite( mire );
@@ -22,11 +26,6 @@ var create = function(){
     sprite.anchor.y = 0.8
 
     sprite.rotation = ( Math.random() - 0.5 ) * 0.6
-
-    //sprite.width = sprite.height = 100
-
-    //sprite.x = ( Math.random() - 0.5 )*10
-    //sprite.y = ( Math.random() - 0.5 )*10
 
     container.addChild( sprite )
 
