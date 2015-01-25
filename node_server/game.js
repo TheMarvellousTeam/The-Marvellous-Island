@@ -229,6 +229,47 @@ var proceduralGenWorld = function( w, h ){
         return map[ k ]
     }
 
+    var max_chain = 5
+
+    // cleaning
+    for ( var x=w; x--; )
+    for ( var y=h; y--; )
+    {
+    	var open = [map.get(x, y)]
+    	var closed = []
+
+    	while( open.length > 0 && closed.length < max_chain ) {
+
+    		var ceil = open.shift()
+    		closed.push(ceil)
+
+    		var neighboor = map.get(x-1, y)
+    		if ( neighboor.height > 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x+1, y)
+    		if ( neighboor.height > 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x, y-1)
+    		if ( neighboor.height > 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x, y+1)
+    		if ( neighboor.height > 0 ) {
+    			open.push(neighboor)
+    		}
+    	}
+
+    	if ( closed.length < max_chain ) {
+    		closed.foreach(function(ceil){
+    			ceil.height = 0
+    			ceil.type = 'water'
+    			ceil.obstacle = null
+    		})
+    	}
+    }
+
     return map
 }
 
