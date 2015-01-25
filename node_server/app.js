@@ -101,7 +101,8 @@ var remoteServer = net.createServer( function(sock) {
 
     		if ( needToBeResolve() ) {
     			var history = room.game.resolveCommands(cmdBuffer)
-
+                // uncomment to send vibration to client, not finished on the controler
+                /*
                 history.forEach(function(data){
                     console.log(data)
                     data.actions.forEach(function(action){
@@ -110,7 +111,7 @@ var remoteServer = net.createServer( function(sock) {
                         }
                     })
                 })
-
+                */
    				dispatcher.dispatch(
        				dispatcher.historyToMessages( history ),
         			room.viewers,
