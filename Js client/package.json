@@ -4,6 +4,8 @@
   "author": "@Platane",
 
   "dependencies": {
+    "pixi.js" : "2.2.x",
+    "socket.io-client": "*",
     "promise" : "*"
   },
 
@@ -14,9 +16,7 @@
     "gulp-watch" : "*",
     "gulp-autoprefixer" : "*",
     "gulp-rename" : "*",
-    "gulp-connect" : "*",
-    "pixi.js" : "2.2.x",
-    "socket.io-client": "*"
+    "gulp-connect" : "*"
   },
 
   "scripts" : {
