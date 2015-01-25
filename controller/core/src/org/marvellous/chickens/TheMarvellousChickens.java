@@ -3,6 +3,7 @@ package org.marvellous.chickens;
 import org.marvellous.chickens.operation.ChickenJSON;
 import org.marvellous.chickens.operation.CredentialsOp;
 import org.marvellous.chickens.operation.Operation;
+import org.marvellous.chickens.operation.VibrateOp;
 import org.marvellous.chickens.screens.ControllerScreen;
 import org.marvellous.chickens.screens.MenuScreen;
 
@@ -24,8 +25,6 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 		Operation creds = new CredentialsOp("Simon");
 		Json json = new Json();
 		System.out.println(ChickenJSON.toJSON(creds));
-		
-		
 		socket = new ChickenSocket();
 		socket.addListener(new ChickenSocketListener() {
 			@Override

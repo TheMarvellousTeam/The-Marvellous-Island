@@ -50,7 +50,7 @@ public class ControllerScreen implements Screen, DirectionSelectorListener, Even
 	private ImageButton cancelButton;
 	
 	private Map<String, Texture> textures;
-	
+	private Map<String, Boolean> opNeedDirection;
 	public ControllerScreen(TheMarvellousChickens game){
 		this.game = game;
 		operations = new ArrayList<CmdOperation>();
@@ -58,14 +58,21 @@ public class ControllerScreen implements Screen, DirectionSelectorListener, Even
 		
 		cmdSelectors.add(new CommandSelector("background/moveButton.png", this, "move", (float)(0.6f*widthRatio)));
 		cmdSelectors.add(new CommandSelector("background/fireButton.png", this, "fire_push_bullet",(float)(0.6f*heightRatio)));
+		cmdSelectors.add(new CommandSelector("background/peckButton.png", this, "peck",(float)(0.6f*heightRatio)));
 		batch = new SpriteBatch();
 		textures = new HashMap<String, Texture>();
 		textures.put("move", new Texture(Gdx.files.internal("background/moveButton.png")));
 		textures.put("fire_push_bullet", new Texture(Gdx.files.internal("background/fireButton.png")));
+		textures.put("peck", new Texture(Gdx.files.internal("background/peckButton.png")));
 		
 		applyButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/applyButton.png")))));
 		cancelButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/cancelButton.png")))));
 		applyButton.setDisabled(true);
+		opNeedDirection = new HashMap<String, Boolean>();
+		
+		opNeedDirection.put("move", true);
+		opNeedDirection.put("fire_push_bullet", true);
+		opNeedDirection.put("peck", false);
 	}
 	
 	
@@ -173,7 +180,10 @@ public class ControllerScreen implements Screen, DirectionSelectorListener, Even
 	public void addNewCommand(CmdOperation op){
 		if(operations.size() < 4){
 			currentOp = op;
-			dirSelector.setVisible(true);
+			if(opNeedDirection.get(op.type)){
+				dirSelector.setVisible(true);
+			}else
+				onDirectionChoosen(0, 0);
 		}
 	}
 	
