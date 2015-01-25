@@ -29,9 +29,9 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
-    var direction = cmd.direction ? cmd.direction : null
+    var direction = cmd.direction ? cmd.direction : {}
 
-    if( cmd.type == 'move' ){
+    if( cmd.type == 'move' || cmd.type == 'fire_push_bullet' ){
     	direction.x = cmd.x
     	direction.y = cmd.y
     }
@@ -269,7 +269,9 @@ var addPlayer = function( name ){
     return this
 }
 var removePlayer = function( name ){
-
+	this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
+	this.order.splice(this.order.indexOf(name), 1)
+	delete this.players[name]
     return this
 }
 
@@ -377,7 +379,6 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
-    		console.log('DELETE SHIT')
     		closed.forEach(function(cell){
     			cell.height = 0
     			cell.type = 'water'

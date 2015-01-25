@@ -14,81 +14,12 @@ var rooms = [{
 
 
 /////////////
-// handle remote connection
-
-var cmdBuffer = {}
-
-var needToBeResolve = function() {
-	var nbCmd = 0;
-	rooms[0].users.forEach(function(user){
-		nbCmd += cmdBuffer[user.name].length
-	})
-	return nbCmd == 4*rooms[0].users.length 
-}
-
-var remoteServer = net.createServer( function(sock) {
-
-    console.log('['+sock.remoteAddress+'] connected')
-
-    var room = rooms[0]
-
-    var user = {
-    	socket: sock
-    }
-
-    room.users.push(user)
-
-    sock.on('end', function(){
-    	console.log('['+sock.remoteAddress+'] deconnected')
-    })
-
-    sock.on('data', function(data){
-    	data = JSON.parse(data)
-    	console.log('['+sock.remoteAddress+'] send '+data)
-
-    	if( data.name ) {
-    		user.name = data.args.name
-    		cmdBuffer[user.name] = []
-    		room.game.addPlayer(user.name)
-    	} else {
-    		data.forEach(function(cmd){
-    			cmd.args.player = user.name
-    			cmdBuffer[user.name].push(cmd.args)
-    		})
-    		
-
-    		if ( needToBeResolve() ) {
-    			room.game.resolveCommands(cmdBuffer) 
-
-   				dispatcher.dispatch(
-       				dispatcher.historyToMessages( history ),
-        			room.viewers,
-        			function(){
-        				room.users.forEach(function(user){
-        					user.socket.write("{op:\"new_turn\", args:{}}");
-       						cmdBuffer[user.name] = []
-       					})
-       				}
-   				)
-
-    		}
-    	}
-
-    })
-
-    sock.on('error', function(){
-    	console.log('['+sock.remoteAddress+'] error !')
-    })
-
-})
-
-
-
-
-/////////////
 // handle viewer connection
+var viewerSocks = []
 
 io.sockets.on('connection', function ( viewerSocket) {
+
+	viewerSocks.push(viewerSocket)
 
     var room = rooms[ 0 ]
 
@@ -117,6 +48,99 @@ io.sockets.on('connection', function ( viewerSocket) {
     })
 
 })
+
+
+/////////////
+// handle remote connection
+
+var cmdBuffer = {}
+
+var needToBeResolve = function() {
+	var nbCmd = 0;
+	rooms[0].users.forEach(function(user){
+		nbCmd += cmdBuffer[user.name].length
+	})
+	return nbCmd == 4*rooms[0].users.length 
+}
+
+var remoteServer = net.createServer( function(sock) {
+
+    console.log('['+sock.remoteAddress+'] connected')
+
+    var room = rooms[0]
+
+    var user = {
+    	socket: sock
+    }
+
+    room.users.push(user)
+
+    sock.on('end', function(){
+    	console.log('['+sock.remoteAddress+'] deconnected')
+    	room.game.removePlayer(user.name)
+    	viewerSocks.forEach(function(viewerSock){
+    		viewerSock.emit('players', {
+        		players : room.game.getPlayersAsJson()
+    		})
+    	})
+    })
+
+    sock.on('data', function(data){
+    	data = JSON.parse(data)
+    	console.log('['+sock.remoteAddress+'] send '+data)
+
+    	if( data.op == "name" ) {
+    		user.name = data.args.name
+    		cmdBuffer[user.name] = []
+    		room.game.addPlayer(user.name)
+    		viewerSocks.forEach(function(viewerSock){
+    			viewerSock.emit('players', {
+        			players : room.game.getPlayersAsJson()
+    			})
+    		})
+    	} else {
+
+    		data.forEach(function(cmd){
+    			cmd.args.player = user.name
+    			cmdBuffer[user.name].push(cmd.args)
+    		})
+    		
+
+    		if ( needToBeResolve() ) {
+    			var history = room.game.resolveCommands(cmdBuffer) 
+
+   				dispatcher.dispatch(
+       				dispatcher.historyToMessages( history ),
+        			room.viewers,
+        			function(){
+        				room.users.forEach(function(user){
+        					user.socket.write("{op:\"new_turn\", args:{}}");
+       						cmdBuffer[user.name] = []
+       					})
+       				}
+   				)
+
+    		}
+    	}
+
+    })
+
+    sock.on('error', function(){
+    	console.log('['+sock.remoteAddress+'] error !')
+    	room.game.removePlayer(user.name)
+    	viewerSocks.forEach(function(viewerSock){
+    		viewerSock.emit('players', {
+        		players : room.game.getPlayersAsJson()
+    		})
+    	})
+    })
+
+})
+
+
+
+
+
 
 
 rendererServer.listen( 1984 )

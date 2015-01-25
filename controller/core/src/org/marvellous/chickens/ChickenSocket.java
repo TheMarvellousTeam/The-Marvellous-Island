@@ -77,6 +77,7 @@ public class ChickenSocket {
 	public void send(String content){
 		try {
 			socket.getOutputStream().write(content.getBytes());
+			socket.getOutputStream().flush();
 			Gdx.app.debug("ChickenSocket", "send:'"+content+"'");
 		} catch (IOException e) {
 			e.printStackTrace();
