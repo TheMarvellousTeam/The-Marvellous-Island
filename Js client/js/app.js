@@ -21,4 +21,4 @@ Object.create( require('./controller/sync-player') ).init( modelBall ).enable()
 
 
 
-serverIO.connect( "localhost", 1984 )
+serverIO.connect( "10.45.18.219", 1984 )
