@@ -55,7 +55,7 @@ public class MenuScreen implements Screen , EventListener{
 		
 		Gdx.input.setInputProcessor(stage);
 		
-		stage.addActor(new Background(new Texture(Gdx.files.internal("background/menu2.png"))));
+		stage.addActor(new Background(new Texture(Gdx.files.internal("background/menu.png"))));
 		
 		
 		//creation du skin du stage
@@ -81,13 +81,13 @@ public class MenuScreen implements Screen , EventListener{
 		TextFieldStyle tfstyle = new TextFieldStyle();
 		tfstyle.font = skin.getFont("default");
 		tfstyle.fontColor = Color.BLACK;
-		tfstyle.background = skin.newDrawable("white", Color.PINK);
+		//tfstyle.background = skin.newDrawable("white", Color.PINK);
 		tfstyle.cursor = skin.newDrawable("white", Color.PURPLE);
 		
 		//skin du label
 		LabelStyle labelStyle = new LabelStyle();
 		labelStyle.font = skin.getFont("default");
-		labelStyle.fontColor = Color.BLACK;
+		labelStyle.fontColor = Color.GREEN;
 		
 		skin.add("default", tbstyle);
 		skin.add("default", tfstyle);
@@ -95,22 +95,22 @@ public class MenuScreen implements Screen , EventListener{
 		
 		int midWitdh = Gdx.graphics.getWidth()/2;
 		int xField = midWitdh - (int)(80*widthRatio);
-		connectButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/playButton.png")))));
+		connectButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/transparent100.png")))));
 		connectButton.setPosition((int)(300*widthRatio), (int)(150*heightRatio));
 		connectButton.addListener(this);
 		connectButton.scaleBy((float)(2*widthRatio), (float)(2*heightRatio));
 		ipField = new TextField("10.45.18.219", skin);
-		ipField.setPosition((int)(xField*widthRatio), (int)(heightRatio*820));
+		ipField.setPosition((int)(xField*widthRatio)-200, (int)(heightRatio*820));
 		ipField.setHeight((int)(60*heightRatio));
 		ipField.setWidth((int)(300*widthRatio));
 		
 		portField = new TextField("31415", skin);
-		portField.setPosition((int)(xField*widthRatio), (int)(700*heightRatio));
+		portField.setPosition((int)(xField*widthRatio)-200, (int)(700*heightRatio));
 		portField.setHeight((int)(60*heightRatio));
 		portField.setWidth((int)(300*widthRatio));
 		
 		nameField = new TextField("Simon", skin);
-		nameField.setPosition((int)(xField*widthRatio), (int)(610*heightRatio));
+		nameField.setPosition((int)(xField*widthRatio+20), (int)(610*heightRatio)-15);
 		nameField.setHeight((int)(60*heightRatio));
 		nameField.setWidth((int)(300*widthRatio));
 		
@@ -119,11 +119,11 @@ public class MenuScreen implements Screen , EventListener{
 		connexionStateLabel.setPosition((int)(220*widthRatio), (int)(100*heightRatio),Align.center);
 		connexionStateLabel.setWidth((int)(200*widthRatio));
 		
-		stage.addActor(ipField);
-		stage.addActor(portField);
+		//stage.addActor(ipField);
+		//stage.addActor(portField);
 		stage.addActor(nameField);
 		stage.addActor(connectButton);
-		stage.addActor(connexionStateLabel);
+		//stage.addActor(connexionStateLabel);
 		
 		connexionStateLabel.setText("w:"+Gdx.graphics.getWidth()+", h:"+Gdx.graphics.getHeight());
 		
