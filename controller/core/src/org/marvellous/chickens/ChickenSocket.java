@@ -101,6 +101,7 @@ public class ChickenSocket {
 			return false;
 	}
 	
+	
 	public void addListener(ChickenSocketListener listener){
 		listeners.add(listener);
 	}
