@@ -25,7 +25,6 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
-    var direction = cmd.direction ? cmd.direction : null
 
     var resulting_actions = []
 
@@ -59,8 +58,8 @@ var resolveOneCommand = function( cmd ){
         case 'move' :
 
             var next_position = {
-                x: player.x + direction.x,
-                y: player.y + direction.y
+                x: player.x + cmd.x,
+                y: player.y + cmd.y
             }
 
             // check if the cell is empty
