@@ -90,6 +90,7 @@ var textures = {
 var setState = function( label, frontOrBack, sens ){
     
     this.removeChildren()
+    this.addChild(this.nameLbl)
 
     var m = this.mc[ label ][ frontOrBack ]
 
@@ -122,15 +123,16 @@ var create = function( name ){
     player.mc = mc
 
     // LOL no
-    var text = new PIXI.Text('name', {font: "bold 60px Podkova", fill: "#cc00ff", align: "center", stroke: "#FFFFFF", strokeThickness: 6});
+    var text = new PIXI.Text(name, {font: "bold 30px Podkova", fill: "0xFFFFFF", align: "center", strokeThickness: 1});
     text.anchor.x = text.anchor.y = 0.5;
-    text.position.x = 10;
-    text.position.y = 10;
+    text.position.x = 13;
+    text.position.y = -175;
 
-    player.addChild( text )
+    text.visible = true
 
     // yolo
     player.setState = setState
+    player.nameLbl = text
 
     return player
 }

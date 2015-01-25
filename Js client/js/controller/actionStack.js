@@ -69,14 +69,24 @@ var doAction = function( action ){
             })
             return
 
+        case 'peck' :
+
+            player.finishMove()
+            player.x = action.fromX
+            player.y = action.fromY
+
+            player.state = 'picor'
+            
+            player.engageWereable( 62 )
+
+            ed.dispatch('change:state', {
+                entity: player
+            })
+            return
+
         default :
             return
     }
-
-    ed.dispatch('action-done', {
-        player: player,
-        action: type
-    })
 }
 
 

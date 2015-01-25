@@ -1,6 +1,28 @@
 <html>
 <link rel="stylesheet" href="css/style.css">
 <body>
-<script src="./js/bundle.js"></script>
+
+<style>
+#gamecontainer {
+    position: relative;
+    margin: 0 auto; 
+}
+
+canvas{ position: absolute; z-index: 1 ; 	height: 100%;
+	width: 100%;}
+
+#gamestartscreen {
+    position: absolute;
+    margin: 0 auto;
+    z-index: 2;
+}
+
+</style>
+
+<div id="gamecontainer">
+	<script src="./js/bundle.js"></script>
+	<div id="gamestartscreen"><ul id="order"></ul></div>
+</div>
+
 </body>
 </html>

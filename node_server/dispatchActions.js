@@ -5,6 +5,7 @@ var actionsDelay = {
     "fail": 200,
     "spawn": 300,
     "fire_push_bullet": 450,
+    "peck": 200,
 }
 
 
