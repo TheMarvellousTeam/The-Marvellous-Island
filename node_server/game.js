@@ -15,8 +15,8 @@ var init = function(){
     console.log("Game initialized ")
 
     // to delete
-    //this.addPlayer('platane')
-    //this.addPlayer('john')
+    this.addPlayer('platane')
+    this.addPlayer('john')
     //this.addPlayer('toby')
     //this.addPlayer('toto')
 
@@ -29,12 +29,8 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
-    var direction = cmd.direction ? cmd.direction : null
+    var direction = cmd.x ? {x:cmd.x, y:cmd.y} : cmd.direction
 
-    if( cmd.type == 'move' ){
-    	direction.x = cmd.x
-    	direction.y = cmd.y
-    }
 
     var resulting_actions = []
 
@@ -269,7 +265,11 @@ var addPlayer = function( name ){
     return this
 }
 var removePlayer = function( name ){
-
+	if( this.players.indexOf(name) != -1 ) {
+		this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
+		this.order.splice(this.order.indexOf(name), 1)
+		delete this.players[name]
+	}
     return this
 }
 
@@ -313,7 +313,7 @@ var proceduralGenWorld = function( w, h ){
 
         var obstacle = null
 
-        if ( height>=3 && Math.random()>0.9 || height>=2 && Math.random()>0.95 )
+        if ( height>=3 && Math.random()>0.93 || height>=2 && Math.random()>0.96 )
             obstacle = 'tree'
 
         map[ x + y*w ] = {
@@ -377,7 +377,6 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
-    		console.log('DELETE SHIT')
     		closed.forEach(function(cell){
     			cell.height = 0
     			cell.type = 'water'

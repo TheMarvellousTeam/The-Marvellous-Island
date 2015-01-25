@@ -35,7 +35,15 @@ var doAction = function( action ){
             return
 
         case 'death' :
-            // TODO
+            player.finishMove()
+
+            player.state = 'death'
+
+            player.engageWereable( 60, 'null')
+
+            ed.dispatch('change:state', {
+                entity: player
+            })
             return
 
         case 'spawn' :

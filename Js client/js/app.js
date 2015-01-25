@@ -19,6 +19,4 @@ Object.create( require('./controller/sync-world') ).init( modelBall ).enable()
 Object.create( require('./controller/sync-player') ).init( modelBall ).enable()
 
 
-
-
-serverIO.connect( "localhost", 1984 )
+serverIO.connect( window.location.hostname, 1984 )

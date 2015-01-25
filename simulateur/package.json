@@ -1,0 +1,15 @@
+{
+  "name": "js-simu",
+  "version":"0.0.1",
+  "author": "@Platane",
+
+  "dependencies": {
+    "promise" : "*",
+    "socket.io-client": "*"
+  },
+  "devDependencies" : {
+
+    "gulp" : "*",
+    "gulp-connect" : "*"
+  }
+}
