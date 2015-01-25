@@ -16,6 +16,7 @@ var init = function(){
     this.addPlayer('platane')
     this.addPlayer('john')
     this.addPlayer('toby')
+    this.addPlayer('toto')
 
     return this
 }
@@ -25,6 +26,7 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
+    var direction = cmd.direction ? cmd.direction : null
 
     var resulting_actions = []
 
@@ -58,8 +60,8 @@ var resolveOneCommand = function( cmd ){
         case 'move' :
 
             var next_position = {
-                x: player.x + cmd.x,
-                y: player.y + cmd.y
+                x: player.x + direction.x,
+                y: player.y + direction.y
             }
 
             // check if the cell is empty
@@ -158,8 +160,8 @@ var resolveCommands = function( cmds ){
 
 
 var addPlayer = function( name ){
-	var spawnCeil = this.spawnCandidate.shift()
-	this.players[name] = {x: spawnCeil.x, y: spawnCeil.y, spawnX: spawnCeil.x, spawnY: spawnCeil.y}
+	var spawncell = this.spawnCandidate.shift()
+	this.players[name] = {x: spawncell.x, y: spawncell.y, spawnX: spawncell.x, spawnY: spawncell.y}
 	this.order.push(name)
     return this
 }
@@ -240,18 +242,18 @@ var proceduralGenWorld = function( w, h ){
     for ( var y=h; y--; )
     {
 
-    	var startCeil = map.get(x, y)
+    	var startcell = map.get(x, y)
 
     	var open = []
     	var closed = []
 
-    	if ( startCeil.height > 0 )
-    		open.push(startCeil)
+    	if ( startcell.height > 0 )
+    		open.push(startcell)
 
     	while( open.length > 0 && closed.length < max_chain ) {
 
-    		var ceil = open.shift()
-    		closed.push(ceil)
+    		var cell = open.shift()
+    		closed.push(cell)
 
     		var neighboor = map.get(x-1, y)
     		if ( neighboor.height > 0 ) {
@@ -272,10 +274,10 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
-    		closed.forEach(function(ceil){
-    			ceil.height = 0
-    			ceil.type = 'water'
-    			ceil.obstacle = null
+    		closed.forEach(function(cell){
+    			cell.height = 0
+    			cell.type = 'water'
+    			cell.obstacle = null
     		})
     	}
     }
@@ -290,19 +292,19 @@ var computeSpawnCandidate = function(map, w, h) {
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
-    	var startCeil = map.get(x, y)
+    	var startcell = map.get(x, y)
     	var max_chain = 5
 
     	var open = []
     	var closed = []
 
-    	if ( startCeil.height > 0 )
-    		open.push(startCeil)
+    	if ( startcell.height > 0 )
+    		open.push(startcell)
 
     	while( open.length > 0 && closed.length < max_chain ) {
 
-    		var ceil = open.shift()
-    		closed.push(ceil)
+    		var cell = open.shift()
+    		closed.push(cell)
 
     		var neighboor = map.get(x-1, y)
     		if ( neighboor.height == 0 ) {
@@ -322,68 +324,70 @@ var computeSpawnCandidate = function(map, w, h) {
     		}
     	}
 
-    	if ( closed.length > max_chain ) {
-    		nextWater.push(startCeil)
+    	if ( closed.length >= max_chain ) {
+    		nextWater.push(startcell)
     	}
     }
+
+    console.log(nextWater)
 
     spawn.push(nextWater.shift())
 
-    var ceil = nextWater.shift()
+    var cell = nextWater.shift()
     var max = {
-    	ceil: ceil,
-    	dst: Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2))
+    	cell: cell,
+    	dst: Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2))
     }
 
-    nextWater.forEach(function(ceil){
-    	var dst = Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2))
+    nextWater.forEach(function(cell){
+    	var dst = Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2))
     	if( dst > max.dst ){
-    		max.ceil = ceil
+    		max.cell = cell
     		max.dst = dst
     	}
     })
 
-    spawn.push(max.ceil)
-    nextWater.splice(nextWater.indexOf(max.ceil), 1)
+    spawn.push(max.cell)
+    nextWater.splice(nextWater.indexOf(max.cell), 1)
 
-    var ceil = nextWater.shift()
+    var cell = nextWater.shift()
     var max = {
-    	ceil: ceil,
-    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    	cell: cell,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     }
 
-    nextWater.forEach(function(ceil){
-    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    nextWater.forEach(function(cell){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     	if( dst > max.dst ){
-    		max.ceil = ceil
+    		max.cell = cell
     		max.dst = dst
     	}
     })
 
-    spawn.push(max.ceil)
-    nextWater.splice(nextWater.indexOf(max.ceil), 1)
+    spawn.push(max.cell)
+    nextWater.splice(nextWater.indexOf(max.cell), 1)
 
-    var ceil = nextWater.shift()
+    var cell = nextWater.shift()
     var max = {
-    	ceil: ceil,
-    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
-    	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - ceil.x, 2)+Math.pow(spawn[2].y - ceil.y, 2)), 2)
+    	cell: cell,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
     }
 
-    nextWater.forEach(function(ceil){
-    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
-    			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - ceil.x, 2)+Math.pow(spawn[2].y - ceil.y, 2)), 2)
+    nextWater.forEach(function(cell){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
     	if( dst > max.dst ){
-    		max.ceil = ceil
+    		max.cell = cell
     		max.dst = dst
     	}
     })
 
-    spawn.push(max.ceil)
+    spawn.push(max.cell)
 
     return spawn
 
