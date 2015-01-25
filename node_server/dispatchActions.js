@@ -1,9 +1,10 @@
 
 var actionsDelay = {
-    "move": 200,
+    "move": 400,
     "death": 200,
     "fail": 200,
-    "spawn": 200,
+    "spawn": 300,
+    "fire_push_bullet": 450,
 }
 
 

@@ -30,9 +30,6 @@ var sync = function( data ){
     this.model.map.m.push.apply( this.model.map.m, data.world )
 
     // add the fucking trees
-    // TODO
-
-
     this.model.map.m.forEach(function( c , i ){
 
         if ( !c.obstacle )
@@ -47,7 +44,28 @@ var sync = function( data ){
 
 
     // add the fucking deco
-    // TODO
+    /*
+    for (var k= 0 | ( 20 * Math.random() ); k--; )
+    for (var i=10; i--; )
+    {
+        var x = 0 | ( Math.random() * this.model.map.width )
+        var y = 0 | ( Math.random() * this.model.map.height )
+
+        var c = this.model.map.get( x, y )
+
+        if( c.type == 'water' && !c.obstacle )
+            continue
+
+        var e = Object.create( Deco ).init( c.type )
+        e.x = x + ( Math.random() - 0.5 )/2
+        e.y = y + ( Math.random() - 0.5 )/2
+
+        this.model.entityPool.push( e )
+
+        break
+    }
+    */
+
 
     ed.dispatch('change:map')
     ed.dispatch('add:entity')

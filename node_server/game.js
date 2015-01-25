@@ -12,19 +12,29 @@ var init = function(){
 
     this.spawnCandidate = computeSpawnCandidate(this.world, this.size, this.size)
 
+    console.log("Game initialized ")
+
     // to delete
-    this.addPlayer('platane')
-    this.addPlayer('john')
-    this.addPlayer('toby')
+    //this.addPlayer('platane')
+    //this.addPlayer('john')
+    //this.addPlayer('toby')
+    //this.addPlayer('toto')
 
     return this
 }
 
+var timeDead = 5
 
 var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
+    var direction = cmd.direction ? cmd.direction : null
+
+    if( cmd.type == 'move' ){
+    	direction.x = cmd.x
+    	direction.y = cmd.y
+    }
 
     var resulting_actions = []
 
@@ -57,13 +67,16 @@ var resolveOneCommand = function( cmd ){
     {
         case 'move' :
 
+            if ( Math.abs( direction.x ) + Math.abs( direction.y ) > 1 )
+                console.log( direction )
+
             var next_position = {
-                x: player.x + cmd.x,
-                y: player.y + cmd.y
+                x: player.x + direction.x,
+                y: player.y + direction.y
             }
 
             // check if the cell is empty
-            var next_cell = this.world.get( next_position.x , next_position.y )
+            var next_cell = this.world.get( next_position.x , next_position.y ) || {obstacle: 'true'}
 
             var fail = next_cell.obstacle
 
@@ -83,14 +96,13 @@ var resolveOneCommand = function( cmd ){
                 }]
 
             // the move is acceptable
-            console.log( 'move ', this.players )
             resulting_actions.push({
                 'action' : 'move',
                 'player' : playerName,
                 'fromX' : player.x,
                 'fromY' : player.y,
-                'toX' : next_cell.x,
-                'toY' : next_cell.y
+                'toX' : next_position.x,
+                'toY' : next_position.y
             })
 
             player.x = next_cell.x
@@ -109,14 +121,107 @@ var resolveOneCommand = function( cmd ){
                 player.x = -999
                 player.y = -999
 
-                player.respawnIn = 5
+                player.respawnIn = timeDead
 
             }
-
-
             break
 
 
+
+            case 'fire_push_bullet' :
+
+                resulting_actions.push({
+                    'action' : 'fire_push_bullet',
+                    'player' : playerName,
+                    'fromX' : player.x,
+                    'fromY' : player.y,
+                    'dirX' : direction.x,
+                    'dirY' : direction.y
+                })
+
+
+                // check the players in the line of fire
+                var in_lines = []
+                var ox = player.x + direction.x
+                var oy = player.y + direction.y
+
+                while( true )
+                {
+
+                    for ( var name in this.players )
+                        if( this.players[ name ].x == ox && this.players[ name ].y == oy )
+                            in_lines.push( name )
+
+                    ox += direction.x
+                    oy += direction.y
+
+                    if( this.size < ox  || ox < 0 || this.size < oy  || oy < 0  )
+                        break
+                }
+
+
+                // push the fuckers
+                var that =this
+                in_lines.reverse().forEach(function( name ){
+
+                    var ax = that.players[ name ].x
+                    var ay = that.players[ name ].y
+
+                    for( var i= 3; i--; )
+                    {
+                        ax += direction.x
+                        ay += direction.y
+
+                        if ( that.world.get( ax , ay ).obstacle )
+                        {
+                            // bim you take a tree in your face and now your dead, happy now ?
+                            resulting_actions.push({
+                                'action' : 'push',
+                                'player' : name,
+                                'fromX' : that.players[ name ].x,
+                                'fromY' : that.players[ name ].y,
+                                'toX' : ax - direction.x,
+                                'toY' : ay - direction.y
+                            })
+
+                            resulting_actions.push({
+                                'action' : 'death',
+                                'player' : name
+                            })
+
+                            // you r dead, go fuck yourself in -99 -999
+                            that.players[ name ].x = -999
+                            that.players[ name ].y = -999
+
+                            that.players[ name ].respawnIn = timeDead
+
+                            return
+                        }
+                    }
+                    resulting_actions.push({
+                        'action' : 'push',
+                        'player' : name,
+                        'fromX' : that.players[ name ].x,
+                        'fromY' : that.players[ name ].y,
+                        'toX' : ax - direction.x,
+                        'toY' : ay - direction.y
+                    })
+
+                    /// is the fucker in the water ?
+                    if ( that.world.get( ax , ay ).type == 'water' ){
+                        resulting_actions.push({
+                            'action' : 'death',
+                            'player' : name
+                        })
+                        // you r dead, go fuck yourself in -99 -999
+                        that.players[ name ].x = -999
+                        that.players[ name ].y = -999
+
+                        that.players[ name ].respawnIn = timeDead
+                    }
+                })
+
+                break
 
     }
 
@@ -158,8 +263,8 @@ var resolveCommands = function( cmds ){
 
 
 var addPlayer = function( name ){
-	var spawnCeil = this.spawnCandidate.shift()
-	this.players[name] = {x: spawnCeil.x, y: spawnCeil.y, spawnX: spawnCeil.x, spawnY: spawnCeil.y}
+	var spawncell = this.spawnCandidate.shift()
+	this.players[name] = {x: spawncell.x, y: spawncell.y, spawnX: spawncell.x, spawnY: spawncell.y}
 	this.order.push(name)
     return this
 }
@@ -233,25 +338,25 @@ var proceduralGenWorld = function( w, h ){
         return map[ k ]
     }
 
-    var max_chain = 5
+    var max_chain = 10
 
     // cleaning
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
 
-    	var startCeil = map.get(x, y)
+    	var startcell = map.get(x, y)
 
     	var open = []
     	var closed = []
 
-    	if ( startCeil.height > 0 )
-    		open.push(startCeil)
+    	if ( startcell.height > 0 )
+    		open.push(startcell)
 
     	while( open.length > 0 && closed.length < max_chain ) {
 
-    		var ceil = open.shift()
-    		closed.push(ceil)
+    		var cell = open.shift()
+    		closed.push(cell)
 
     		var neighboor = map.get(x-1, y)
     		if ( neighboor.height > 0 ) {
@@ -272,10 +377,11 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
-    		closed.forEach(function(ceil){
-    			ceil.height = 0
-    			ceil.type = 'water'
-    			ceil.obstacle = null
+    		console.log('DELETE SHIT')
+    		closed.forEach(function(cell){
+    			cell.height = 0
+    			cell.type = 'water'
+    			cell.obstacle = null
     		})
     	}
     }
@@ -290,19 +396,19 @@ var computeSpawnCandidate = function(map, w, h) {
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
-    	var startCeil = map.get(x, y)
+    	var startcell = map.get(x, y)
     	var max_chain = 5
 
     	var open = []
     	var closed = []
 
-    	if ( startCeil.height > 0 )
-    		open.push(startCeil)
+    	if ( startcell.height > 0 )
+    		open.push(startcell)
 
     	while( open.length > 0 && closed.length < max_chain ) {
 
-    		var ceil = open.shift()
-    		closed.push(ceil)
+    		var cell = open.shift()
+    		closed.push(cell)
 
     		var neighboor = map.get(x-1, y)
     		if ( neighboor.height == 0 ) {
@@ -322,68 +428,68 @@ var computeSpawnCandidate = function(map, w, h) {
     		}
     	}
 
-    	if ( closed.length > max_chain ) {
-    		nextWater.push(startCeil)
+    	if ( closed.length >= max_chain ) {
+    		nextWater.push(startcell)
     	}
     }
 
     spawn.push(nextWater.shift())
 
-    var ceil = nextWater.shift()
+    var cell = nextWater.shift()
     var max = {
-    	ceil: ceil,
-    	dst: Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2))
+    	cell: cell,
+    	dst: Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2))
     }
 
-    nextWater.forEach(function(ceil){
-    	var dst = Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2))
+    nextWater.forEach(function(cell){
+    	var dst = Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2))
     	if( dst > max.dst ){
-    		max.ceil = ceil
+    		max.cell = cell
     		max.dst = dst
     	}
     })
 
-    spawn.push(max.ceil)
-    nextWater.splice(nextWater.indexOf(max.ceil), 1)
+    spawn.push(max.cell)
+    nextWater.splice(nextWater.indexOf(max.cell), 1)
 
-    var ceil = nextWater.shift()
+    var cell = nextWater.shift()
     var max = {
-    	ceil: ceil,
-    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    	cell: cell,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     }
 
-    nextWater.forEach(function(ceil){
-    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
+    nextWater.forEach(function(cell){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
     	if( dst > max.dst ){
-    		max.ceil = ceil
+    		max.cell = cell
     		max.dst = dst
     	}
     })
 
-    spawn.push(max.ceil)
-    nextWater.splice(nextWater.indexOf(max.ceil), 1)
+    spawn.push(max.cell)
+    nextWater.splice(nextWater.indexOf(max.cell), 1)
 
-    var ceil = nextWater.shift()
+    var cell = nextWater.shift()
     var max = {
-    	ceil: ceil,
-    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
-    	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - ceil.x, 2)+Math.pow(spawn[2].y - ceil.y, 2)), 2)
+    	cell: cell,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
     }
 
-    nextWater.forEach(function(ceil){
-    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - ceil.x, 2)+Math.pow(spawn[0].y - ceil.y, 2)), 2) 
-    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - ceil.x, 2)+Math.pow(spawn[1].y - ceil.y, 2)), 2)
-    			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - ceil.x, 2)+Math.pow(spawn[2].y - ceil.y, 2)), 2)
+    nextWater.forEach(function(cell){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2)
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
     	if( dst > max.dst ){
-    		max.ceil = ceil
+    		max.cell = cell
     		max.dst = dst
     	}
     })
 
-    spawn.push(max.ceil)
+    spawn.push(max.cell)
 
     return spawn
 

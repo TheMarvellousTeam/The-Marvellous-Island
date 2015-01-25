@@ -18,6 +18,14 @@ var rooms = [{
 
 var cmdBuffer = {}
 
+var needToBeResolve = function() {
+	var nbCmd = 0;
+	rooms[0].users.forEach(function(user){
+		nbCmd += cmdBuffer[user.name].length
+	})
+	return nbCmd == 4*rooms[0].users.length 
+}
+
 var remoteServer = net.createServer( function(sock) {
 
     console.log('['+sock.remoteAddress+'] connected')
@@ -36,25 +44,36 @@ var remoteServer = net.createServer( function(sock) {
 
     sock.on('data', function(data){
     	data = JSON.parse(data)
-    	switch(data.op) {
+    	console.log('['+sock.remoteAddress+'] send '+data)
 
-    		case "name":
-    			user.name = data.args.name
-    			room.game.addPlayer(user.name)
-    			break
+    	if( data.name ) {
+    		user.name = data.args.name
+    		cmdBuffer[user.name] = []
+    		room.game.addPlayer(user.name)
+    	} else {
+    		data.forEach(function(cmd){
+    			cmd.args.player = user.name
+    			cmdBuffer[user.name].push(cmd.args)
+    		})
+    		
 
-    		case "cmd":
-    			cmdBuffer[user.name] = data.args
+    		if ( needToBeResolve() ) {
+    			room.game.resolveCommands(cmdBuffer) 
 
-    			if ( cmdBuffer.length == room.users.length ) {
-    				room.game.resolveCommands(cmdBuffer)
-    				cmdBuffer = {}
-    			}
-    			break
+   				dispatcher.dispatch(
+       				dispatcher.historyToMessages( history ),
+        			room.viewers,
+        			function(){
+        				room.users.forEach(function(user){
+        					user.socket.write("{op:\"new_turn\", args:{}}");
+       						cmdBuffer[user.name] = []
+       					})
+       				}
+   				)
 
-    		default:
-    			console.log('['+sock.remoteAddress+'] unknown op '+data)
+    		}
     	}
+
     })
 
     sock.on('error', function(){
@@ -101,12 +120,13 @@ io.sockets.on('connection', function ( viewerSocket) {
 
 
 rendererServer.listen( 1984 )
-/*
+
+
 remoteServer.listen(31415, '10.45.18.219', function(){
     console.log('server bound')
 })
-*/
 
+/*
 ;(function action(){
 
     var room = rooms[0]
@@ -121,7 +141,7 @@ remoteServer.listen(31415, '10.45.18.219', function(){
         var k = 0 | (Math.random()*4)
 
         var cmd = {
-            type : 'move',
+            type : Math.random() < 0.5 ? 'move' : 'fire_push_bullet',
             player : name,
             direction : {
                 x: k==0 ? -1 : ( k==1 ? 1 : 0 ),
@@ -137,8 +157,9 @@ remoteServer.listen(31415, '10.45.18.219', function(){
     dispatcher.dispatch(
         dispatcher.historyToMessages( history ),
         room.viewers,
-        function(){ setTimeout( action, 2000 ) }
+        function(){ setTimeout( action, 200 ) }
     )
 
 
 })()
+*/

@@ -86,13 +86,13 @@ var renderDynamic = function( ){
                     break
                 case 'tree':
                     sprite = treeFactory.create( )
-                    sprite.width =  ratio / 2
-                    sprite.height = ratio / 2
+                    sprite.width =  ratio / 0.3
+                    sprite.height = ratio / 0.3
                     break
                 case 'deco':
-                    sprite = decoFactory.create(  )
-                    sprite.width =  ratio / 4000
-                    sprite.height = ratio / 4000
+                    sprite = decoFactory.create( entity.type )
+                    sprite.width =  ratio / 2.4
+                    sprite.height = ratio / 2.4
                     break
                 default :
                     return
