@@ -4,19 +4,19 @@ var io = require('socket.io')(rendererServer)
 var net = require('net')
 var game = require('./game')
 var dispatcher = require('./dispatchActions')
-var loop = require('./remote')
 
 
 var rooms = [{
     viewers : [],
     users : [],
-    game : game.init(),
-    loop : loop.init()
+    game : game.init()
 }]
 
 
 /////////////
 // handle remote connection
+
+var cmdBuffer = {}
 
 var remoteServer = net.createServer( function(sock) {
 
@@ -35,7 +35,7 @@ var remoteServer = net.createServer( function(sock) {
     })
 
     sock.on('data', function(data){
-    	console.log("=> "+data.op)
+    	data = JSON.parse(data)
     	switch(data.op) {
 
     		case "name":
@@ -44,6 +44,12 @@ var remoteServer = net.createServer( function(sock) {
     			break
 
     		case "cmd":
+    			cmdBuffer[user.name] = data.args
+
+    			if ( cmdBuffer.length == room.users.length ) {
+    				room.game.resolveCommands(cmdBuffer)
+    				cmdBuffer = {}
+    			}
     			break
 
     		default:
@@ -92,6 +98,8 @@ io.sockets.on('connection', function ( viewerSocket) {
     })
 
 })
+
+
 rendererServer.listen( 1984 )
 
 remoteServer.listen(31415, '10.45.18.219', function(){
