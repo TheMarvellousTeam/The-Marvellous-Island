@@ -25,10 +25,10 @@ for (var i=2; i<4; i++)
 
 var textures_fire_front = []
 var textures_fire_back = []
-for (var i=0; i<9; i++)
+for (var i=1; i<9; i++)
 {
-    textures_fire_front.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + i*125, y: 0 }) )
-    textures_fire_back.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + i*125, y: 0 }) )
+    textures_fire_front.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + (9-i)*125, y: 0 }) )
+    textures_fire_back.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + (9-i)*125, y: 0 }) )
 }
 
 var textures = {
@@ -45,7 +45,7 @@ var textures = {
     fire : {
         front: textures_fire_front,
         back: textures_fire_back,
-        speed: 0.23,
+        speed: 0.1,
         noLoop: true
     }
 }
@@ -76,6 +76,7 @@ var create = function( name ){
     {
         var m = new PIXI.MovieClip( textures[ i ][ k ] )
         m.animationSpeed = textures[ i ].speed
+        m.loop = !textures[ i ].noLoop
         m.anchor.x = 0.5
         m.anchor.y = 0.9
 
