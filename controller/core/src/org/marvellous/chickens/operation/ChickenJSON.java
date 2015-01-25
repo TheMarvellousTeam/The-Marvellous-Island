@@ -25,10 +25,17 @@ public class ChickenJSON {
 		JsonValue args = value.get("args");
 		
 		//informations liees a l'operation
-		String argsStr = "{"+args.child.toString()+"}";
+		String argsStr = "{";
+		if(args.child != null){
+			argsStr += args.child.toString();
+		}
+		argsStr += "}";
 		
 		if("name".equals(op)){
 			return json.fromJson(CredentialsOp.class, argsStr);
+		}
+		if("new_turn".equals(op)){
+			return json.fromJson(NewTurnOp.class, argsStr);
 		}
 		return null;
 	}

@@ -79,7 +79,7 @@ var renderDynamic = function( ){
         if (!r.length) {
             switch( entity.type ){
                 case 'player':
-                    sprite = playerFactory.create( )
+                    sprite = playerFactory.create( entity.name )
                     sprite.setState( entity.state, entity.direction.frontOrBack, entity.direction.sens )
                     sprite.width =  ratio / 1.2
                     sprite.height = ratio / 1.2

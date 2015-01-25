@@ -46,6 +46,7 @@ public class ChickenSocket {
 									String content = new String(b, 0, read);
 									if(!content.isEmpty())
 										Gdx.app.debug("ChickenSocket", "recv:'"+content+"'");
+										System.out.println("recv:'"+content+"'");
 										for(ChickenSocketListener listener : listeners)
 											listener.onReceive(content);
 									}

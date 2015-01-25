@@ -1,12 +1,15 @@
 package org.marvellous.chickens.screens;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.marvellous.chickens.TheMarvellousChickens;
 import org.marvellous.chickens.operation.ChickenJSON;
 import org.marvellous.chickens.operation.CmdOperation;
-import org.marvellous.chickens.operation.Operation;
+
+import sun.awt.windows.WWindowPeer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -15,11 +18,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -35,25 +38,43 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 	private Label selected;
 	private DirectionSelector dirSelector;
 	private CmdOperation currentOp;
+	
+	private double widthRatio ;
+	private double heightRatio ;
+	private SpriteBatch batch;
+	
+	private ImageButton applyButton;
+	private ImageButton cancelButton;
+	
+	private Map<String, Texture> textures;
+	
 	public ControllerScreen(TheMarvellousChickens game){
 		this.game = game;
 		operations = new ArrayList<CmdOperation>();
 		cmdSelectors = new ArrayList<CommandSelector>();
 		
-		cmdSelectors.add(new CommandSelector("background/moveButton.png", this, "move", 0.6f));
-		cmdSelectors.add(new CommandSelector("background/fireButton.png", this, "fire",0.6f));
-
+		cmdSelectors.add(new CommandSelector("background/moveButton.png", this, "move", (float)(0.6f*widthRatio)));
+		cmdSelectors.add(new CommandSelector("background/fireButton.png", this, "fire_push_bullet",(float)(0.6f*heightRatio)));
+		batch = new SpriteBatch();
+		textures = new HashMap<String, Texture>();
+		textures.put("move", new Texture(Gdx.files.internal("background/moveButton.png")));
+		textures.put("fire_push_bullet", new Texture(Gdx.files.internal("background/fireButton.png")));
 	}
 	
 	
 	@Override
 	public void show() {
+		
+		widthRatio = Gdx.graphics.getWidth()/720. ;
+		heightRatio = Gdx.graphics.getHeight()/1180. ;
+		
+		
 		dirSelector = new DirectionSelector(this);
 		dirSelector.setPosition(Gdx.graphics.getWidth() /2 - (dirSelector.getWidth()/2), Gdx.graphics.getHeight()/2 - (dirSelector.getHeight()/2));
 		dirSelector.setVisible(false);
 		System.out.println("show");
 		System.out.println(Gdx.graphics.getWidth()+","+Gdx.graphics.getHeight());
-		stage = new Stage(new StretchViewport(720, 1180));
+		stage = new Stage(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin();
 		
@@ -76,14 +97,14 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 		
 		
 		selected = new Label("", skin);
-		selected.setPosition(200, 800);
+		selected.setPosition((int)(200*widthRatio), (int)(800*heightRatio));
 		
 		stage.addActor(new Background(new Texture(Gdx.files.internal("background/controller.png"))));
 		stage.addActor(selected);
 		
 		for(int i = 0; i < cmdSelectors.size(); i++){
 			CommandSelector selector = cmdSelectors.get(i);
-			selector.getButton().setPosition(280, 320+(i*220));
+			selector.getButton().setPosition((int)(280*widthRatio), (int)((320+(i*220)*heightRatio)));
 			stage.addActor(selector.getButton());
 			System.out.println(i);
 		}
@@ -97,6 +118,19 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(delta);
 		stage.draw();
+		
+		batch.begin();
+		int w = Gdx.graphics.getWidth() / 4;
+		int height = Gdx.graphics.getHeight();
+		for(int i = 0; i < operations.size(); i++){
+			String op = operations.get(i).type;
+			Texture text = textures.get(op);
+			if(text != null)
+				batch.draw(text, i*w, height-w, w, w);
+			else
+				System.out.println("impossible de dessiner " + op);
+		}
+		batch.end();
 	}
 
 	@Override
@@ -133,6 +167,10 @@ public class ControllerScreen implements Screen, DirectionSelectorListener{
 			currentOp = op;
 			dirSelector.setVisible(true);
 		}
+	}
+	
+	public void clearCommands(){
+		operations.clear();
 	}
 	
 	public void setSelected(String text){

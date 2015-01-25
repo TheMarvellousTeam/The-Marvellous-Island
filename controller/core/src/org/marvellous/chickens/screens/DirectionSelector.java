@@ -57,11 +57,11 @@ public class DirectionSelector extends Table implements EventListener{
 		int x =0;
 		int y = 0;
 		if(NE == event.getTarget()){
-			y = 1;
+			y = -1;
 		}else if(SE == event.getTarget()){
 			x = 1;
 		}else if(SW == event.getTarget()){
-			y = -1;
+			y = 1;
 		}else if(NW == event.getTarget()){
 			x = -1;
 		}

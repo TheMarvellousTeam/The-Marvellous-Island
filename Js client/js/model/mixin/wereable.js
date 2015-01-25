@@ -14,20 +14,24 @@ var finishWereable = function( ){
         ed.dispatch('change:state', {
             entity: this
         })
+        if ( this._wereable.cb )
+            this._wereable.cb()
     }
     this._wereable = null
+
 
     ed.unlisten('update', this.id+'_wearable' )
 }
 
 // duration  : nb frame
-var engageWereable = function( duration, restoreState ){
+var engageWereable = function( duration, restoreState, cb ){
 
     this.finishWereable( true )
 
     this._wereable = {
         k: duration,
-        restoreState: 'idl'
+        restoreState: restoreState || 'idl',
+        cb: cb
     }
     ed.listen('update', _wait.bind( this ), this.id+'_wearable' )
 }

@@ -4,6 +4,7 @@ var PIXI = require('pixi.js')
 
 var texture_overlay = PIXI.Texture.fromImage("./asset/zeldaWaves_stollen_from_pixi.png")
 var displacement_map = PIXI.Texture.fromImage("./asset/displacement_map_stollen_from_pixi.jpg")
+var deepSea_text = PIXI.Texture.fromImage("./asset/ile.jpg")
 
 
 var animate = function(){
@@ -21,11 +22,15 @@ var create = function(){
 
     var container = new PIXI.DisplayObjectContainer();
 
+    var deepSea = new PIXI.Sprite( deepSea_text )
+    deepSea.width = window.innerWidth
+    deepSea.height = window.innerHeight
+    container.addChild( deepSea )
 
     this.overlay = new PIXI.TilingSprite( texture_overlay , window.innerWidth, window.innerHeight )
     this.overlay.tileScale.y = 0.3
 
-    this.overlay.alpha = 0.5
+    this.overlay.alpha = 0.7
     container.addChild(this.overlay);
 
     this.displacementFilter = new PIXI.DisplacementFilter(displacement_map);
@@ -34,6 +39,8 @@ var create = function(){
     this.displacementFilter.scale.y = 50;
 
     container.filters = [ this.displacementFilter ]
+
+
 
 
     this.t = 0
