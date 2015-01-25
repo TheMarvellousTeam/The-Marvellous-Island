@@ -197,7 +197,7 @@ app.get('/js/bundle.js', function(req, res) {
 app.get('/asset/:file', function(req, res) {
     res.sendFile('asset/'+req.params.file, {root: './../Js client'})
 })
-app.get('/asset/mini/:file', function(req, res) {
-    res.sendFile('asset/mini/'+req.params.file, {root: './../Js client'})
+app.get('/asset/Mini/:file', function(req, res) {
+    res.sendFile('asset/Mini/'+req.params.file, {root: './../Js client'})
 })
 app.listen(2015)
