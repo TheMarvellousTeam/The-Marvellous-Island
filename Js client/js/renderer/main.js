@@ -89,6 +89,11 @@ var renderDynamic = function( ){
                     sprite.width =  ratio / 0.3
                     sprite.height = ratio / 0.3
                     break
+                // case 'snake':
+                //     sprite = snakeFactory.create( )
+                //     sprite.width = ratio / 1.5
+                //     sprite.height = ratio / 1.5
+                //     break
                 case 'deco':
                     sprite = decoFactory.create( entity.type )
                     sprite.width =  ratio / 2.4

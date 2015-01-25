@@ -66,6 +66,12 @@ var sync = function( data ){
     }
     */
 
+    //add the fucking snake
+    // var e = Object.create( Snake ).init()
+    // e.x = 0 | ( Math.random() * this.model.map.width )
+    // e.y = 0 | ( Math.random() * this.model.map.height )
+    // entityPool.push( e )
+
 
     ed.dispatch('change:map')
     ed.dispatch('add:entity')
