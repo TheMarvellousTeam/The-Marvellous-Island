@@ -15,8 +15,8 @@ var init = function(){
     console.log("Game initialized ")
 
     // to delete
-    //this.addPlayer('platane')
-    //this.addPlayer('john')
+    this.addPlayer('platane')
+    this.addPlayer('john')
     //this.addPlayer('toby')
     //this.addPlayer('toto')
 
@@ -29,12 +29,8 @@ var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
     var player = this.players[ playerName ]
     var cmdType = cmd.type
-    var direction = cmd.direction ? cmd.direction : {}
+    var direction = cmd.x ? {x:cmd.x, y:cmd.y} : cmd.direction
 
-    if( cmd.type == 'move' || cmd.type == 'fire_push_bullet' ){
-    	direction.x = cmd.x
-    	direction.y = cmd.y
-    }
 
     var resulting_actions = []
 
@@ -317,7 +313,7 @@ var proceduralGenWorld = function( w, h ){
 
         var obstacle = null
 
-        if ( height>=3 && Math.random()>0.9 || height>=2 && Math.random()>0.95 )
+        if ( height>=3 && Math.random()>0.93 || height>=2 && Math.random()>0.96 )
             obstacle = 'tree'
 
         map[ x + y*w ] = {
