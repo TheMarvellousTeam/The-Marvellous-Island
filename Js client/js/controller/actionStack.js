@@ -23,6 +23,7 @@ var doAction = function( action ){
     if ( playerName )
         player = this.model.entityPool.filter(function(c){ return playerName == c.name })[ 0 ]
 
+
     switch( type )
     {
         case 'move' :
@@ -40,8 +41,22 @@ var doAction = function( action ){
             // TODO
             return
 
+        case 'fire_push_bullet' :
+            player.state = 'fire'
+            player.state = 'fire'
+
+
+            player._move = null
+            player.x = action.fromX
+            player.y = action.fromY
+
+            ed.dispatch('change:state', {
+                entity: player
+            })
+            return
+
         default :
-            return 0
+            return
     }
 
     ed.dispatch('action-done', {

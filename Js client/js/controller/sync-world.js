@@ -44,6 +44,7 @@ var sync = function( data ){
 
 
     // add the fucking deco
+    /*
     for (var k= 0 | ( 20 * Math.random() ); k--; )
     for (var i=10; i--; )
     {
@@ -63,6 +64,7 @@ var sync = function( data ){
 
         break
     }
+    */
 
 
     ed.dispatch('change:map')

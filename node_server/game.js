@@ -17,6 +17,7 @@ var init = function(){
     return this
 }
 
+var timeDead = 5
 
 var resolveOneCommand = function( cmd ){
     var playerName = cmd.player
@@ -81,7 +82,6 @@ var resolveOneCommand = function( cmd ){
                 }]
 
             // the move is acceptable
-            console.log( 'move ', this.players )
             resulting_actions.push({
                 'action' : 'move',
                 'player' : playerName,
@@ -107,14 +107,107 @@ var resolveOneCommand = function( cmd ){
                 player.x = -999
                 player.y = -999
 
-                player.respawnIn = 5
+                player.respawnIn = timeDead
 
             }
-
-
             break
 
 
+
+            case 'fire_push_bullet' :
+
+                resulting_actions.push({
+                    'action' : 'fire_push_bullet',
+                    'player' : playerName,
+                    'fromX' : player.x,
+                    'fromY' : player.y,
+                    'dirX' : direction.x,
+                    'dirY' : direction.y
+                })
+
+
+                // check the players in the line of fire
+                var in_lines = []
+                var ox = player.x + direction.x
+                var oy = player.y + direction.y
+
+                while( true )
+                {
+
+                    for ( var name in this.players )
+                        if( this.players[ name ].x == ox && this.players[ name ].y == oy )
+                            in_lines.push( name )
+
+                    ox += direction.x
+                    oy += direction.y
+
+                    if( this.size < ox  || ox < 0 || this.size < oy  || oy < 0  )
+                        break
+                }
+
+
+                // push the fuckers
+                var that =this
+                in_lines.forEach(function( name ){
+
+                    var ax = that.players[ name ].x
+                    var ay = that.players[ name ].y
+
+                    for( var i= 3; i--; )
+                    {
+                        ax += direction.x
+                        ay += direction.y
+
+                        if ( that.world.get( ax , ay ).obstacle )
+                        {
+                            // bim you take a tree in your face and now your dead, happy now ?
+                            resulting_actions.push({
+                                'action' : 'push',
+                                'player' : name,
+                                'fromX' : that.players[ name ].x,
+                                'fromY' : that.players[ name ].y,
+                                'toX' : ax - direction.x,
+                                'toY' : ay - direction.y
+                            })
+
+                            resulting_actions.push({
+                                'action' : 'death',
+                                'player' : name
+                            })
+
+                            // you r dead, go fuck yourself in -99 -999
+                            that.players[ name ].x = -999
+                            that.players[ name ].y = -999
+
+                            that.players[ name ].respawnIn = timeDead
+
+                            return
+                        }
+                    }
+                    resulting_actions.push({
+                        'action' : 'push',
+                        'player' : name,
+                        'fromX' : that.players[ name ].x,
+                        'fromY' : that.players[ name ].y,
+                        'toX' : ax - direction.x,
+                        'toY' : ay - direction.y
+                    })
+
+                    /// is the fucker in the water ?
+                    if ( that.world.get( ax , ay ).type == 'water' ){
+                        resulting_actions.push({
+                            'action' : 'death',
+                            'player' : name
+                        })
+                        // you r dead, go fuck yourself in -99 -999
+                        that.players[ name ].x = -999
+                        that.players[ name ].y = -999
+
+                        that.players[ name ].respawnIn = timeDead
+                    }
+                })
+
+                break
 
     }
 
