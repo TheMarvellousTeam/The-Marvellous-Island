@@ -20,6 +20,7 @@ public class ChickenJSON {
 	}
 	
 	public static Operation fromJSON(String str){
+		System.out.println("'"+str+"'");
 		JsonValue value = reader.parse(str);
 		String op = value.getString("op");
 		JsonValue args = value.get("args");
