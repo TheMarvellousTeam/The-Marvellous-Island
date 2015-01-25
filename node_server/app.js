@@ -15,10 +15,11 @@ var rooms = [{
 
 /////////////
 // handle viewer connection
-var viewerSock ;
+var viewerSocks = []
+
 io.sockets.on('connection', function ( viewerSocket) {
 
-	viewerSock = viewerSocket
+	viewerSocks.push(viewerSocket)
 
     var room = rooms[ 0 ]
 
@@ -77,8 +78,10 @@ var remoteServer = net.createServer( function(sock) {
     sock.on('end', function(){
     	console.log('['+sock.remoteAddress+'] deconnected')
     	room.game.removePlayer(user.name)
-    	viewerSock.emit('players', {
-        	players : room.game.getPlayersAsJson()
+    	viewerSocks.forEach(function(viewerSock){
+    		viewerSock.emit('players', {
+        		players : room.game.getPlayersAsJson()
+    		})
     	})
     })
 
@@ -90,8 +93,10 @@ var remoteServer = net.createServer( function(sock) {
     		user.name = data.args.name
     		cmdBuffer[user.name] = []
     		room.game.addPlayer(user.name)
-    		viewerSock.emit('players', {
-        		players : room.game.getPlayersAsJson()
+    		viewerSocks.forEach(function(viewerSock){
+    			viewerSock.emit('players', {
+        			players : room.game.getPlayersAsJson()
+    			})
     		})
     	} else {
 
@@ -123,8 +128,10 @@ var remoteServer = net.createServer( function(sock) {
     sock.on('error', function(){
     	console.log('['+sock.remoteAddress+'] error !')
     	room.game.removePlayer(user.name)
-    	viewerSock.emit('players', {
-        	players : room.game.getPlayersAsJson()
+    	viewerSocks.forEach(function(viewerSock){
+    		viewerSock.emit('players', {
+        		players : room.game.getPlayersAsJson()
+    		})
     	})
     })
 
