@@ -1,10 +1,14 @@
 package org.marvellous.chickens;
 
+import org.marvellous.chickens.operation.ChickenJSON;
+import org.marvellous.chickens.operation.CredentialsOp;
+import org.marvellous.chickens.operation.Operation;
 import org.marvellous.chickens.screens.ControllerScreen;
 import org.marvellous.chickens.screens.MenuScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.Json;
 
 public class TheMarvellousChickens extends Game implements InputProcessor {
 	private ChickenSocket socket;
@@ -14,7 +18,13 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 	
 	@Override
 	public void create () {
-		resize(800, 480);
+		
+		Operation creds = new CredentialsOp("Simon");
+		Json json = new Json();
+		System.out.println(ChickenJSON.toJSON(creds));
+		
+		
+		System.out.println(ChickenJSON.fromJSON("{ op:name, args:{name:Simon}}").getClass());
 		socket = new ChickenSocket();
 		socket.addListener(new ChickenSocketListener() {
 			@Override
@@ -32,7 +42,7 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 		});
 		menuScreen = new MenuScreen(this);
 		controllerScreen = new ControllerScreen(this);
-		setScreen(menuScreen);
+		setScreen(controllerScreen);
 	}
 
 
