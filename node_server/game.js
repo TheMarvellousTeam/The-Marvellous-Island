@@ -155,7 +155,7 @@ var resolveOneCommand = function( cmd ){
 
                 // push the fuckers
                 var that =this
-                in_lines.forEach(function( name ){
+                in_lines.reverse().forEach(function( name ){
 
                     var ax = that.players[ name ].x
                     var ay = that.players[ name ].y
