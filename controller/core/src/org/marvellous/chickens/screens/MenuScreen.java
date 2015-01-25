@@ -1,6 +1,8 @@
 package org.marvellous.chickens.screens;
 
 import org.marvellous.chickens.TheMarvellousChickens;
+import org.marvellous.chickens.operation.ChickenJSON;
+import org.marvellous.chickens.operation.CredentialsOp;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,11 +14,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -25,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class MenuScreen implements Screen , EventListener{
@@ -36,32 +38,19 @@ public class MenuScreen implements Screen , EventListener{
 	private TextField ipField;
 	private TextField portField;
 	private TextField nameField;
-	private TextButton connectButton;
+	private ImageButton connectButton;
 	private Label connexionStateLabel;
 	
-	private class Background extends Actor{
-		private TextureRegion texture;
-		
-		public Background(Texture background){
-			super();
-			texture = new TextureRegion(background,0,0,800,480);
-		}
-
-		@Override
-		public void draw(Batch batch, float parentAlpha) {
-			super.draw(batch, parentAlpha);
-			batch.draw(texture, 0,0);
-		}
-	}
+	
 	
 	public MenuScreen(TheMarvellousChickens game){
 		this.game = game;
 	}
 	public void show(){
-		stage = new Stage();
+		stage = new Stage(new StretchViewport(720, 1180));
 		Gdx.input.setInputProcessor(stage);
 		
-		stage.addActor(new Background(new Texture(Gdx.files.internal("background/menu.png"))));
+		stage.addActor(new Background(new Texture(Gdx.files.internal("background/menu2.png"))));
 		
 		
 		//creation du skin du stage
@@ -72,7 +61,7 @@ public class MenuScreen implements Screen , EventListener{
 		
 		skin.add("white", new Texture(pixmap));
 		skin.add("default", new BitmapFont());
-		
+		skin.getFont("default").scale(2);
 		
 		//skin du button
 		TextButtonStyle tbstyle = new TextButtonStyle();
@@ -80,8 +69,8 @@ public class MenuScreen implements Screen , EventListener{
 		tbstyle.down = skin.newDrawable("white", Color.DARK_GRAY);
 		tbstyle.checked = skin.newDrawable("white", Color.BLUE);
 		tbstyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-		tbstyle.font = skin.getFont("default");
 		
+		tbstyle.font = skin.getFont("default");
 		
 		//skin du textfield
 		TextFieldStyle tfstyle = new TextFieldStyle();
@@ -95,21 +84,29 @@ public class MenuScreen implements Screen , EventListener{
 		labelStyle.font = skin.getFont("default");
 		labelStyle.fontColor = Color.BLACK;
 		
-		
 		skin.add("default", tbstyle);
 		skin.add("default", tfstyle);
 		skin.add("default", labelStyle);
-		connectButton = new TextButton("Land!", skin);
+		
+		int midWitdh = Gdx.graphics.getWidth()/2;
+		int xField = midWitdh - 80;
+		connectButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/playButton.png")))));
 		connectButton.setPosition(300, 150);
 		connectButton.addListener(this);
 		ipField = new TextField("10.45.18.219", skin);
-		ipField.setPosition(350, 300);
+		ipField.setPosition(xField, 820);
+		ipField.setHeight(60);
+		ipField.setWidth(300);
 		
 		portField = new TextField("31415", skin);
-		portField.setPosition(350, 250);
+		portField.setPosition(xField, 700);
+		portField.setHeight(60);
+		portField.setWidth(300);
 		
 		nameField = new TextField("Simon", skin);
-		nameField.setPosition(350, 200);
+		nameField.setPosition(xField, 610);
+		nameField.setHeight(60);
+		nameField.setWidth(300);
 		
 		
 		connexionStateLabel = new Label("", skin);
@@ -121,6 +118,8 @@ public class MenuScreen implements Screen , EventListener{
 		stage.addActor(nameField);
 		stage.addActor(connectButton);
 		stage.addActor(connexionStateLabel);
+		
+		connexionStateLabel.setText("w:"+Gdx.graphics.getWidth()+", h:"+Gdx.graphics.getHeight());
 		
 	}
 
@@ -171,8 +170,9 @@ public class MenuScreen implements Screen , EventListener{
 			
 			game.getSocket().connect(ip, port);
 			if(game.getSocket().isConnected()){
-				game.getSocket().send("{name:" + name+"}");
-				connexionStateLabel.setText("Connexion �tablie.");
+				CredentialsOp creds = new CredentialsOp(name);
+				game.getSocket().send(ChickenJSON.toJSON(creds));
+				connexionStateLabel.setText("Connexion etablie.");
 			}else{
 				connexionStateLabel.setText("Impossible de se connecter au serveur.");
 			}

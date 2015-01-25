@@ -2,8 +2,8 @@
 var PIXI = require('pixi.js')
 
 
-var run_sp = PIXI.Texture.fromImage("./asset/mini/poulet.png")
-var pi_sp = PIXI.Texture.fromImage("./asset/mini/pistolet.png")
+var run_sp = PIXI.Texture.fromImage("./asset/Mini/poulet.png")
+var pi_sp = PIXI.Texture.fromImage("./asset/Mini/pistolet.png")
 
 
 

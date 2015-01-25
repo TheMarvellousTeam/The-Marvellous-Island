@@ -44,7 +44,9 @@ var remoteServer = net.createServer( function(sock) {
     			break
 
     		case "cmd":
+    			data.args.player = user.name
     			cmdBuffer[user.name] = data.args
+
 
     			if ( cmdBuffer.length == room.users.length ) {
     				room.game.resolveCommands(cmdBuffer)
@@ -101,6 +103,7 @@ io.sockets.on('connection', function ( viewerSocket) {
 
 
 rendererServer.listen( 1984 )
+
 /*
 remoteServer.listen(31415, '10.45.18.219', function(){
     console.log('server bound')

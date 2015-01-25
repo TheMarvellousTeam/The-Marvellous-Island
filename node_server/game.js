@@ -2,17 +2,21 @@
 
 var init = function(){
 
-    this.players = {
-        'platane' : { x:5, y:6, spawnX:5, spawnY:6 },
-        'john' : { x:10, y:7, spawnX:10, spawnY:7 },
-        'toby' : { x:12, y:12, spawnX:12, spawnY:12 }
-    }
+    this.players = {}
 
-    this.order = ['platane','john','toby']
+    this.order = []
 
     this.size = 16
 
     this.world = proceduralGenWorld( this.size, this.size )
+
+    this.spawnCandidate = computeSpawnCandidate(this.world, this.size, this.size)
+
+    // to delete
+    this.addPlayer('platane')
+    this.addPlayer('john')
+    this.addPlayer('toby')
+    this.addPlayer('toto')
 
     return this
 }
@@ -249,7 +253,9 @@ var resolveCommands = function( cmds ){
 
 
 var addPlayer = function( name ){
-
+	var spawncell = this.spawnCandidate.shift()
+	this.players[name] = {x: spawncell.x, y: spawncell.y, spawnX: spawncell.x, spawnY: spawncell.y}
+	this.order.push(name)
     return this
 }
 var removePlayer = function( name ){
@@ -328,13 +334,19 @@ var proceduralGenWorld = function( w, h ){
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
-    	var open = [map.get(x, y)]
+
+    	var startcell = map.get(x, y)
+
+    	var open = []
     	var closed = []
+
+    	if ( startcell.height > 0 )
+    		open.push(startcell)
 
     	while( open.length > 0 && closed.length < max_chain ) {
 
-    		var ceil = open.shift()
-    		closed.push(ceil)
+    		var cell = open.shift()
+    		closed.push(cell)
 
     		var neighboor = map.get(x-1, y)
     		if ( neighboor.height > 0 ) {
@@ -355,10 +367,10 @@ var proceduralGenWorld = function( w, h ){
     	}
 
     	if ( closed.length < max_chain ) {
-    		closed.forEach(function(ceil){
-    			ceil.height = 0
-    			ceil.type = 'water'
-    			ceil.obstacle = null
+    		closed.forEach(function(cell){
+    			cell.height = 0
+    			cell.type = 'water'
+    			cell.obstacle = null
     		})
     	}
     }
@@ -366,6 +378,113 @@ var proceduralGenWorld = function( w, h ){
     return map
 }
 
+var computeSpawnCandidate = function(map, w, h) {
+	var nextWater = []
+	var spawn = []
+
+    for ( var x=w; x--; )
+    for ( var y=h; y--; )
+    {
+    	var startcell = map.get(x, y)
+    	var max_chain = 5
+
+    	var open = []
+    	var closed = []
+
+    	if ( startcell.height > 0 )
+    		open.push(startcell)
+
+    	while( open.length > 0 && closed.length < max_chain ) {
+
+    		var cell = open.shift()
+    		closed.push(cell)
+
+    		var neighboor = map.get(x-1, y)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x+1, y)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x, y-1)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    		neighboor = map.get(x, y+1)
+    		if ( neighboor.height == 0 ) {
+    			open.push(neighboor)
+    		}
+    	}
+
+    	if ( closed.length >= max_chain ) {
+    		nextWater.push(startcell)
+    	}
+    }
+
+    console.log(nextWater)
+
+    spawn.push(nextWater.shift())
+
+    var cell = nextWater.shift()
+    var max = {
+    	cell: cell,
+    	dst: Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2))
+    }
+
+    nextWater.forEach(function(cell){
+    	var dst = Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2))
+    	if( dst > max.dst ){
+    		max.cell = cell
+    		max.dst = dst
+    	}
+    })
+
+    spawn.push(max.cell)
+    nextWater.splice(nextWater.indexOf(max.cell), 1)
+
+    var cell = nextWater.shift()
+    var max = {
+    	cell: cell,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    }
+
+    nextWater.forEach(function(cell){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    	if( dst > max.dst ){
+    		max.cell = cell
+    		max.dst = dst
+    	}
+    })
+
+    spawn.push(max.cell)
+    nextWater.splice(nextWater.indexOf(max.cell), 1)
+
+    var cell = nextWater.shift()
+    var max = {
+    	cell: cell,
+    	dst: Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    	   + Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
+    }
+
+    nextWater.forEach(function(cell){
+    	var dst = Math.pow(Math.sqrt(Math.pow(spawn[0].x - cell.x, 2)+Math.pow(spawn[0].y - cell.y, 2)), 2) 
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[1].x - cell.x, 2)+Math.pow(spawn[1].y - cell.y, 2)), 2)
+    			+ Math.pow(Math.sqrt(Math.pow(spawn[2].x - cell.x, 2)+Math.pow(spawn[2].y - cell.y, 2)), 2)
+    	if( dst > max.dst ){
+    		max.cell = cell
+    		max.dst = dst
+    	}
+    })
+
+    spawn.push(max.cell)
+
+    return spawn
+
+}
 
 module.exports = {
     init: init,

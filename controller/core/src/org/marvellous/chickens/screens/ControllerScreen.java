@@ -1,6 +1,10 @@
 package org.marvellous.chickens.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.marvellous.chickens.TheMarvellousChickens;
+import org.marvellous.chickens.operation.CmdOperation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -14,21 +18,24 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class ControllerScreen implements Screen{
 	private TheMarvellousChickens game;
 	
 	private Stage stage;
-	private Table container;
 	private Skin skin;
+	private List<CmdOperation> operations;
+	private List<ImageButton> cmdButtons;
+	private Label selected;
 	public ControllerScreen(TheMarvellousChickens game){
 		this.game = game;
+		operations = new ArrayList<CmdOperation>();
+		cmdButtons = new ArrayList<ImageButton>();
 	}
 	
 	
@@ -45,13 +52,6 @@ public class ControllerScreen implements Screen{
 		public void draw(Batch batch, float parentAlpha) {
 			//super.draw(batch, parentAlpha);
 			int width = Gdx.graphics.getWidth() /4;
-			batch.end();
-			renderer.setAutoShapeType(true);
-			renderer.begin();
-			renderer.setColor(color);
-			renderer.rect(width*position, getParent().getY(),width, width);
-			renderer.end();
-			batch.begin();
 		}
 	}
 	
@@ -60,8 +60,7 @@ public class ControllerScreen implements Screen{
 	public void show() {
 		System.out.println("show");
 		System.out.println(Gdx.graphics.getWidth()+","+Gdx.graphics.getHeight());
-		stage = new Stage();
-		container = new Table();
+		stage = new Stage(new StretchViewport(720, 1180));
 		
 		skin = new Skin();
 		
@@ -72,47 +71,19 @@ public class ControllerScreen implements Screen{
 		
 		skin.add("white", new Texture(pixmap));
 		skin.add("default", new BitmapFont());
-		
+		skin.getFont("default").scale(2);
 		
 		LabelStyle labelStyle = new LabelStyle();
 		labelStyle.font = skin.getFont("default");
 		labelStyle.fontColor = Color.BLACK;
 		skin.add("default", labelStyle);
 		
-		
-		Table north = new Table();
-		north.setBackground(skin.newDrawable("white", Color.BLUE));
-		north.add(new ActionSlot(0, Color.BLUE));
-		north.add(new ActionSlot(1, Color.RED));
-		north.add(new ActionSlot(2, Color.YELLOW));
-		north.add(new ActionSlot(3, Color.GREEN));
-		Table south = new Table();
-		south.add(new Label("South", skin));
-		south.setBackground(skin.newDrawable("white", Color.RED));
-		Table east = new Table();
-		east.add(new Label("East", skin));
-		east.setBackground(skin.newDrawable("white", Color.YELLOW));
+		selected = new Label("", skin);
+		selected.setPosition(200, 200);
 		
 		
-		Table middle = new Table();
-		
-		Table center = new Table();
-		center.add(new Label("Center", skin));
-		center.setBackground(skin.newDrawable("white", Color.MAROON));
-		
-		middle.add(east).width(100);
-		middle.add(center).expand().fill();
-		
-		east.row();
-		east.add(new Label("East2", skin));
-		
-		container.add(north).expandX();
-		container.row();
-		container.add(middle).expand();
-		container.row();
-		container.add(south).expandX();
-		container.setFillParent(true);
-		stage.addActor(container);
+		stage.addActor(new Background(new Texture(Gdx.files.internal("background/controller.png"))));
+		stage.addActor(selected);
 	}
 
 	@Override

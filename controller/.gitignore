@@ -4,7 +4,7 @@
 *.war
 *.ear
 hs_err_pid*
-
+gradle.properties
 ## GWT
 war/
 html/war/gwt_bree/
