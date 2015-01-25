@@ -109,9 +109,6 @@ var remoteServer = net.createServer( function(sock) {
                             user.socket.write("{op:\"vibrate\", args={}}")
                         }
                     })
-                    viewerSock.emit('order', {
-                        players : room.game.getOrderAsJson()
-                    })
                 })
 
    				dispatcher.dispatch(
@@ -122,9 +119,6 @@ var remoteServer = net.createServer( function(sock) {
         					user.socket.write("{op:\"new_turn\", args:{}}");
        						cmdBuffer[user.name] = []
        					})
-                        viewerSock.emit('order', {
-                            players : room.game.getOrderAsJson()
-                        })
        				}
    				)
 
@@ -142,6 +136,9 @@ var remoteServer = net.createServer( function(sock) {
     		viewerSock.emit('players', {
         		players : room.game.getPlayersAsJson()
     		})
+            viewerSock.emit('order', {
+                players : room.game.getOrderAsJson()
+            })
     	})
     })
 
@@ -154,6 +151,9 @@ var remoteServer = net.createServer( function(sock) {
     		viewerSock.emit('players', {
         		players : room.game.getPlayersAsJson()
     		})
+            viewerSock.emit('order', {
+                players : room.game.getOrderAsJson()
+            })
     	})
     })
 
