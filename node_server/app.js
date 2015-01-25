@@ -164,11 +164,22 @@ var remoteServer = net.createServer( function(sock) {
 rendererServer.listen( 1984 )
 
 
-remoteServer.listen(31415, '10.45.18.219', function(){
-    console.log('server bound')
-})
+//remoteServer.listen(31415, '10.45.18.219', function(){
+//    console.log('server bound')
+//})
 
-/*
+
+
+rooms[0].game.addPlayer('ana')
+rooms[0].game.addPlayer('todd')
+rooms[0].game.addPlayer('hesmeralda')
+rooms[0].game.addPlayer('remy')
+
+rooms[0].game.players[ 'ana' ].bot =
+rooms[0].game.players[ 'todd' ].bot =
+rooms[0].game.players[ 'hesmeralda' ].bot =
+rooms[0].game.players[ 'remy' ].bot = true
+
 ;(function action(){
 
     var room = rooms[0]
@@ -194,6 +205,8 @@ remoteServer.listen(31415, '10.45.18.219', function(){
         orders[ name ] = [ cmd ]
     }
 
+
+
     var history = game.resolveCommands( orders )
 
     dispatcher.dispatch(
@@ -201,24 +214,22 @@ remoteServer.listen(31415, '10.45.18.219', function(){
         room.viewers,
         function(){ setTimeout( action, 200 ) }
     )
-
-
 })()
-*/
+
 
 app.get('/', function(req, res) {
-    res.sendFile('index.html', {root: './../Js client'})
+    res.sendFile('index.html', {root: './../js_viewer'})
 })
 app.get('/css/style.css', function(req, res) {
-    res.sendFile('css/style.css', {root: './../Js client'})
+    res.sendFile('css/style.css', {root: './../js_viewer'})
 })
 app.get('/js/bundle.js', function(req, res) {
-    res.sendFile('js/bundle.js', {root: './../Js client'})
+    res.sendFile('js/bundle.js', {root: './../js_viewer'})
 })
 app.get('/asset/:file', function(req, res) {
-    res.sendFile('asset/'+req.params.file, {root: './../Js client'})
+    res.sendFile('asset/'+req.params.file, {root: './../js_viewer'})
 })
 app.get('/asset/Mini/:file', function(req, res) {
-    res.sendFile('asset/Mini/'+req.params.file, {root: './../Js client'})
+    res.sendFile('asset/Mini/'+req.params.file, {root: './../js_viewer'})
 })
-app.listen(2015)
+app.listen(20151)

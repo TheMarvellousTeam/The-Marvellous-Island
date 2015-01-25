@@ -14,12 +14,6 @@ var init = function(){
 
     console.log("Game initialized ")
 
-    // to delete
-    //this.addPlayer('platane')
-    //this.addPlayer('john')
-    //this.addPlayer('toby')
-    //this.addPlayer('toto')
-
     return this
 }
 
