@@ -15,9 +15,9 @@ var init = function(){
     console.log("Game initialized ")
 
     // to delete
-    this.addPlayer('platane')
-    this.addPlayer('john')
-    this.addPlayer('toby')
+    //this.addPlayer('platane')
+    //this.addPlayer('john')
+    //this.addPlayer('toby')
     //this.addPlayer('toto')
 
     return this
@@ -276,7 +276,7 @@ var addPlayer = function( name ){
     return this
 }
 var removePlayer = function( name ){
-	this.spawnCandidate.push({x: this.players[name].x, y: this.players[name].y})
+	this.spawnCandidate.push({x: this.players[name].spawnX, y: this.players[name].spawnY})
 	this.order.splice(this.order.indexOf(name), 1)
 	delete this.players[name]
     return this

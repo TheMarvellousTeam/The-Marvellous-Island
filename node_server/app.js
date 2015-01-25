@@ -87,6 +87,9 @@ var remoteServer = net.createServer( function(sock) {
     			viewerSock.emit('players', {
         			players : room.game.getPlayersAsJson()
     			})
+                viewerSock.emit('order', {
+                    players : room.game.getOrderAsJson()
+                })
     		})
     	} else {
 
@@ -98,6 +101,15 @@ var remoteServer = net.createServer( function(sock) {
 
     		if ( needToBeResolve() ) {
     			var history = room.game.resolveCommands(cmdBuffer)
+
+                history.forEach(function(data){
+                    console.log(data)
+                    data.actions.forEach(function(action){
+                        if( action.action == 'death' && action.player == user.name){
+                            user.socket.write("{op:\"vibrate\", args={}}")
+                        }
+                    })
+                })
 
    				dispatcher.dispatch(
        				dispatcher.historyToMessages( history ),
@@ -117,23 +129,31 @@ var remoteServer = net.createServer( function(sock) {
 
     sock.on('error', function(){
     	console.log('['+sock.remoteAddress+'] error !')
+        room.users.splice(room.users.indexOf(user), 1)
     	room.game.removePlayer(user.name)
     	delete cmdBuffer[user.name]
     	viewerSocks.forEach(function(viewerSock){
     		viewerSock.emit('players', {
         		players : room.game.getPlayersAsJson()
     		})
+            viewerSock.emit('order', {
+                players : room.game.getOrderAsJson()
+            })
     	})
     })
 
     sock.on('end', function(){
     	console.log('['+sock.remoteAddress+'] deconnected')
+        room.users.splice(room.users.indexOf(user), 1)
     	room.game.removePlayer(user.name)
     	delete cmdBuffer[user.name]
     	viewerSocks.forEach(function(viewerSock){
     		viewerSock.emit('players', {
         		players : room.game.getPlayersAsJson()
     		})
+            viewerSock.emit('order', {
+                players : room.game.getOrderAsJson()
+            })
     	})
     })
 
