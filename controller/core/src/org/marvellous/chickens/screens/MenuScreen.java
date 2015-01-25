@@ -173,6 +173,7 @@ public class MenuScreen implements Screen , EventListener{
 				CredentialsOp creds = new CredentialsOp(name);
 				game.getSocket().send(ChickenJSON.toJSON(creds));
 				connexionStateLabel.setText("Connexion etablie.");
+				game.setScreen(game.getControllerScreen());
 			}else{
 				connexionStateLabel.setText("Impossible de se connecter au serveur.");
 			}

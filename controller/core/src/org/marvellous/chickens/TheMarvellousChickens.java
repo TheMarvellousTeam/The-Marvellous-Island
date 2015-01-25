@@ -42,7 +42,7 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 		});
 		menuScreen = new MenuScreen(this);
 		controllerScreen = new ControllerScreen(this);
-		setScreen(controllerScreen);
+		setScreen(menuScreen);
 	}
 
 
@@ -100,5 +100,13 @@ public class TheMarvellousChickens extends Game implements InputProcessor {
 	}
 	public ChickenSocket getSocket(){
 		return socket;
+	}
+	
+	public MenuScreen getMenuScreen(){
+		return menuScreen;
+	}
+	
+	public ControllerScreen getControllerScreen(){
+		return controllerScreen;
 	}
 }
