@@ -4,6 +4,7 @@ var Abstract = require('../util/Abstract')
   , playerFactory = require('./player-factory')
   , treeFactory = require('./tree-factory')
   , decoFactory = require('./deco-factory')
+  , snakeFactory = require('./snake-factory')
   , water = require('./water')
   , PIXI = require('pixi.js')
 
@@ -89,6 +90,11 @@ var renderDynamic = function( ){
                     sprite.width =  ratio / 0.3
                     sprite.height = ratio / 0.3
                     break
+                // case 'snake':
+                //     sprite = snakeFactory.create( )
+                //     sprite.width = ratio / 1.5
+                //     sprite.height = ratio / 1.5
+                //     break
                 case 'deco':
                     sprite = decoFactory.create( entity.type )
                     sprite.width =  ratio / 2.4
