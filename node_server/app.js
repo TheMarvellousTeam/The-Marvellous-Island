@@ -14,6 +14,42 @@ var rooms = [{
 
 
 /////////////
+// handle viewer connection
+var viewerSock ;
+io.sockets.on('connection', function ( viewerSocket) {
+
+	viewerSock = viewerSocket
+
+    var room = rooms[ 0 ]
+
+    room.viewers.push( viewerSocket )
+
+
+    // handle disconnection
+    viewerSocket
+    .on('disconnect', function () {
+
+        // remove from the list of viewers
+        for(var i=room.viewers.length; i--;)
+            if( room.viewers[i].id == viewerSocket.id )
+                room.viewers.splice( i,1 )
+    })
+
+    // send him the actual situation
+    .emit('world', {
+        world : room.game.getWorldAsJson()
+    })
+    .emit('order', {
+        order : room.game.getOrderAsJson()
+    })
+    .emit('players', {
+        players : room.game.getPlayersAsJson()
+    })
+
+})
+
+
+/////////////
 // handle remote connection
 
 var cmdBuffer = {}
@@ -40,6 +76,10 @@ var remoteServer = net.createServer( function(sock) {
 
     sock.on('end', function(){
     	console.log('['+sock.remoteAddress+'] deconnected')
+    	room.game.removePlayer(user.name)
+    	viewerSock.emit('players', {
+        	players : room.game.getPlayersAsJson()
+    	})
     })
 
     sock.on('data', function(data){
@@ -50,6 +90,9 @@ var remoteServer = net.createServer( function(sock) {
     		user.name = data.args.name
     		cmdBuffer[user.name] = []
     		room.game.addPlayer(user.name)
+    		viewerSock.emit('players', {
+        		players : room.game.getPlayersAsJson()
+    		})
     	} else {
 
     		data.forEach(function(cmd){
@@ -79,6 +122,10 @@ var remoteServer = net.createServer( function(sock) {
 
     sock.on('error', function(){
     	console.log('['+sock.remoteAddress+'] error !')
+    	room.game.removePlayer(user.name)
+    	viewerSock.emit('players', {
+        	players : room.game.getPlayersAsJson()
+    	})
     })
 
 })
@@ -86,38 +133,7 @@ var remoteServer = net.createServer( function(sock) {
 
 
 
-/////////////
-// handle viewer connection
 
-io.sockets.on('connection', function ( viewerSocket) {
-
-    var room = rooms[ 0 ]
-
-    room.viewers.push( viewerSocket )
-
-
-    // handle disconnection
-    viewerSocket
-    .on('disconnect', function () {
-
-        // remove from the list of viewers
-        for(var i=room.viewers.length; i--;)
-            if( room.viewers[i].id == viewerSocket.id )
-                room.viewers.splice( i,1 )
-    })
-
-    // send him the actual situation
-    .emit('world', {
-        world : room.game.getWorldAsJson()
-    })
-    .emit('order', {
-        order : room.game.getOrderAsJson()
-    })
-    .emit('players', {
-        players : room.game.getPlayersAsJson()
-    })
-
-})
 
 
 rendererServer.listen( 1984 )
