@@ -2,19 +2,20 @@
 
 var init = function(){
 
-    this.players = {
-        'platane' : { x:5, y:6, spawnX:5, spawnY:6 },
-        'john' : { x:10, y:7, spawnX:10, spawnY:7 },
-        'toby' : { x:12, y:12, spawnX:12, spawnY:12 }
-    }
+    this.players = {}
 
-    this.order = ['platane','john','toby']
+    this.order = []
 
     this.size = 16
 
     this.world = proceduralGenWorld( this.size, this.size )
 
     this.spawnCandidate = computeSpawnCandidate(this.world, this.size, this.size)
+
+    // to delete
+    this.addPlayer('platane')
+    this.addPlayer('john')
+    this.addPlayer('toby')
 
     return this
 }
@@ -158,7 +159,9 @@ var resolveCommands = function( cmds ){
 
 
 var addPlayer = function( name ){
-
+	var spawnCeil = this.spawnCandidate.shift()
+	this.players[name] = {x: spawnCeil.x, y: spawnCeil.y, spawnX: spawnCeil.x, spawnY: spawnCeil.y}
+	this.order.push(name)
     return this
 }
 var removePlayer = function( name ){
