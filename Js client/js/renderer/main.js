@@ -168,7 +168,7 @@ var bootstrapPIXI = function(){
 
 var computeCamera = function( ){
     var w = Math.min( this.renderer.width, this.renderer.height * 2 )
-    this.ratio = w / this.model.map.width
+    this.ratio = w / this.model.map.width * 1.1
     this.offset = {
         x: 0,
         y: 0

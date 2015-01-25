@@ -101,11 +101,11 @@ io.sockets.on('connection', function ( viewerSocket) {
 
 
 rendererServer.listen( 1984 )
-
+/*
 remoteServer.listen(31415, '10.45.18.219', function(){
     console.log('server bound')
 })
-
+*/
 
 ;(function action(){
 
@@ -137,7 +137,7 @@ remoteServer.listen(31415, '10.45.18.219', function(){
     dispatcher.dispatch(
         dispatcher.historyToMessages( history ),
         room.viewers,
-        function(){ setTimeout( action, 200 ) }
+        function(){ setTimeout( action, 2000 ) }
     )
 
 

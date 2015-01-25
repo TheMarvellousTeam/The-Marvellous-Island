@@ -2,29 +2,51 @@
 var PIXI = require('pixi.js')
 
 
-var poulet_spriteSheet = PIXI.Texture.fromImage("./asset/poulet_green.png")
-var player_spriteSheet = PIXI.Texture.fromImage("./asset/dude_animation_sheet_stolen.png")
-var mire_texture = PIXI.Texture.fromImage("./asset/mire.svg", 128, 128)
+var run_sp = PIXI.Texture.fromImage("./asset/mini/poulet.png")
+var pi_sp = PIXI.Texture.fromImage("./asset/mini/pistolet.png")
 
 
-var textures_running = []
+
+var textures_running_front = []
+var textures_running_back = []
 for (var i=0; i<5; i++)
-    textures_running.push( new PIXI.Texture( poulet_spriteSheet, {width: 395, height: 413, x: 265 + i*395, y: 90 }) )
+{
+    textures_running_back.push( new PIXI.Texture( run_sp, {width: 130, height: 160, x: i*130, y: 0 }) )
+    textures_running_front.push( new PIXI.Texture( run_sp, {width: 130, height: 160, x: i*130, y: 160 }) )
+}
 
-var textures_idl = []
-for (var i=0; i<2; i++)
-    textures_idl.push( new PIXI.Texture( poulet_spriteSheet, {width: 395, height: 413, x: 265 + i*395, y: 90 + i *10 }) )
+var textures_idl_front = []
+var textures_idl_back = []
+for (var i=2; i<4; i++)
+{
+    textures_idl_back.push( new PIXI.Texture( run_sp, {width: 130, height: 160, x: i*130 , y: 0 }) )
+    textures_idl_front.push( new PIXI.Texture( run_sp, {width: 130, height: 160, x: i*130 , y: 160 }) )
+}
+
+var textures_fire_front = []
+var textures_fire_back = []
+for (var i=0; i<9; i++)
+{
+    textures_fire_front.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + i*125, y: 0 }) )
+    textures_fire_back.push( new PIXI.Texture( pi_sp, {width: 125, height: 150, x: 20 + i*125, y: 0 }) )
+}
 
 var textures = {
     running : {
-        front: textures_running,
-        back: textures_running,
+        front: textures_running_front,
+        back: textures_running_back,
         speed: 0.23
     },
     idl : {
-        front: textures_idl,
-        back: textures_idl,
+        front: textures_idl_front,
+        back: textures_idl_back,
         speed: 0.06
+    },
+    fire : {
+        front: textures_fire_front,
+        back: textures_fire_back,
+        speed: 0.23,
+        noLoop: true
     }
 }
 
@@ -36,7 +58,7 @@ var setState = function( label, frontOrBack, sens ){
 
     this.addChild( m )
 
-    if ( sens != m.scale.x<0 )
+    if ( sens != m.scale.x>0 )
         m.scale.x *= -1
 
     m.gotoAndPlay( label == this.stateLabel ? m.currentFrame : 0 )
