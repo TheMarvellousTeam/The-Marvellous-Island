@@ -1,7 +1,7 @@
 var Abstract = require('../util/Abstract')
   , ed = require('../system/eventDispatcher')
-  , Tree = require('../model/Tree')
-  , Deco = require('../model/Deco')
+  , Tree = require('../model/tree')
+  , Deco = require('../model/deco')
 
 var init = function( modelBall ){
 

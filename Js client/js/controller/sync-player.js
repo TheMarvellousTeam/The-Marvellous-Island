@@ -1,6 +1,6 @@
 var Abstract = require('../util/Abstract')
   , ed = require('../system/eventDispatcher')
-  , Player = require('../model/Player')
+  , Player = require('../model/player')
 
 var init = function( modelBall ){
 
