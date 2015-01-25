@@ -56,17 +56,19 @@ public class ControllerScreen implements Screen, DirectionSelectorListener, Even
 		operations = new ArrayList<CmdOperation>();
 		cmdSelectors = new ArrayList<CommandSelector>();
 		
-		cmdSelectors.add(new CommandSelector("background/moveButton.png", this, "move", (float)(0.6f*widthRatio)));
-		cmdSelectors.add(new CommandSelector("background/fireButton.png", this, "fire_push_bullet",(float)(0.6f*heightRatio)));
-		cmdSelectors.add(new CommandSelector("background/peckButton.png", this, "peck",(float)(0.6f*heightRatio)));
+		cmdSelectors.add(new CommandSelector("background/walk.png", this, "move", (float)(0.6f*widthRatio)));
+		cmdSelectors.add(new CommandSelector("background/fire.png", this, "fire_push_bullet",(float)(0.6f*heightRatio)));
+		cmdSelectors.add(new CommandSelector("background/peck.png", this, "peck",(float)(0.6f*heightRatio)));
 		batch = new SpriteBatch();
 		textures = new HashMap<String, Texture>();
-		textures.put("move", new Texture(Gdx.files.internal("background/moveButton.png")));
-		textures.put("fire_push_bullet", new Texture(Gdx.files.internal("background/fireButton.png")));
-		textures.put("peck", new Texture(Gdx.files.internal("background/peckButton.png")));
+		textures.put("move", new Texture(Gdx.files.internal("background/walk.png")));
+		textures.put("fire_push_bullet", new Texture(Gdx.files.internal("background/fire.png")));
+		textures.put("peck", new Texture(Gdx.files.internal("background/peck.png")));
 		
-		applyButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/applyButton.png")))));
-		cancelButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/cancelButton.png")))));
+		applyButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/Yes.png")))));
+		cancelButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("background/no.png")))));
+		applyButton.scaleBy(1.5f);
+		cancelButton.scaleBy(1.5f);
 		applyButton.setDisabled(true);
 		opNeedDirection = new HashMap<String, Boolean>();
 		
@@ -107,7 +109,7 @@ public class ControllerScreen implements Screen, DirectionSelectorListener, Even
 		skin.add("default", labelStyle);
 		
 		applyButton.setPosition(0, 100);
-		cancelButton.setPosition(300, 100);
+		cancelButton.setPosition(500, 100);
 		applyButton.setDisabled(true);
 		applyButton.addListener(this);
 		cancelButton.addListener(this);
@@ -115,7 +117,7 @@ public class ControllerScreen implements Screen, DirectionSelectorListener, Even
 		
 		
 		
-		stage.addActor(new Background(new Texture(Gdx.files.internal("background/controller.png"))));
+		stage.addActor(new Background(new Texture(Gdx.files.internal("background/controller_ok.png"))));
 		stage.addActor(applyButton);
 		stage.addActor(cancelButton);
 		for(int i = 0; i < cmdSelectors.size(); i++){
