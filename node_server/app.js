@@ -60,7 +60,7 @@ var needToBeResolve = function() {
 	rooms[0].users.forEach(function(user){
 		nbCmd += cmdBuffer[user.name].length
 	})
-	return nbCmd == 4*rooms[0].users.length 
+	return nbCmd == 4*rooms[0].users.length
 }
 
 var remoteServer = net.createServer( function(sock) {
@@ -104,10 +104,10 @@ var remoteServer = net.createServer( function(sock) {
     			cmd.args.player = user.name
     			cmdBuffer[user.name].push(cmd.args)
     		})
-    		
+
 
     		if ( needToBeResolve() ) {
-    			var history = room.game.resolveCommands(cmdBuffer) 
+    			var history = room.game.resolveCommands(cmdBuffer)
 
    				dispatcher.dispatch(
        				dispatcher.historyToMessages( history ),
@@ -146,7 +146,7 @@ var remoteServer = net.createServer( function(sock) {
 rendererServer.listen( 1984 )
 
 
-remoteServer.listen(31415, '10.45.18.219', function(){
+remoteServer.listen(31415, 'localhost', function(){
     console.log('server bound')
 })
 
@@ -187,3 +187,20 @@ remoteServer.listen(31415, '10.45.18.219', function(){
 
 })()
 */
+
+app.get('/', function(req, res) {
+    res.sendFile('index.html', {root: './../Js client'})
+})
+app.get('/css/style.css', function(req, res) {
+    res.sendFile('css/style.css', {root: './../Js client'})
+})
+app.get('/js/bundle.js', function(req, res) {
+    res.sendFile('js/bundle.js', {root: './../Js client'})
+})
+app.get('/asset/:file', function(req, res) {
+    res.sendFile('asset/'+req.params.file, {root: './../Js client'})
+})
+app.get('/asset/mini/:file', function(req, res) {
+    res.sendFile('asset/mini/'+req.params.file, {root: './../Js client'})
+})
+app.listen(2015)
