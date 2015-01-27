@@ -65,8 +65,8 @@ var textures = {
     death : {
         front: textures_death_front,
         back: textures_death_back,
-        speed: 0.04,
-        //noLoop: true
+        speed: 0.15,
+        noLoop: true
     },
     fire : {
         front: textures_fire_front,
@@ -88,7 +88,7 @@ var textures = {
 }
 
 var setState = function( label, frontOrBack, sens ){
-    
+
     this.removeChildren()
     this.addChild(this.nameLbl)
 

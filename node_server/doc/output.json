@@ -26,7 +26,8 @@
                     "x": "<number>",
                     "y": "<number>",
                     "height": "<number>",
-                    "type": "<string>[water,sand,dirt,grass]"
+                    "type": "<string>[water,sand,dirt,grass]",
+                    "obstable": "<string>[tree|'']",
                 }
             ]
         }
