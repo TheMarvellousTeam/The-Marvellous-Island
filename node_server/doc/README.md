@@ -16,7 +16,7 @@ The transcription of the four direction as (x,y) vector is available in __doc/di
 
 ## Controller
 
-Controllers must connect to __<host>:<port>/controller__
+Controllers must connect to __*host*:*port*/controller__
 
 Once the connection is established, the room must be selected with a req
 
@@ -57,7 +57,7 @@ The list of available commands is in __doc/acceptableCmds.json__.
 
 ## Viewer
 
-Viewers must connect to __<host>:<port>/viewer__  ( same host and port as for controllers )
+Viewers must connect to __*host*:*port*/viewer__  ( same host and port as for controllers )
 
 Once the connection is established, the room must be selected with a req
 
