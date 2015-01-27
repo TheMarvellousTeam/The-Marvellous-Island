@@ -28,17 +28,17 @@ var sync = function( data ){
         if ( entityPool[ i ].type != 'player' )
             continue
 
-        if ( !data.players[ entityPool[ i ].name ] )
+        if ( !data.players[ entityPool[ i ].playerId ] )
             entityPool.splice( i,1 )
         else
-            finds[ entityPool[ i ].name ] = true
+            finds[ entityPool[ i ].playerId ] = true
     }
 
-    // delete the ones that are not yet in
+    // add the ones that are not yet in
     for ( var i in data.players )
         if ( !finds[ i ] ){
             var e = Object.create( Player ).init()
-            e.name = data.players[ i ].name
+            e.playerId = data.players[ i ].playerId
             e.playerId = i
             e.x = data.players[ i ].x
             e.y = data.players[ i ].y

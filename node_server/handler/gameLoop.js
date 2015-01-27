@@ -37,10 +37,8 @@ var addCommand = function( data ){
 
     while( cmds.length && this.playersCmds[ data.id ].length < round )
     {
-
-        cmds[0].playerId = data.id
-
         // TODO sanitize
+
         this.playersCmds[ data.id ].push( cmds.shift() )
     }
 
@@ -55,22 +53,28 @@ var addCommand = function( data ){
 var checkAllReady = function(){
     // test if everyOne is ready
     for (var id in this.playersCmds )
-        if( this.playersCmds[ id ].length < round )
+        if( this.game.players[ id ].respawnIn <= 0 && this.playersCmds[ id ].length < round )
             return
 
     // launch the resolution phase
     this.state != 'play'
     this.ed.dispatch('gameLoop:start-resolution')
 
-    var that = this
-    dispatch.call( this, this.game.resolveCommands( this.playersCmds ) , function(){
-        that.state != 'waitingCmds'
-        that.ed.dispatch('gameLoop:end-resolution')
-    })
+    var history = this.game.resolveCommands( this.playersCmds )
 
     // clean up
     for (var id in this.playersCmds )
         this.playersCmds[ id ].length = 0
+
+
+    // replay
+    var that = this
+    dispatch.call( this, history , function(){
+        that.state != 'waitingCmds'
+        that.ed.dispatch('gameLoop:end-resolution')
+
+        checkAllReady.call( that )
+    })
 }
 
 
@@ -80,6 +84,7 @@ var actionsDelay = {
     "fail": 200,
     "spawn": 300,
     "fire_push_bullet": 450,
+    "fire": 450,
     "peck": 200
 }
 var dispatch = function( history, cb ){

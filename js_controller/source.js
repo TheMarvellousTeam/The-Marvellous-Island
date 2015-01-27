@@ -47,6 +47,7 @@ document.getElementById('login').addEventListener('change',function(){
     })
 
     this.setAttribute('disabled', 'disabled')
+    document.getElementById('room').setAttribute('disabled', 'disabled')
     document.getElementById('cmd').style.display = ''
 })
 document.getElementById('go').addEventListener('click',sendCmd )

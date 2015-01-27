@@ -28,7 +28,7 @@ var handleEvent = function( roomName, eventName, data ){
         Object.create( controllerUpdateHandler ).init( modelBall )
 
 
-        for( var i=3; i--;)
+        for( var i=0; i--;)
             Object.create( bot ).init( modelBall )
 
         room = rooms[ roomName ] = modelBall

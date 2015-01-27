@@ -2,7 +2,7 @@ var webSocket = require( '../comm/mainSocket' )
 
 
 var changePlayers = function( ){
-    this.broadcastViewer( 'player', this.game.getPlayersAsJson() )
+    this.broadcastViewer( 'players', {players: this.game.getPlayersAsJson()} )
     this.broadcastViewer( 'order', {order: this.game.getOrderAsJson()} )
 }
 var broadcastViewer = function( room, name, data ){

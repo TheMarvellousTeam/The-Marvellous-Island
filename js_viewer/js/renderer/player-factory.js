@@ -123,7 +123,7 @@ var create = function( name ){
     player.mc = mc
 
     // LOL no
-    var text = new PIXI.Text(name, {font: "bold 30px Podkova", fill: "0xFFFFFF", align: "center", strokeThickness: 1});
+    var text = new PIXI.Text(name||'', {font: "bold 30px Podkova", fill: "0xFFFFFF", align: "center", strokeThickness: 1});
     text.anchor.x = text.anchor.y = 0.5;
     text.position.x = 13;
     text.position.y = -175;

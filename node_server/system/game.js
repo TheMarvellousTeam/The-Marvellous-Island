@@ -15,7 +15,7 @@ var init = function(){
     return this
 }
 
-var timeDead = 5
+var timeDead = 1
 
 var resolveOneCommand = function( cmd ){
 
@@ -29,27 +29,11 @@ var resolveOneCommand = function( cmd ){
 
     if ( player.respawnIn > 0 ){
 
-        player.respawnIn --
-
-        if ( player.respawnIn <= 0 )
-        {
-            resulting_actions.push({
-                'action' : 'spawn',
-                'playerId' : playerId,
-                'toX' : player.spawnX,
-                'toY' : player.spawnY
-            })
-
-            player.x = player.spawnX
-            player.y = player.spawnY
-
-        }
-        else
-            return [{
-                'action' : 'fail',
-                'label' : 'player is dead',
-                'playerId' : playerId
-            }]
+        return [{
+            'action' : 'fail',
+            'label' : 'player is dead',
+            'playerId' : playerId
+        }]
     }
 
     switch( cmdType )
@@ -231,6 +215,32 @@ var resolveCommands = function( cmds ){
 
     var history = []
 
+    // resolve death
+    var player
+    for( var playerId in this.players )
+        if( ( player = this.players[ playerId ] ).respawnIn >= 0 ){
+
+            if ( player.respawnIn == 0 ) {
+
+                history.push({
+                    actions:[{
+                        'action' : 'spawn',
+                        'playerId' : playerId,
+                        'toX' : player.spawnX,
+                        'toY' : player.spawnY
+                    }],
+                    new_order : this.getOrderAsJson()
+                })
+
+                player.x = player.spawnX
+                player.y = player.spawnY
+
+            } else
+                cmds[ playerId ] = [{},{},{},{}]
+            player.respawnIn --
+        }
+
+
     while( true )
     {
 
@@ -249,6 +259,7 @@ var resolveCommands = function( cmds ){
         this.order.push( next_player )
 
         // add one history entry
+        next_cmd.playerId = next_player
         history.push({
             actions : resolveOneCommand.call( this, next_cmd ),
             new_order : this.getOrderAsJson()
@@ -267,7 +278,8 @@ var addPlayer = function( id, name ){
         y: spawncell.y,
         spawnX: spawncell.x,
         spawnY: spawncell.y,
-        name: name
+        name: name,
+        respawnIn: -1
     }
 }
 var removePlayer = function( id ){
