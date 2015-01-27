@@ -2,7 +2,7 @@ var io = require('socket.io-client')
 
 
 
-var socket = io.connect( 'localhost:31415/controller' )
+var socket = io.connect( 'localhost:31415/comm/controller' )
 
 socket.on( 'connect' , function( ){
     console.log( 'connected' )

@@ -5,6 +5,22 @@ app.get('/', function(req, res) {
     res.send( 'hello')
 })
 
+
+app.get('/controller', function(req, res) {
+
+    var roomName = req.params['room']
+
+    if (!roomName)
+        // TODO go to another page
+        ;
+
+    res.sendFile( 'index.html' , {root: './../js_controller'})
+})
+app.get('/bundle.js', function(req, res) {
+    res.sendFile('./bundle.js', {root: './../js_controller'})
+})
+
+
 app.get('/view', function(req, res) {
 
     var roomName = req.params['room']
