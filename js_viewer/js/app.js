@@ -19,5 +19,9 @@ Object.create( require('./controller/sync-world') ).init( modelBall ).enable()
 Object.create( require('./controller/sync-player') ).init( modelBall ).enable()
 //Object.create( require('./controller/sync-order') ).init( modelBall ).enable()
 
+var room = location.search.match('room=([^&#]+)')
 
-serverIO.connect( window.location.hostname+':'+31415+'/viewer' )
+if ( !room )
+    return
+
+serverIO.connect( window.location.hostname+':'+31415+'/comm/viewer', room[ 1 ] )

@@ -1,6 +1,6 @@
 var io = require('socket.io').listen(31415);
 
-var ioController = io.of('/controller')
+var ioController = io.of('/comm/controller')
 .on('connection', function(socket){
     var room
     var messageHandler= function( eventName, data ){
@@ -32,7 +32,7 @@ var ioController = io.of('/controller')
     socket.on('disconnect', messageHandler.bind( null, 'disconnect' ));
 })
 
-var ioViewer = io.of('/viewer')
+var ioViewer = io.of('/comm/viewer')
 .on('connection', function (socket) {
 
     var room

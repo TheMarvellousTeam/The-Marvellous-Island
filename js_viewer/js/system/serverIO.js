@@ -3,14 +3,14 @@ var Abstract = require('../util/Abstract')
   , io = require('socket.io-client')
 
 
-var connect = function( url ){
+var connect = function( url, room ){
 
     ed.dispatch('io:connecting')
     var socket = this.socket = io.connect( url )
 
     this.socket.on( 'connect' , function( ){
 
-        socket.emit('room', {room: 'mainRoom'})
+        socket.emit('room', {room: room})
 
         ed.dispatch('io:connected')
     })

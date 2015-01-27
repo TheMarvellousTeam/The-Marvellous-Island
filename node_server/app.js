@@ -1,5 +1,4 @@
 
-var app = require('express')()
 var ed = require('./util/eventDispatcher')
 var gameLoop = require('./handler/gameLoop')
 var game = require('./system/game')
@@ -28,7 +27,7 @@ var handleEvent = function( roomName, eventName, data ){
         Object.create( controllerUpdateHandler ).init( modelBall )
 
 
-        for( var i=0; i--;)
+        for( var i=1; i--;)
             Object.create( bot ).init( modelBall )
 
         room = rooms[ roomName ] = modelBall
@@ -44,22 +43,4 @@ var cleanEmptyRoom = function(){
 
 
 require('./comm/mainSocket').bindEventCb( handleEvent )
-
-
-
-app.get('/', function(req, res) {
-    res.sendFile('index.html', {root: './../js_viewer'})
-})
-app.get('/css/style.css', function(req, res) {
-    res.sendFile('css/style.css', {root: './../js_viewer'})
-})
-app.get('/js/bundle.js', function(req, res) {
-    res.sendFile('js/bundle.js', {root: './../js_viewer'})
-})
-app.get('/asset/:file', function(req, res) {
-    res.sendFile('asset/'+req.params.file, {root: './../js_viewer'})
-})
-app.get('/asset/Mini/:file', function(req, res) {
-    res.sendFile('asset/Mini/'+req.params.file, {root: './../js_viewer'})
-})
-app.listen(20151)
+require('../website/app')

@@ -1,10 +1,9 @@
 {
-  "name": "js-server",
+  "name": "website",
   "version":"0.0.1",
 
   "dependencies": {
-    "socket.io" : "*",
-    "net" : "*"
+    "express" : "*"
   },
 
   "engines": {

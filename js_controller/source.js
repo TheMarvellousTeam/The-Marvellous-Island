@@ -37,6 +37,9 @@ var sendCmd = function(){
         ] });
 }
 
+var room = location.search.match('room=([^&#]+)')
+document.getElementById('room').value = (room || ['', ''])[ 1 ]
+
 document.getElementById('login').addEventListener('change',function(){
 
     socket.emit('room',{
