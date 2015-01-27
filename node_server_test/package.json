@@ -1,0 +1,21 @@
+{
+  "name": "node_server_test",
+  "version":"0.0.1",
+  "author": "@Platane",
+
+  "dependencies": {
+    "promise" : "*"
+  },
+
+  "devDependencies" : {
+    "browserify" : "*",
+    "gulp" : "*",
+    "gulp-watch" : "*",
+    "jasmine-core" : "2.1.x",
+    "jasmine-node" : "*"
+  },
+
+  "scripts" : {
+    "test" : "node ./node_modules/jasmine-node/bin/jasmine-node --matchall ./specs/"
+  }
+}
