@@ -20,6 +20,7 @@ var handleEvent = function( roomName, eventName, data ){
             game : Object.create( game ).init(  ),
             room: roomName
         }
+        ed.roomName = roomName
 
         Object.create( gameLoop ).init( modelBall ),
 
@@ -27,7 +28,7 @@ var handleEvent = function( roomName, eventName, data ){
         Object.create( controllerUpdateHandler ).init( modelBall )
 
 
-        for( var i=4; i--;)
+        for( var i=3; i--;)
             Object.create( bot ).init( modelBall )
 
         room = rooms[ roomName ] = modelBall
@@ -36,7 +37,6 @@ var handleEvent = function( roomName, eventName, data ){
     room.ed.dispatch( eventName, data )
 }
 
-handleEvent('test-room')
 
 var cleanEmptyRoom = function(){
     // TODO

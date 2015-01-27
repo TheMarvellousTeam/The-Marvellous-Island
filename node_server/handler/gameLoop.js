@@ -46,7 +46,7 @@ var addCommand = function( data ){
 
 
     this.ed.dispatch('gameLoop:change-player-ready',{
-        player: this.game.players[ data.id ],
+        playerId: data.id,
         ready : true
     })
     checkAllReady.call(this)

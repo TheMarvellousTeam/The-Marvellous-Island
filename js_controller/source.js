@@ -2,21 +2,26 @@ var io = require('socket.io-client')
 
 
 
-var socket = io.connect( 'localhost:31415/viewer' )
+var socket = io.connect( 'localhost:31415/controller' )
 
 socket.on( 'connect' , function( ){
     console.log( 'connected' )
 })
-socket.on( 'next_turn' , function( ){
+socket.on( 'end-resolution' , function( ){
     document.getElementById('cmd').style.display = ''
 })
 
 var extract = function( k ){
-    var v= document.querySelector('[name=direction'+k+']').value.split(';')
+    var v = [0,0]
+    var vs= document.querySelectorAll('[name=direction'+k+']')
+    for( var i=vs.length; i--;)
+        if (vs[ i ].checked )
+            v = vs[ i ].value.split(';')
+
     return {
-        type: document.getElementById('action'+k).value,
-        x:+v[0],
-        y:+v[1]
+        action: document.getElementById('action'+k).value,
+        directionX:+v[0],
+        directionY:+v[1]
     }
 }
 var sendCmd = function(){
@@ -38,7 +43,7 @@ document.getElementById('login').addEventListener('change',function(){
         room: document.getElementById('room').value
     })
     socket.emit('name',{
-        room: this.value
+        name: this.value
     })
 
     this.setAttribute('disabled', 'disabled')

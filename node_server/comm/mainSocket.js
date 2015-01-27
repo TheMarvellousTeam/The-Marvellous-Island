@@ -7,7 +7,7 @@ var ioController = io.of('/controller')
         var o = {id: socket.id}
         for( var i in data )
             o[ i ] = data[ i ]
-        eventCb( room, eventName, data)
+        eventCb( room, 'io:player-'+eventName, o)
     }
 
     // set or change room
@@ -27,9 +27,9 @@ var ioController = io.of('/controller')
         eventCb( room, 'io:player-connect', {id: socket.id} )
     });
 
-    socket.on('cmds', messageHandler);
-    socket.on('name', messageHandler);
-    socket.on('disconnect', messageHandler);
+    socket.on('cmds', messageHandler.bind( null, 'cmds' ));
+    socket.on('name', messageHandler.bind( null, 'name' ));
+    socket.on('disconnect', messageHandler.bind( null, 'disconnect' ));
 })
 
 var ioViewer = io.of('/viewer')

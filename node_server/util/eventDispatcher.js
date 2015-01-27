@@ -10,7 +10,7 @@ var dispatch = function( eventName, data ){
             case 'update':
                 break;
             default:
-                console.log(eventName, data)
+                console.log('--- '+ this.roomName +' [ '+eventName+' ] ', data)
         }
 
     this._lock = true
