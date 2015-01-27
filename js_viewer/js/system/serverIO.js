@@ -3,17 +3,18 @@ var Abstract = require('../util/Abstract')
   , io = require('socket.io-client')
 
 
-var connect = function( host, port ){
+var connect = function( url ){
 
     ed.dispatch('io:connecting')
-    this.socket = io.connect( host+':'+port )
+    var socket = this.socket = io.connect( url )
 
     this.socket.on( 'connect' , function( ){
+
+        socket.emit('room', {room: 'mainRoom'})
+
         ed.dispatch('io:connected')
     })
 
-
-    this.socket
     .on( 'order' , function( data ){
         ed.dispatch('io:update-order', data)
     })

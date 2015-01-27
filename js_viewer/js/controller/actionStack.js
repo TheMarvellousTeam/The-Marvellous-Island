@@ -16,13 +16,15 @@ var init = function( modelBall ){
 var doAction = function( action ){
 
     var type = action.action
-    var playerName = action.player
+    var playerId = action.playerId
     var duration = action.duration / 15 // from ms to frame
 
     var player
-    if ( playerName )
-        player = this.model.entityPool.filter(function(c){ return playerName == c.name })[ 0 ]
+    if ( playerId )
+        player = this.model.entityPool.filter(function(c){ return playerId == c.playerId })[ 0 ]
 
+    if( !player )
+        return
 
     switch( type )
     {
@@ -76,7 +78,7 @@ var doAction = function( action ){
             player.y = action.fromY
 
             player.state = 'picor'
-            
+
             player.engageWereable( 62 )
 
             ed.dispatch('change:state', {

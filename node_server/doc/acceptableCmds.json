@@ -1,0 +1,17 @@
+[
+    {
+        "action" : "move",
+        "directionX": "<number>",
+        "directionY": "<number>",
+    },
+    {
+        "action" : "peck",
+    },
+    {
+        "action" : "fire_push_bullet",
+        "direction": {
+            "x": "<number>",
+            "y": "<number>"
+        }
+    }
+]

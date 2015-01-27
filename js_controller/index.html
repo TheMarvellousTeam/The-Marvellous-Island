@@ -1,21 +1,90 @@
 <html>
 <body>
 
-    <input id="login" type="text" ></input>
+    <style>
+        input[value="0;1"] {
+            top: 5px;
+            left: 5px;
+            position: absolute;
+        }
+        input[value="1;0"] {
+            top: 5px;
+            left: 45px;
+            position: absolute;
+        }
+        input[value="0;-1"] {
+            top: 45px;
+            left: 5px;
+            position: absolute;
+        }
+        input[value="-1;0"] {
+            top: 45px;
+            left: 45px;
+            position: absolute;
+        }
+    </style>
 
-    <select id="action">
-        <option value="move">move</option>
-        <option value="fire">fire</option>
-    </select>
+    <input id="login" type="text" placeholder="login" ></input>
+    <input id="room" type="text" value="mainRoom"></input>
 
-    <div>
-        <input type= "radio" name="direction" value="x+"></input>
-        <input type= "radio" name="direction" value="x-"></input>
-        <input type= "radio" name="direction" value="y-"></input>
-        <input type= "radio" name="direction" value="y-"></input>
-    </div>
+    <div id="cmd" style="display:none">
+    <section>
+        <select id="action1">
+            <option value="move">move</option>
+            <option value="fire">fire</option>
+        </select>
 
+        <div style="width: 100px; height: 100px; position: relative">
+            <input type= "radio" name="direction1" value="0;1" checked></input>
+            <input type= "radio" name="direction1" value="1;0"></input>
+            <input type= "radio" name="direction1" value="0;-1"></input>
+            <input type= "radio" name="direction1" value="-1;0"></input>
+        </div>
+    </section>
+
+    <section>
+        <select id="action2">
+            <option value="move">move</option>
+            <option value="fire">fire</option>
+        </select>
+
+        <div style="width: 100px; height: 100px; position: relative">
+            <input type= "radio" name="direction2" value="0;1" checked></input>
+            <input type= "radio" name="direction2" value="1;0"></input>
+            <input type= "radio" name="direction2" value="0;-1"></input>
+            <input type= "radio" name="direction2" value="-1;0"></input>
+        </div>
+    </section>
+
+    <section>
+        <select id="action3">
+            <option value="move">move</option>
+            <option value="fire">fire</option>
+        </select>
+
+        <div style="width: 100px; height: 100px; position: relative">
+            <input type= "radio" name="direction3" value="0;1" checked></input>
+            <input type= "radio" name="direction3" value="1;0"></input>
+            <input type= "radio" name="direction3" value="0;-1"></input>
+            <input type= "radio" name="direction3" value="-1;0"></input>
+        </div>
+    </section>
+
+    <section>
+        <select id="action4">
+            <option value="move">move</option>
+            <option value="fire">fire</option>
+        </select>
+
+        <div style="width: 100px; height: 100px; position: relative">
+            <input type= "radio" name="direction4" value="0;1" checked></input>
+            <input type= "radio" name="direction4" value="1;0"></input>
+            <input type= "radio" name="direction4" value="0;-1"></input>
+            <input type= "radio" name="direction4" value="-1;0"></input>
+        </div>
+    </section>
     <input id="go" type="button" value="go" ></input>
+</div>
 
 
 <script src="./bundle.js"></script>

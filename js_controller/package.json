@@ -1,5 +1,5 @@
 {
-  "name": "js-simu",
+  "name": "js-controller",
   "version":"0.0.1",
   "author": "@Platane",
 
@@ -10,6 +10,8 @@
   "devDependencies" : {
 
     "gulp" : "*",
-    "gulp-connect" : "*"
+    "gulp-connect" : "*",
+    "gulp-watch" : "*",
+    "browserify" : "*"
   }
 }

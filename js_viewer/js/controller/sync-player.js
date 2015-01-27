@@ -38,7 +38,8 @@ var sync = function( data ){
     for ( var i in data.players )
         if ( !finds[ i ] ){
             var e = Object.create( Player ).init()
-            e.name = i
+            e.name = data.players[ i ].name
+            e.playerId = i
             e.x = data.players[ i ].x
             e.y = data.players[ i ].y
             entityPool.push( e )

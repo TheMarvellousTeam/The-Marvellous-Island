@@ -2,50 +2,46 @@ var io = require('socket.io-client')
 
 
 
-var socket = io.connect( 'localhost:31415' )
+var socket = io.connect( 'localhost:31415/viewer' )
 
 socket.on( 'connect' , function( ){
-    console.log( 'connect' )
+    console.log( 'connected' )
+})
+socket.on( 'next_turn' , function( ){
+    document.getElementById('cmd').style.display = ''
 })
 
-var sendName = function( name ){
-    var req = {
-        op:"name",
-        args:{
-            name:name
-        }
+var extract = function( k ){
+    var v= document.querySelector('[name=direction'+k+']').value.split(';')
+    return {
+        type: document.getElementById('action'+k).value,
+        x:+v[0],
+        y:+v[1]
     }
-    socket.send(JSON.stringify( req )+'\r\n');
 }
-var sendCmd = function( type, x, y ){
-    var cmds = [
-        {
-            op : "cmd",
-            args : {
-                type: type,
-                x: x,
-                y: y
-            }
-        }
-    ]
-    socket.send(JSON.stringify( cmds )+'\r\n');
-    socket.emit('data', JSON.stringify( cmds )+'\r\n');
+var sendCmd = function(){
+
+    document.getElementById('cmd').style.display = 'none'
+
+    socket.emit('cmds', {cmds: [
+        extract(1),
+        extract(2),
+        extract(3),
+        extract(4)
+
+        ] });
 }
 
 document.getElementById('login').addEventListener('change',function(){
-    sendName( this.value )
+
+    socket.emit('room',{
+        room: document.getElementById('room').value
+    })
+    socket.emit('name',{
+        room: this.value
+    })
+
+    this.setAttribute('disabled', 'disabled')
+    document.getElementById('cmd').style.display = ''
 })
-
-
-/*
-//var socket = io.connect('localhost:31415')
-var socket = io.connect({port: 31415, host:'localhost'})
-
-socket.on('world', function( event ){
-
-})
-
-document.getElementById('go').addEventListener('click', function(){
-    socket.emit('')
-}, false)
-*/
+document.getElementById('go').addEventListener('click',sendCmd )

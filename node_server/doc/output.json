@@ -1,0 +1,83 @@
+{
+    "players": [
+        {
+            "players": {
+                "<string>(playerId)": {
+                    "name": "<string>",
+                    "x": "<number>",
+                    "y": "<number>"
+                }
+            }
+        }
+    ],
+
+    "order": [
+        {
+            "order": [
+                "<string>( playerId)"
+            ]
+        }
+    ],
+
+    "world": [
+        {
+            "world": [
+                {
+                    "x": "<number>",
+                    "y": "<number>",
+                    "height": "<number>",
+                    "type": "<string>[water,sand,dirt,grass]"
+                }
+            ]
+        }
+    ],
+
+    "action": [
+        {
+            "action": "spawn",
+            "playerId": "<string>playerId",
+            "toX": "<number>",
+            "toY": "<number>",
+            "duration": "<number>",
+        },
+        {
+            "action": "move",
+            "playerId": "<string>playerId",
+            "toX": "<number>",
+            "toY": "<number>",
+            "fromX": "<number>",
+            "fromY": "<number>",
+            "duration": "<number>",
+        },
+        {
+            "action": "death",
+            "playerId": "<string>playerId",
+            "duration": "<number>",
+        },
+        {
+            "action": "peck",
+            "playerId": "<string>playerId",
+            "duration": "<number>",
+        },
+        {
+            "action": "fire_push_bullet",
+            "playerId": "<string>playerId",
+            "dirX": "<number>",
+            "dirY": "<number>",
+            "duration": "<number>",
+        },
+        {
+            "action": "push",
+            "playerId": "<string>playerId",
+            "toX": "<number>",
+            "toY": "<number>",
+            "fromX": "<number>",
+            "fromY": "<number>",
+            "duration": "<number>",
+        },
+        {
+            "action": "fail",
+            "label": "<string>",
+        }
+    ]
+}
