@@ -13,5 +13,9 @@
     "gulp-connect" : "*",
     "gulp-watch" : "*",
     "browserify" : "*"
+  },
+
+  "scripts" : {
+    "prepublish" : "node ./node_modules/browserify/bin/cmd.js ./source.js -o bundle.js --debug"
   }
 }
