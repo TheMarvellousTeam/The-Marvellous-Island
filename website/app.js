@@ -43,4 +43,4 @@ app.get('/asset/:file', function(req, res) {
 app.get('/asset/Mini/:file', function(req, res) {
     res.sendFile('asset/Mini/'+req.params.file, {root: './../js_viewer'})
 })
-app.listen(80)
+app.listen(8080)
