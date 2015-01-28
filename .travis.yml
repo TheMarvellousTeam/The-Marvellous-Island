@@ -1,3 +1,12 @@
 language: node_js
 node_js:
   - "0.10"
+install:
+  - cd node_server
+  - npm install
+  - cd ../node_server_test
+  - npm install
+  - cd ..
+script:
+  - cd ../node_server_test
+  - npm test
