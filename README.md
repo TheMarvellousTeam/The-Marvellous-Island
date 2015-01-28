@@ -5,8 +5,18 @@ The Marvellous Island
 
 Global Game Jam 2015
 
-# how to
+# launch server
+ 
+ - cd ./js_viewer
+ - npm install
+ - cd ../node_server
+ - npm install
+ - node ./app.js
 
-it's complicated ..
+
+Optionnaly build the js controller with ( do it before )
+ - cd ./js_controller
+ - npm install
+
 
 online release in coming
