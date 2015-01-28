@@ -12,6 +12,3 @@ install:
 script:
   - cd ./node_server_test
   - npm test
-  - cd ../node_server_test
-  - npm prepublish
-  - cd ..
