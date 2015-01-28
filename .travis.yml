@@ -8,5 +8,5 @@ install:
   - npm install
   - cd ..
 script:
-  - cd ../node_server_test
+  - cd ./node_server_test
   - npm test
