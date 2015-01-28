@@ -33,29 +33,35 @@ describe('', function(){
     })
     describe('gameLoop ', function(){
 
-        // wait
-        beforeEach(function( ){
+        beforeEach(function(){
+
+            // wait
             //setTimeout( done, 500)
             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
         })
 
         // build simple world
         beforeEach(function(){
+
             var w = []
             for( var x=3;x--;)
             for( var y=3;y--;)
             {
-                var empty = ( x==1 || y==1 )
-                w.push({
+                var water = ( x!=1 && y!=1 )
+                w[ x + y*3 ] = {
                     x: x,
                     y: y,
-                    type : empty ? 'watter' : 'grass',
-                    height : empty ? 0 : 1,
+                    type : water ? 'water' : 'grass',
+                    height : water ? 0 : 1,
                     obstacle : false
-                })
+                }
             }
-            this.game.world.length
+            this.game.size = 3
+            this.game.world.length = 0
             this.game.world.push.apply( this.game.world, w )
+            this.game.world.get = function(x,y){
+                return w[ x + y*3 ]
+            }
 
             // force world update
             this.ed.dispatch('io:viewer-connect')
@@ -140,8 +146,8 @@ describe('', function(){
                             {'action': 'move', 'directionX': 1, 'directionY': 0 }
                         ]
                     })
-                    
-                    setTimeout( done, 9500 )
+
+                    setTimeout( done, 4500 )
                 })
 
                 it('start / end resolution should be called multiple times', function(){

@@ -16,7 +16,7 @@ gulp.task('browserify', function () {
 
 gulp.task('watch', function () {
 
-	gulp.watch( ['./**/*.js' , '!./jasmine-bundle.js'] , ['browserify'] )
+	gulp.watch( ['./jasmine-bundle-src.js' , './specs/**/*.js'] , ['browserify'] )
 
 });
 
