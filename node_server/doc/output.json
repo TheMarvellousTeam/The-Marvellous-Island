@@ -32,7 +32,7 @@
                     "y": "<number>",
                     "height": "<number>",
                     "type": "<string>[water,sand,dirt,grass]",
-                    "obstable": "<string>[tree|'']",
+                    "obstacle": "<string>[tree|'']",
                 }
             ]
         }
