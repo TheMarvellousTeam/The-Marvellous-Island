@@ -84,7 +84,7 @@ var expectEvent = function( eventName, dataExpected, done ){
 
         this.ed.unlisten( eventName, accept )
         this._willCatch = false
-        clearInterval( timeout )
+        //clearInterval( timeout )
 
         //test shit
         if ( dataExpected ){
@@ -104,11 +104,11 @@ var expectEvent = function( eventName, dataExpected, done ){
     if ( last && last.k < this.k && !last.consumed )
         return accept( last )
 
-    var timeout = setTimeout( function(){
-        this.whenAssertFail('expected '+eventName+', never got it after '+this.timeout+ ' ms')
-        clearInterval( timeout )
-        this.ed.unlisten( eventName, key )
-    }.bind( this ), this.timeout )
+    //var timeout = setTimeout( function(){
+    //    this.whenAssertFail('expected '+eventName+', never got it after '+this.timeout+ ' ms')
+    //    clearInterval( timeout )
+    //    this.ed.unlisten( eventName, key )
+    //}.bind( this ), this.timeout )
 
     this._willCatch = true
     this.ed.listen( eventName, accept )
