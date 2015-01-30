@@ -9,7 +9,7 @@ var solve = function( game ){
 
         var k = Math.random()
 
-        if ( k<10.3 ){
+        if ( k<0.3 ){
             action = 'peck'
         } else if ( k<1 ) {
             action = 'move'

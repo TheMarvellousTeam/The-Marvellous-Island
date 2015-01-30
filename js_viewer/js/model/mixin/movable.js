@@ -18,6 +18,8 @@ var _move = function(){
 var finishMove = function( noStateChange ){
 
     if ( this._move ) {
+        if ( typeof this._move.targetX == 'undefined')
+            throw 'move to undefined'
         this.x = this._move.targetX
         this.y = this._move.targetY
     }

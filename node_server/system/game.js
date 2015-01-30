@@ -104,9 +104,7 @@ var resolveOneCommand = function( cmd ){
 
             resulting_actions.push({
                 'action' : 'peck',
-                'playerId' : playerId,
-                'fromX' : player.x,
-                'fromY' : player.y,
+                'playerId' : playerId
             })
             break
 

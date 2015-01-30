@@ -51,13 +51,17 @@ var addCommand = function( data ){
 }
 
 var checkAllReady = function(){
+
+    if( this.state != 'waitingCmds')
+        return
+
     // test if everyOne is ready
     for (var id in this.playersCmds )
         if( this.game.players[ id ].respawnIn <= 0 && this.playersCmds[ id ].length < round )
             return
 
     // launch the resolution phase
-    this.state != 'play'
+    this.state = 'play'
     this.ed.dispatch('gameLoop:start-resolution')
 
     var history = this.game.resolveCommands( this.playersCmds )
@@ -70,7 +74,7 @@ var checkAllReady = function(){
     // replay
     var that = this
     dispatch.call( this, history , function(){
-        that.state != 'waitingCmds'
+        that.state = 'waitingCmds'
         that.ed.dispatch('gameLoop:end-resolution')
 
         checkAllReady.call( that )
@@ -102,7 +106,7 @@ var dispatch = function( history, cb ){
     action.duration = actionsDelay[ action.action  ] || 0
     this.ed.dispatch('gameLoop:action', action )
 
-    setTimeout( dispatch.bind( this, history, cb ), actionsDelay[ action.action  ] || 0 )
+    setTimeout( dispatch.bind( this, history, cb ), 500 )
 }
 
 var init = function( modelBall ){

@@ -57,8 +57,6 @@ var doAction = function( action ){
         case 'fire_push_bullet' :
 
             player.finishMove()
-            player.x = action.fromX
-            player.y = action.fromY
 
             player.state = 'fire'
             player.direction.frontOrBack = action.dirX+action.dirY > 0 ? 'back' : 'front'
@@ -74,8 +72,6 @@ var doAction = function( action ){
         case 'peck' :
 
             player.finishMove()
-            player.x = action.fromX
-            player.y = action.fromY
 
             player.state = 'picor'
 
