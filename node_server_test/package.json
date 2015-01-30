@@ -12,10 +12,10 @@
     "gulp" : "*",
     "gulp-watch" : "*",
     "jasmine-core" : "2.1.x",
-    "jasmine-node" : "*"
+    "jasmine" : "2.1.x"
   },
 
   "scripts" : {
-    "test" : "node ./node_modules/jasmine-node/bin/jasmine-node --matchall ./specs/"
+    "test" : "node ./node_modules/jasmine/bin/jasmine.js"
   }
 }

@@ -5,7 +5,7 @@ var Abstract = require('../util/Abstract')
 
 var dispatch = function( eventName, data ){
 
-    if(true)
+    if(!this.nolog)
         switch(eventName){
             case 'update':
                 break;

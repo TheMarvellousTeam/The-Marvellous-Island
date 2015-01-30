@@ -15,7 +15,7 @@ var init = function(){
     return this
 }
 
-var timeDead = 1
+var timeDead = 3
 
 var resolveOneCommand = function( cmd ){
 

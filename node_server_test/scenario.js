@@ -102,13 +102,47 @@ var expectEvent = function( eventName, dataExpected, done ){
 
     var last = this._events[ eventName ].shift()
     if ( last && last.k < this.k && !last.consumed )
-        return accept( last )
+        return accept( last.data )
 
     //var timeout = setTimeout( function(){
     //    this.whenAssertFail('expected '+eventName+', never got it after '+this.timeout+ ' ms')
     //    clearInterval( timeout )
     //    this.ed.unlisten( eventName, key )
     //}.bind( this ), this.timeout )
+
+    this._willCatch = true
+    this.ed.listen( eventName, accept )
+}
+var expectNoEvent = function( eventName, dataExpected, done ){
+
+    var key = k++
+
+    var accept = function( data ){
+
+
+        this.ed.unlisten( eventName, accept )
+        this._willCatch = false
+        clearInterval( timeout )
+
+        //test shit
+        if ( dataExpected ){
+            // TODO
+        }
+
+        this.whenAssertFail('event '+eventName+' wasnt expected')
+        done()
+
+    }.bind( this )
+
+    var last = this._events[ eventName ].shift()
+    if ( last && last.k < this.k && !last.consumed )
+        return accept( last.data )
+
+    var timeout = setTimeout( function(){
+        clearInterval( timeout )
+        this.ed.unlisten( eventName, accept )
+        done()
+    }.bind( this ), this.timeout )
 
     this._willCatch = true
     this.ed.listen( eventName, accept )
@@ -175,6 +209,15 @@ var S = {
             this._events[ eventName ] = []
         }
         addStack.call( this, expectEvent.bind( this, eventName, data ) )
+        return this
+    },
+    expectNoEvent: function( eventName, data ){
+        if ( !this._events[ eventName ])
+        {
+            this.ed.listen( eventName , gotEvent.bind( this, eventName ) )
+            this._events[ eventName ] = []
+        }
+        addStack.call( this, expectNoEvent.bind( this, eventName, data ) )
         return this
     },
     expectPlayer: function( data ){
