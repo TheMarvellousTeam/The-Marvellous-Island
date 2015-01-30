@@ -1,1 +1,1 @@
-require('./specs/mechanics/end-to-end.js')
+require('./specs/mechanics/fonctionnal.js')
