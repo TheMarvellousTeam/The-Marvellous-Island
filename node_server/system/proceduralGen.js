@@ -5,6 +5,9 @@ var proceduralGenWorld = function( w, h ){
     var map = []
 
     var r_max = ( (w/2)*(w/2) + (h/2)*(h/2) ) * 1.1
+    var max_tree = 3
+    var tree = 0
+    var threesold_tree = 1
 
     for ( var x=w; x--; )
     for ( var y=h; y--; )
@@ -28,8 +31,13 @@ var proceduralGenWorld = function( w, h ){
 
         var obstacle = null
 
-        if ( height>=3 && Math.random()>0.93 || height>=2 && Math.random()>0.96 )
-        obstacle = 'tree'
+        if ( max_tree > tree && ( (height>=3 && Math.random()>threesold_tree) || (height>=2 && Math.random()>threesold_tree+0.25) ) ){
+            obstacle = 'tree'
+            ++tree
+            threesold_tree = 1
+        } else {
+            threesold_tree-=0.01
+        }
 
         map[ x + y*w ] = {
             height : height,
