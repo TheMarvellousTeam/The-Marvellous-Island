@@ -69,14 +69,13 @@ var proceduralGenWorld = function( w, h ){
         }
     }
 
-    // cleaning
+    // compute the linked cell
     var connexion = []
 
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
         if( map.get(x, y).height > 0 ){
-
             var toCheck = []
             if( map.get(x-1, y).height >0 )
                 toCheck.push(x-1+y*w)
@@ -109,18 +108,16 @@ var proceduralGenWorld = function( w, h ){
                     var newConnexion = []
                     for(var i=addTo.length; i-- ;)
                     {
-                        // something to fix here
-                        newConnexion.concat(connexion[addTo[i]])
-                        // that's work, but there is some strange behavior in the array
+                        newConnexion = newConnexion.concat(connexion[addTo[i]])
                         connexion.splice(addTo[i], 1)
                     }
                     connexion.push(newConnexion)
                 }
             }
-
         }
     }
 
+    // removing the unreachable tiles
     var maxLen = -1 ;
     var maxI = -1 ;
     for( var i=connexion.length; i--; ) {
