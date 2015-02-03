@@ -53,49 +53,88 @@ var proceduralGenWorld = function( w, h ){
         return map[ k ]
     }
 
-    var max_chain = 10
-
-    // cleaning
+    // fill the ugly gap
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
-
         var startcell = map.get(x, y)
+        if ( startcell.height == 0
+             && map.get(startcell.x-1, startcell.y).height > 0 
+             && map.get(startcell.x+1, startcell.y).height > 0
+             && map.get(startcell.x, startcell.y-1).height > 0
+             && map.get(startcell.x, startcell.y+1).height > 0 ) {
 
-        var open = []
-        var closed = []
-
-        if ( startcell.height > 0 )
-        open.push(startcell)
-
-        while( open.length > 0 && closed.length < max_chain ) {
-
-            var cell = open.shift()
-            closed.push(cell)
-
-            var neighboor = map.get(x-1, y)
-            if ( neighboor.height > 0 ) {
-                open.push(neighboor)
-            }
-            neighboor = map.get(x+1, y)
-            if ( neighboor.height > 0 ) {
-                open.push(neighboor)
-            }
-            neighboor = map.get(x, y-1)
-            if ( neighboor.height > 0 ) {
-                open.push(neighboor)
-            }
-            neighboor = map.get(x, y+1)
-            if ( neighboor.height > 0 ) {
-                open.push(neighboor)
-            }
+            startcell.height = 1
+            startcell.type = 'sand'
         }
+    }
 
-        if ( closed.length < max_chain ) {
-            closed.forEach(function(cell){
-                cell.height = 0
-                cell.type = 'water'
-                cell.obstacle = null
+    // cleaning
+    var connexion = []
+
+    for ( var x=w; x--; )
+    for ( var y=h; y--; )
+    {
+        if( map.get(x, y).height > 0 ){
+
+            var toCheck = []
+            if( map.get(x-1, y).height >0 )
+                toCheck.push(x-1+y*w)
+            if( map.get(x+1, y).height >0 )
+                toCheck.push(x+1+y*w)
+            if( map.get(x, y-1).height >0 )
+                toCheck.push(x+y*w-w)
+            if( map.get(x, y+1).height >0 )
+                toCheck.push(x+y*w+w)
+
+            if ( connexion.length == 0 ){
+                connexion.push([x+y*w])
+            } else {
+                var addTo = []
+
+                for(var j=connexion.length; j-- ;)
+                for(var i=toCheck.length; i-- ;)
+                {
+                    if( connexion[j].indexOf(toCheck[i]) != -1 ) {
+                        if( addTo.indexOf(j) == -1 )
+                            addTo.unshift(j)
+                    }
+                }
+
+                if( addTo.length == 0 ){
+                    connexion.push([x+y*w])
+                } else if (addTo.length == 1) {
+                    connexion[addTo[0]].push(x+y*w)
+                } else {
+                    var newConnexion = []
+                    for(var i=addTo.length; i-- ;)
+                    {
+                        // something to fix here
+                        newConnexion.concat(connexion[addTo[i]])
+                        // that's work, but there is some strange behavior in the array
+                        connexion.splice(addTo[i], 1)
+                    }
+                    connexion.push(newConnexion)
+                }
+            }
+
+        }
+    }
+
+    var maxLen = -1 ;
+    var maxI = -1 ;
+    for( var i=connexion.length; i--; ) {
+        if( connexion[i].length > maxLen ){
+            maxLen = connexion[i].length
+            maxI = i
+        }
+    }
+    for( var i = connexion.length; i--; ){
+        if( i != maxI ){
+            connexion[i].forEach(function(position){
+                map[position].height = 0
+                map[position].type = 'water'
+                map[position].obstacle = ''
             })
         }
     }
