@@ -147,50 +147,41 @@ var proceduralGenWorld = function( w, h ){
     return map
 }
 
+// TODO: make this method more generic, i.e. compute X spawn candidate
 var computeSpawnCandidate = function(map, w, h) {
-    var nextWater = []
     var spawn = []
 
+    var nextWater = []
     for ( var x=w; x--; )
     for ( var y=h; y--; )
     {
-        var startcell = map.get(x, y)
+        var cell = map.get(x, y)
         var max_chain = 5
-
-        var open = []
-        var closed = []
-
-        if ( startcell.height > 0 )
-        open.push(startcell)
-
-        while( open.length > 0 && closed.length < max_chain ) {
-
-            var cell = open.shift()
-            closed.push(cell)
-
+        if( cell.height > 0){
             var neighboor = map.get(x-1, y)
             if ( neighboor.height == 0 ) {
-                open.push(neighboor)
+                nextWater.push(cell)
+                break
             }
             neighboor = map.get(x+1, y)
             if ( neighboor.height == 0 ) {
-                open.push(neighboor)
+                nextWater.push(cell)
+                break
             }
             neighboor = map.get(x, y-1)
             if ( neighboor.height == 0 ) {
-                open.push(neighboor)
+                nextWater.push(cell)
+                break
             }
             neighboor = map.get(x, y+1)
             if ( neighboor.height == 0 ) {
-                open.push(neighboor)
+                nextWater.push(cell)
+                break
             }
-        }
-
-        if ( closed.length >= max_chain ) {
-            nextWater.push(startcell)
         }
     }
 
+    // an ugly piece of code, don't blame me please :P
     spawn.push(nextWater.shift())
 
     var cell = nextWater.shift()

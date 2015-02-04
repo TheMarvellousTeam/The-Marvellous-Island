@@ -17,6 +17,7 @@ var init = function(){
 
 var timeDead = 3
 
+//TODO: split into multiple function (i.e: resolveMoveCommand, resolvePeckCommand...)
 var resolveOneCommand = function( cmd ){
 
     var playerId = cmd.playerId
